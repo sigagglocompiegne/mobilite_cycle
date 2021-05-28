@@ -1,7 +1,7 @@
  
 /*Mobilité douce V1.0*/
 /*Creation des vues et triggers nécessaires à la gestion via l'application web-métier */
-/*md_20_vues_xapps.sql */
+/*md_21_vues_xapps.sql */
 /*PostGIS*/
 /* GeoCompiegnois - http://geo.compiegnois.fr/ */
 /* Auteur : Grégory Bodet*/
