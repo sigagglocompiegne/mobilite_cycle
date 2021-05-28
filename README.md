@@ -4,6 +4,7 @@
 
 [ ] à rédiger [x] en cours de rédaction [ ] finaliser
 
+Ensemble des éléments constituant la mise en oeuvre de la base de données sur la thématique des mobilités douces ainsi que l'exploitation de ces données dans les différentes applications dédiées.
 
 - Script d'initialisation de la base de données
   * [Suivi des modifications](bdd/md_00_trace.sql)
