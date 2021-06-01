@@ -27,6 +27,7 @@ L’ARC privilégie donc une organisation dans laquelle l’Interface Homme Mach
 
 - [Schéma de données national pour le stationnement cyclable](https://schema.data.gouv.fr/etalab/schema-stationnement-cyclable/latest.html)
 - [Schéma de données national d’aménagements cyclables](https://schema.data.gouv.fr/etalab/schema-amenagements-cyclables/latest.html)
+- [Documentation sur les aménagements cyclables](https://github.com/etalab/schema-amenagements-cyclables/blob/master/documentation/ame_d.md)
 
 ## Jeu de données consolidé
 
