@@ -27,7 +27,8 @@ L’ARC privilégie donc une organisation dans laquelle l’Interface Homme Mach
 
 - [Schéma de données national pour le stationnement cyclable](https://schema.data.gouv.fr/etalab/schema-stationnement-cyclable/latest.html)
 - [Schéma de données national d’aménagements cyclables](https://schema.data.gouv.fr/etalab/schema-amenagements-cyclables/latest.html)
-- [Documentation sur les aménagements cyclables](https://github.com/etalab/schema-amenagements-cyclables/blob/master/documentation/ame_d.md)
+- [Documentation sur les aménagements cyclables (GITHUB)](https://github.com/etalab/schema-amenagements-cyclables/blob/master/documentation/ame_d.md)
+- [Documentation sur les aménagements cyclables (ETALAB)](https://doc.transport.data.gouv.fr/producteurs/amenagements-cyclables#amenagements-cyclables)
 - [VéloObs - Observatoire du vélo](https://github.com/2p2r/velobs_web/blob/master/documentation_utilisateurs.md)
 - [Outil de signalement Vélo&Territoires](https://www.velo-territoires.org/observatoires/observatoire-national-des-veloroutes-et-voies-vertes/outil-signalement-anomalies-cyclables/)
 
