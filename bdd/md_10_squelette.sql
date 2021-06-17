@@ -1,6 +1,6 @@
 /*Aménagement cyclable V0.5*/
 /*Creation des triggers de la structure*/
-/*BDD.sql */
+/*md_10_squelette.sql */
 /*PostGIS*/
 /*GeoCompiegnois - http://geo.compiegnois.fr/ */
 /*Auteur : Julien Houziaux */
