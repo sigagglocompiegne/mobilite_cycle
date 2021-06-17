@@ -11,13 +11,17 @@
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
---TRIGGERS
+-- TRIGGERS
 
-DROP TRIGGER IF EXISTS 
+DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
---VUES
+-- VUES
 
-DROP VIEW IF EXISTS 
+DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
+DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
+DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
+DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
+DROP VIEW if exists x_opendata.xopendata_geo_v_mob_opendata;
 
 
 
