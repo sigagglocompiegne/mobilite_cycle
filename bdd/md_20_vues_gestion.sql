@@ -6,6 +6,12 @@
 /*Auteur : Julien Houziaux */
 
 
+
+				IL Y A LES VUES D'AFFICHAGE DEDANS
+
+
+
+
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
 -- ###                                                           DROP                                                          ###
@@ -20,7 +26,6 @@ DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
-DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
 DROP VIEW if exists x_opendata.xopendata_geo_v_mob_opendata;
 
@@ -120,54 +125,6 @@ CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_troncon
 
 
 
---##############################################################OUVELEC#############################################################
--- Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons
-CREATE OR REPLACE VIEW x_apps.xapps_geo_v_mob_troncon_affiche
-AS
- WITH req_t AS (
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            tr.geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = 'ZZ'::text OR tr.ame_g::text = '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_g AS ame,
-            tr.avanc_g AS avanc,
-            st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_g AS ame,
-            tr.avanc_g AS avanc,
-            st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        )
- SELECT row_number() OVER () AS gid,
-    t.idtroncon,
-    t.ame,
-    t.avanc,
-    t.geom
- FROM req_t t;
-
-
 
 --##############################################################OUVELEC#############################################################
 -- Vue de modélisation des noeuds des tronçons purement cartographique pour géo
@@ -207,5 +164,4 @@ CREATE TRIGGER t_t1_modif_troncon
 
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_troncon	IS 'Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données';
-COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
