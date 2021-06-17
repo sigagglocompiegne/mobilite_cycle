@@ -23,13 +23,6 @@ SOMMAIRE :
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
--- VUES
-
---DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
---DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
---DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
---DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
---DROP VIEW if exists x_opendata.xopendata_geo_v_mob_opendata;
 
 -- SCHEMA
 
@@ -584,195 +577,6 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
--- ###                                                           VUES                                                          ###
--- ###                                                                                                                         ###
--- ###############################################################################################################################
-
---################################################################# VUE #######################################################
-
--- Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_iti
- AS
- SELECT
-    i.iditi,
-	i.num_iti,
-	i.nom_off,
-    i.num_loc,
-	i.nom_usage,
-    i.depart,
-	i.via,
-    i.arrivee,
-	i.est_inscri,
-	i.niv_inscri,
-	i.nom_schema,
-	i.an_inscri,
-	i.an_ouvert,
-	i.gest_iti,
-	i.usag,
-	i.usage_comm,
-	i.voca_iti,
-	i.typ_iti,
-	i.mao,
-	i.equip,
-	i.descrip,
-	i.cout,
-	i.esti,
-	i.url_site,
-    i.observ,
-	i.op_sai,
-	i.date_sai,
-	i.date_maj,
-	st_linemerge(ST_Union(tr.geom)) as geom
-   	FROM m_mobilite_3v.lk_mob_ititroncon lk
-     	JOIN m_mobilite_3v.an_mob_itineraire i  ON lk.iditi = i.iditi
-     	JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
-	group by i.iditi;
-
---################################################################# VUE #######################################################
-
--- Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_troncon
- AS
- SELECT
-    tr.idtroncon,
-	tr.id_osm,
-	tr.id_on3v,
-	tr.typ_res,
-	tr.gest,
-	tr.propriete,
-	tr.d_service,
-	tr.trafic_vit,
-	tr.lumiere,
-	tr.code_com_g,
-	tr.commune_g, 
-	tr.ame_g,
-	tr.avanc_g, 
-	tr.regime_g,
-	tr.sens_g,
-	tr.largeur_g,
-	tr.local_g, 
-	tr.revet_g, 
-	tr.code_com_d,
-	tr.commune_d, 
-	tr.ame_d,
-	tr.avanc_d,
-	tr.regime_d, 
-	tr.sens_d,
-	tr.largeur_d,
-	tr.local_d, 
-	tr.revet_d, 
-	tr.long_m,
-	tr.src_geom, 
-	tr.observ,
-	tr.verif,	
-	tr.op_sai, 
-	tr.date_sai,
-	tr.date_maj, 
-	tr.geom
-   	FROM m_mobilite_3v.geo_mob_troncon tr;
-
---################################################################# VUE #######################################################
-
--- Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons
-CREATE OR REPLACE VIEW x_apps.xapps_geo_v_mob_troncon_affiche
- AS
- WITH req_t AS (
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            tr.geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = 'ZZ'::text OR tr.ame_g::text = '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_g AS ame,
-            tr.avanc_g AS avanc,
-            st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_d AS ame,
-            tr.avanc_d AS avanc,
-            st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        UNION ALL
-         SELECT tr.idtroncon,
-            tr.ame_g AS ame,
-            tr.avanc_g AS avanc,
-            st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
-           FROM m_mobilite_3v.geo_mob_troncon tr
-          WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text
-        )
- SELECT row_number() OVER () AS gid,
-    t.idtroncon,
-    t.ame,
-    t.avanc,
-    t.geom
-   FROM req_t t;
-
---################################################################# VUE #######################################################
-
--- Vue de modélisation des noeuds des tronçons purement cartographique pour géo
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_noeud
- AS
- SELECT
- 	tr.idtroncon,
-	st_Union(st_startpoint(tr.geom), st_endpoint(tr.geom)) as geom 
-	FROM m_mobilite_3v.geo_mob_troncon tr;
-
---################################################################# VUE #######################################################
-
-/*-- Vue d export opendata pour le PAN
-CREATE OR REPLACE VIEW x_opendata.xopendata_geo_v_mob_opendata
- AS
- SELECT
-    tr.idtroncon as id_local,
-	tr.id_osm,
-	tr.id_on3v,
-	tr.typ_res as reseau_loc,
-	--ITINERAIRE CY nom_loc
-	--NUMERO ITINERAIRE CY num_iti
-	tr.d_service,
-	tr.acces_ame,
-	tr.trafic_vit,
-	tr.lumiere,
-	tr.code_com_g,
-	tr.ame_g,
-	tr.avanc_g as statut_g,
-	tr.regime_g,
-	tr.sens_g,
-	tr.largeur_g,
-	tr.local_g,
-	tr.code_com_d,
-	tr.ame_d,
-	tr.avanc_d as statut_d,
-	tr.regime_d,
-	tr.sens_d,
-	tr.largeur_d,
-	tr.local_d,
-	tr.src_geom,
-	tr.observ as comm,
-	tr.op_sai as source,
-	tr.date_sai,
-	tr.date_maj,
-	tr.geom
-   	FROM m_mobilite_3v.geo_mob_troncon as tr;*/
-
-
-
-
-
--- ###############################################################################################################################
--- ###                                                                                                                         ###
 -- ###                                                         FONCTIONS                                                       ###
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
@@ -1008,7 +812,7 @@ CREATE TRIGGER t_t1_date_sai
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
-
+--################################################################# TRIGGER #######################################################
 -- Trigger t_t2_date_maj pour la fonction ecrivant la date de mise a jour 
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
@@ -1026,38 +830,27 @@ CREATE TRIGGER t_t2_date_sai
     ON m_mobilite_3v.geo_mob_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
-
+--################################################################# TRIGGER #######################################################
 -- Trigger t_t3_date_maj pour la fonction ecrivant la date de mise a jour
 CREATE TRIGGER t_t3_date_maj
     BEFORE UPDATE
     ON m_mobilite_3v.geo_mob_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
-
+--################################################################# TRIGGER #######################################################
 -- Trigger t_t4_long_m pour la fonction calculant la longueur du tracé
 CREATE TRIGGER t_t4_long_m
     BEFORE UPDATE OR INSERT
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_longm_maj();
-
+--################################################################# TRIGGER #######################################################
 -- Trigger t_t5_commune pour la fonction recuperant le nom de la commune (CHANGER LE NOM DE LA TABLE (Oise))
 CREATE TRIGGER t_t5_commune
     BEFORE UPDATE OR INSERT
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
-
-
-
---Trigger sur la vue geo_v_mob_troncon
---################################################################# TRIGGER #######################################################
--- Trigger t_t1_modif_troncon pour la fonction de modification des troncons
-CREATE TRIGGER t_t1_modif_troncon
-    INSTEAD OF INSERT OR UPDATE OR DELETE
-	ON m_mobilite_3v.geo_v_mob_troncon
-    FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.ft_modif_troncon();
 
 
 
@@ -1069,7 +862,7 @@ CREATE TRIGGER t_t1_date_sai
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
-
+--################################################################# TRIGGER #######################################################
 -- Trigger t_t2_date_maj pour la fonction ecrivant la date de mise a jour
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
@@ -1253,12 +1046,6 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_media.t_fichier is 'Type de média dans G
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.l_prec is 'Précision sur le document';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.op_sai is 'Opérateur de saisie';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai is 'Date de saisie';
-
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_troncon	IS 'Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données';
-COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
-COMMENT ON VIEW x_opendata.xopendata_geo_v_mob_opendata IS 'Vue d export opendata pour le PAN';
 
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
