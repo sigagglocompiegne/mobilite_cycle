@@ -70,3 +70,12 @@ CREATE OR REPLACE VIEW x_opendata.xopendata_geo_v_mob_opendata
  FROM m_mobilite_3v.geo_mob_troncon as tr;
 
 
+
+-- ###############################################################################################################################
+-- ###                                                                                                                         ###
+-- ###                                                       COMMENTAIRES                                                      ###
+-- ###                                                                                                                         ###
+-- ###############################################################################################################################
+
+
+COMMENT ON VIEW x_opendata.xopendata_geo_v_mob_opendata IS 'Vue d export opendata pour le PAN';
