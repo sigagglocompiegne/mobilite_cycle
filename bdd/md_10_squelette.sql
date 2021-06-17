@@ -1,5 +1,5 @@
-/*Aménagement cyclable V0.5*/
-/*Creation des triggers de la structure*/
+/*Mobilité douce V1.0*/
+/*Creation du squelette de la base et de ses déclencheurs*/
 /*md_10_squelette.sql */
 /*PostGIS*/
 /*GeoCompiegnois - http://geo.compiegnois.fr/ */
