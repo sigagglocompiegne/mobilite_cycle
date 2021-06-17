@@ -2,7 +2,9 @@
 
 # Prescriptions locales pour la gestion des mobilités douces 
 
-[ ] à rédiger [x] en cours de rédaction [ ] finaliser
+[ ] à rédiger 
+[x] en cours de rédaction 
+[ ] finaliser
 
 Ensemble des éléments constituant la mise en oeuvre de la base de données sur la thématique des mobilités douces ainsi que l'exploitation de ces données dans les différentes applications dédiées.
 
