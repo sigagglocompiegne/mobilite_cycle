@@ -1,10 +1,9 @@
- 
-/*Mobilité douce V1.0*/
-/*Creation des vues et triggers nécessaires à la gestion via l'application web-métier */
-/*md_20_VUES_GESTION.sql */
+/*Aménagement cyclable V0.5*/
+/*Creation des triggers de la structure*/
+/*md_20_vues_gestion.sql */
 /*PostGIS*/
-/* GeoCompiegnois - http://geo.compiegnois.fr/ */
-/* Auteur : Grégory Bodet*/
+/*GeoCompiegnois - http://geo.compiegnois.fr/ */
+/*Auteur : Julien Houziaux */
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
