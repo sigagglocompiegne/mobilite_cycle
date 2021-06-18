@@ -20,7 +20,7 @@
 
 ## Dépendances
 
-**Je ne sais pas si c'est cela qu'il fallait mettre dedans**
+`**Je ne sais pas si c'est cela qu'il fallait mettre dedans**
 
 <br>
 
@@ -28,7 +28,7 @@ La base de données des aménagements cyclables s'appuie sur d'anciennes donnée
 
 |schéma | table | description | usage |
 |:---|:---|:---|:---|   
-
+`
 ---
 
 ## Classes d'objets
