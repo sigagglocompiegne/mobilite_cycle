@@ -241,6 +241,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---|  
 |00|Non renseigné|
@@ -259,6 +264,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des faux booléens|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---|  
 |0|Non renseigné|
@@ -272,8 +282,14 @@ Paticularité(s) à noter :
 
 `[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
-|Code | Valeur |
-|:---|:---|  
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|modele|Code du modèle de carrefour|character varying(3)| |
+
+|Code | Valeur | Modele |
+|:---|:---|:---|  
 |00|Non renseigné|
 |10|SAS vélo|
 |20|Traversée|
@@ -284,6 +300,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur dinscription|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -297,6 +318,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des gestionnaires|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -314,6 +340,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur du gestionnaire|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---|  
 |10|ARC|
@@ -325,6 +356,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -339,6 +375,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur du niveau|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -357,6 +398,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---| 
 |00|Non renseigné|
@@ -374,8 +420,14 @@ Paticularité(s) à noter :
 
 `[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
-|Code | Valeur |
-|:---|:---|
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|prix_m|Prix moyen au mètre linéaire|numeric| |
+
+|Code | Valeur | Prix_m|
+|:---|:---|:---|
 |00|Non renseigné|
 |10|Lisse|
 |11|....|
@@ -391,6 +443,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .    
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---|
 |00|Non renseigné|
@@ -403,6 +460,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des types de réseau locaux|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -417,6 +479,11 @@ Paticularité(s) à noter :
 
 `[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des usages|character varying(50)| |
+
 |Code | Valeur |
 |:---|:---|
 |10|Cyclable|
@@ -427,6 +494,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des régimes|character varying(20)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -449,6 +521,11 @@ Paticularité(s) à noter :
 ---
 
 `[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des vocations|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
