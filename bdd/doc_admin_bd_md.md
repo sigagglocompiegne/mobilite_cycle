@@ -166,14 +166,293 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 ## Liste de valeurs
 
-`[libellé]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+`[lt_mob_ame]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|    
 
+|Code | Valeur |
+|:---|:---|  
+|10|Non aménagé|
+|11|Non aménagé (jalonnement)|
+|20|Piste cyclable|
+|30|Bande cyclable|
+|41|Double sens cyclable piste|
+|42|Double sens cyclable bande|
+|43|Double sens cyclable non matérialisé|
+|50|Voie verte|
+|60|Vélo rue|
+|61|Couloir Bus+Vélo|
+|62|Rampe|
+|63|Goulotte|
+|64|Aménagement mixte piéton-vélo (hors voie verte)|
+|70|Chaussée à voie centrale banalisée|
+|71|Accotement revêtu hors CVCB|
+|99|Autre|
+|ZZ|Non concerné|
+<br/>
+<br/>
 
-|code | valeur |
+`[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|Esquisse|
+|20|Avant-projet|
+|30|Provisoire|
+|40|En travaux|
+|50|En service|
+|60|Supprimé|
+|70|Abandonné|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|0|Non renseigné|
+|f|Non|
+|t|Oui|
+|z|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|SAS vélo|
+|20|Traversée|
+|30|Feux aménagés|
+<br/>
+<br/>
+
+`[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|Ne sais pas (inconnu)|
+|20|Non|
+|30|Oui|
+<br/>
+<br/>
+
+`[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|État|
+|20|Région|
+|30|Département|
+|40|Intercommunalité|
+|50|Commune|
+|60|Privé|
+<br/>
+<br/>
+
+`[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|10|ARC|
+|20|CCPE|
+|30|CCLO|
+<br/>
+<br/>
+
+`[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|Trottoir|
+|20|Intermédiaire|
+|30|Chaussée|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|  
+|00|Non renseigné|
+|10|Européen|
+|20|National|
+|30|Régional|
+|40|Départemental|
+|50|Intercommunal|
+|60|Communal|
+|70|Infracommunal|
+<br/>
+<br/>
+
+`[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
 |:---|:---| 
+|00|Non renseigné|
+|10|Zone 30|
+|20|Aire piétonne|
+|30|Zone de rencontre|
+|40|En agglomération|
+|50|Hors agglomération
+|60|Autre|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Lisse|
+|11|....|
+|20|Meuble|
+|21|....|
+|30|Rugueux|
+|31|....|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|    
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Unidirectionnel|
+|20|Bidirectionnel|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|   
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|REV|
+|20|STRUCTURANT|
+|30|AUTRE|
+<br/>
+<br/>
+
+`[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|   
+
+|Code | Valeur |
+|:---|:---|
+|10|Cyclable|
+|20|Piéton|
+<br/>
+<br/>
+
+`[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|   
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|10|
+|11|15|
+|20|20|
+|21|25|
+|30|30|
+|40|40|
+|50|50|
+|60|60|
+|70|70|
+|80|80|
+|90|90|
+|ZZ|Non concerné|
+<br/>
+<br/>
+
+`[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|   
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Loisirs|
+|20|Utilitaire|
+<br/>
+<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
