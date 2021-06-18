@@ -111,40 +111,56 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |geom|Géométrie de l objet|USER-DEFINED| |
 
 * triggers : *commune_g*, *commune_d*, *long_m*, *date_sai* et *date_maj*
+<br/>
+<br/>
 
+`[geo_mob_carrefour]` : table géométrique .
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|  
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text| |
+|libelle|Libellé du carrefour|character varying(255)| |
+|typ_car|Type de carrefour|character varying(2)| |
+|avanc|Niveau d avancement en terme de projet|character varying(2)| |
+|insee|Code insee de la commune d implantation|character varying(5)| |
+|commune|Nom de la commune d implantation|character varying(80)| |
+|observ|Commentaires|character varying(1000)| |
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+|geom|Géométrie de l objet|USER-DEFINED| |
 
+* triggers : *date_sai* et *date_maj*
+<br/>
+<br/>
 
+`[lk_mob_ititroncon]` : table de relation .
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|  
+|gid|Identifiant unique (clé primaire) de la relation|bigint| |
+|idtroncon|Identifiant unique du tronçon|text| |
+|iditi|Identifiant unique de litinéraire|text| |
 
+* triggers : aucun
+<br/>
+<br/>
 
+`[an_mob_media]` : table alpanumérique .
 
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|qid|Identifiant uniqueue (clé primaire) du média|bigint| |
+|gid|Identifiant de l objet référence|text| |
+|media|Champ Média de GEO|text| |
+|miniature|Champ miniature de GEO|bytea| |
+|n_fichier|Nom du fichier|text| |
+|t_fichier|Type de média dans GEO|text| |
+|l_prec|Précision sur le document|character varying(1000)| |
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie|timestamp without time zone| |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+* triggers : aucun
 
 
 
