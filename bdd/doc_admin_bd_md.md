@@ -20,11 +20,14 @@
 
 ## Dépendances
 
-La base de données des espaces verts s'appuie sur des référentiels préexistants constituant autant de dépendances nécessaires pour l'implémentation de la base PEI.
+La base de données des aménagements cyclables s'appuie sur des référentiels préexistants constituant autant de dépendances nécessaires pour le transfère vers le PAN (Point d'Accès National).
 
 |schéma | table | description | usage |
 |:---|:---|:---|:---|   
-
+|m_mobilite_3v| an_mob_itineraire| Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois| stocke les différents itinéraires| |
+|m_mobilite_3v| geo_mob_troncon| Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois| stocke les différents tronçons cyclables| |
+|m_mobilite_3v| geo_mob_carrefour| Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois| stocke les différents carrefours renseignés| |
+|m_mobilite_3v| lk_mob_ititroncon| Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires| stocke les liaisons entre les itinéraires et les tronçons| |
 
 ---
 
