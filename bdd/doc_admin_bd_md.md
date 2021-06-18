@@ -24,11 +24,6 @@ La base de données des aménagements cyclables s'appuie sur d'anciennes donnée
 
 |schéma | table | description | usage |
 |:---|:---|:---|:---|   
-|m_mobilite_3v| an_mob_itineraire| Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois| stocke les différents itinéraires| |
-|m_mobilite_3v| geo_mob_troncon| Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois| stocke les différents tronçons cyclables| |
-|m_mobilite_3v| geo_mob_carrefour| Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois| stocke les différents carrefours renseignés| |
-|m_mobilite_3v| lk_mob_ititroncon| Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires| stocke les liaisons entre les itinéraires et les tronçons| |
-|m_mobilite_3v| an_mob_media| Table alphanumérique gérant la liste des documents associés aux objets cyclables| |
 
 ---
 
@@ -38,13 +33,116 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 ### Classe d'objet géographique et patrimoniale
 
-`[libellé]` : table alphanumérique des métadonnées des objets .
+`[an_mob_itineraire]` : table alphanumérique des métadonnées des objets .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
+|num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
+|num_loc|Numéro de l itinéraire local|character varying(10)| |
+|nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
+|nom_usage|Autre nom ou appellation de l itinéraire en usage|character varying(100)| |
+|depart|Nom de la localité située au départ|character varying(80)| |
+|via|Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire|character varying(254)| |
+|arrivee|Nom de la localité située à l arrivée|character varying(80)| |
+|est_inscri|Précise si l itinéraire est inscrit à un schéma de développement des véloroutes|character varying(2)| |
+|niv_inscri|Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(2)| |
+|nom_schema|Libellé du schéma d inscription|character varying(100)| |
+|an_inscri|Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(4)| |
+|an_ouvert|Indique l année d ouverture de l itinéraire|character varying(4)| |
+|gest_iti|Gestion sur l itinéraire en terme d action sur les données|character varying(2)| |
+|usag|Usage principal de l itinéraire|character varying(2)| |
+|usage_comm|diffusion des données au grand public|boolean|false|
+|voca_iti|Vocation de l itinéraire|character varying(10)| |
+|typ_iti|Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet|character varying(40)| |
+|mao|Maître d ouvrage de l itinéraire en projet ou en cours de travaux|character varying(100)| |
+|equip|Liste d équipements potentiellement proche ou desservis par l itinéraire|character varying(5000)| |
+|descrip|Description de l itinéraire (parcours, …)|character varying(5000)| |
+|cout|Estimation du coût au mètre linéaire de l aménagement de l itinéraire|character varying(10)| |
+|esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
+|url_site|Lien Http vers une page web|character varying(254)| |
+|observ|Commentaires|character varying(1000)| |
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+
+* triggers : *date_sai* et *date_maj*
+<br/>
+<br/>
+
+`[geo_mob_troncon]` : table géométrique .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|  
+|idtroncon|Identifiant unique (clé primaire) du tronçon|text| |
+|id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
+|id_on3v|Identifiant unique du tronçon sur le standard 3V|character varying(30)| |
+|typ_res|Type de réseau local|character varying(2)| |
+|gest|Gestionnaire de l infrastructure|character varying(2)| |
+|propriete|Propriétaire de l infrastructure|character varying(2)| |
+|d_service|Année de mise en service|character varying(4)| |
+|trafic_vit|Vitesse maximale du trafic adjacent|character varying(2)| |
+|lumiere|Présence d éclairage|character varying(1)| |
+|code_com_g|Code insee de la commune à gauche de l aménagement|character varying(5)| |
+|commune_g|Libellé de la commune à gauche de l aménagement|character varying(80)| |
+|ame_g|Type d aménagement de gauche|character varying(2)| |
+|avanc_g|Niveau d avancement en terme de projet à gauche|character varying(2)| |
+|regime_g|Régime présent sur la voie de gauche|character varying(2)| |
+|sens_g|Sens de circulation de l aménagement de gauche|character varying(2)| |
+|largeur_g|Largeur en mètre de l aménagement de gauche|character varying(2)| |
+|local_g|Localisation de l aménagement de gauche|character varying(2)| |
+|revet_g|Type de revêtement du tronçon de gauche|character varying(2)| |
+|code_com_d|Code insee de la commune à droite de l aménagement|character varying(5)| |
+|commune_d|Libellé de la commune à droite de l aménagement|character varying(80)| |
+|ame_d|Type d aménagement de droite|character varying(2)| |
+|avanc_d|Niveau d avancement en terme de projet à droite|character varying(2)| |
+|regime_d|Régime présent sur la voie de droite|character varying(2)| |
+|sens_d|Sens de circulation de l aménagement de droite|character varying(2)| |
+|largeur_d|Largeur en mètre de l aménagement de droite|character varying(2)| |
+|local_d|Localisation de l aménagement de droite|character varying(2)| |
+|revet_d|Type de revêtement du tronçon de droite|character varying(2)| |
+|long_m|Longueur en mètre du tronçon|integer| |
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
+|observ|Commentaires|character varying(1000)| |
+|verif|attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon|boolean|false|
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+|geom|Géométrie de l objet|USER-DEFINED| |
+
+* triggers : *commune_g*, *commune_d*, *long_m*, *date_sai* et *date_maj*
 
 
-* triggers : sans objet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
