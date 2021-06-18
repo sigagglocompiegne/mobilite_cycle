@@ -26,59 +26,59 @@ SOMMAIRE :
 
 -- SCHEMA
 
---DROP SCHEMA if exits m_mobilite_3v CASCADE;
+DROP SCHEMA if exits m_mobilite_3v CASCADE;
 
 -- CLASSES
 
---DROP TABLE if EXISTS m_mobilite_3v.an_mob_itineraire;
---DROP TABLE if EXISTS m_mobilite_3v.geo_mob_troncon;
---DROP TABLE if EXISTS m_mobilite_3v.geo_mob_carrefour;
---DROP TABLE if EXISTS m_mobilite_3v.an_mob_media;
---DROP TABLE if EXISTS m_mobilite_3v.lk_mob_ititroncon;
+DROP TABLE if EXISTS m_mobilite_3v.an_mob_itineraire;
+DROP TABLE if EXISTS m_mobilite_3v.geo_mob_troncon;
+DROP TABLE if EXISTS m_mobilite_3v.geo_mob_carrefour;
+DROP TABLE if EXISTS m_mobilite_3v.an_mob_media;
+DROP TABLE if EXISTS m_mobilite_3v.lk_mob_ititroncon;
 
 -- DOMAINE DE VALEUR
 
---DROP TABLE if exists m_mobilite_3v.lt_mob_etat_inscri;
---DROP TABLE if exists m_mobilite_3v.lt_mob_niv_inscri;
---DROP TABLE if exists m_mobilite_3v.lt_mob_gest_iti;
---DROP TABLE if exists m_mobilite_3v.lt_mob_usage;
---DROP TABLE if exists m_mobilite_3v.lt_mob_typres;
---DROP TABLE if exists m_mobilite_3v.lt_mob_gest;
---DROP TABLE if exists m_mobilite_3v.lt_mob_booleen;
---DROP TABLE if exists m_mobilite_3v.lt_mob_ame;
---DROP TABLE if exists m_mobilite_3v.lt_mob_avanc;
---DROP TABLE if exists m_mobilite_3v.lt_mob_regime;
---DROP TABLE if exists m_mobilite_3v.lt_mob_sens;
---DROP TABLE if exists m_mobilite_3v.lt_mob_voca_iti;
---DROP TABLE if exists m_mobilite_3v.lt_mob_local;
---DROP TABLE if exists m_mobilite_3v.lt_mob_revet;
---DROP TABLE if exists m_mobilite_3v.lt_mob_vitesse;
---DROP TABLE if exists m_mobilite_3v.lt_mob_carrefour;
+DROP TABLE if exists m_mobilite_3v.lt_mob_etat_inscri;
+DROP TABLE if exists m_mobilite_3v.lt_mob_niv_inscri;
+DROP TABLE if exists m_mobilite_3v.lt_mob_gest_iti;
+DROP TABLE if exists m_mobilite_3v.lt_mob_usage;
+DROP TABLE if exists m_mobilite_3v.lt_mob_typres;
+DROP TABLE if exists m_mobilite_3v.lt_mob_gest;
+DROP TABLE if exists m_mobilite_3v.lt_mob_booleen;
+DROP TABLE if exists m_mobilite_3v.lt_mob_ame;
+DROP TABLE if exists m_mobilite_3v.lt_mob_avanc;
+DROP TABLE if exists m_mobilite_3v.lt_mob_regime;
+DROP TABLE if exists m_mobilite_3v.lt_mob_sens;
+DROP TABLE if exists m_mobilite_3v.lt_mob_voca_iti;
+DROP TABLE if exists m_mobilite_3v.lt_mob_local;
+DROP TABLE if exists m_mobilite_3v.lt_mob_revet;
+DROP TABLE if exists m_mobilite_3v.lt_mob_vitesse;
+DROP TABLE if exists m_mobilite_3v.lt_mob_carrefour;
 
 -- SEQUENCES 
 
---DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
---DROP SEQUENCE m_mobilite_3v.mob_lk_gid CASCADE;
+DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
+-DROP SEQUENCE m_mobilite_3v.mob_lk_gid CASCADE;
 
 -- FONCTIONS
 
---DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee() CASCADE;
---DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon() CASCADE;
+DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee() CASCADE;
+DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon() CASCADE;
 
 -- TRIGGERS
 
---DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_itineraire;
---DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_itineraire;
+DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_itineraire;
+DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_itineraire;
 
---DROP TRIGGER if exists t_t2_date_sai ON m_mobilite_3v.geo_mob_troncon;
---DROP TRIGGER if exists t_t3_date_maj ON m_mobilite_3v.geo_mob_troncon;
---DROP TRIGGER if exists t_t4_long_m ON m_mobilite_3v.geo_mob_troncon;
---DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_troncon;
+DROP TRIGGER if exists t_t2_date_sai ON m_mobilite_3v.geo_mob_troncon;
+DROP TRIGGER if exists t_t3_date_maj ON m_mobilite_3v.geo_mob_troncon;
+DROP TRIGGER if exists t_t4_long_m ON m_mobilite_3v.geo_mob_troncon;
+DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_troncon;
 
---DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
+DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
---DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
---DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
+DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
+DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
 
 
 
