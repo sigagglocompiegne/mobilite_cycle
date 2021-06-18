@@ -21,14 +21,11 @@
 ## Dépendances
 
 `**Je ne sais pas si c'est cela qu'il fallait mettre dedans**
-
-<br>
-
-La base de données des aménagements cyclables s'appuie sur d'anciennes données préexistantes mise en place avec le standard *3V*. Suite au nouveau standard des *Aménagements cyclables* mis en place par Etalab, Il a fallu migrer les anciennes données en essayant de perdre le moins d'information possible pour ensuite pouvoir enrichir celles-ci et les transférer vers le PAN (Point d'Accès National).
+La base de données des aménagements cyclables s'appuie sur d'anciennes données préexistantes mise en place avec le standard *3V*. Suite au nouveau standard des *Aménagements cyclables* mis en place par Etalab, Il a fallu migrer les anciennes données en essayant de perdre le moins d'information possible pour ensuite pouvoir enrichir celles-ci et les transférer vers le PAN (Point d'Accès National).`
 
 |schéma | table | description | usage |
 |:---|:---|:---|:---|   
-`
+
 ---
 
 ## Classes d'objets
