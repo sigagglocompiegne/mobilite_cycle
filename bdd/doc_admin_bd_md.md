@@ -396,16 +396,20 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 ### classes d'objets applicatives de gestion :
 
-`[libellé]` : vue de gestion permettant la saisie des objets 
+`[geo_v_mob_iti]` : vue de gestion permettant la saisie des objets 
 
 * Fonction triggers : sans objet
+
+`[geo_v_mob_troncon]` : vue de gestion permettant la saisie des objets 
+
+* Fonction triggers : *t_t1_modif_troncon*
 
 
 ---
 
 ### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
  
-Sans objet
+`[xapps_geo_v_mob_troncon_affiche]` : vue d'affichage permettant la visualisation des objets 
 
 ---
 
@@ -418,7 +422,7 @@ Sans objet
 
 ### classes d'objets opendata sont classés dans le schéma x_opendata :
 
-Sans objet
+`[xopendata_geo_v_mob_opendata]` : vue de d'export des données
 
 ---
 
