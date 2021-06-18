@@ -70,9 +70,16 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
-* triggers : *date_sai* et *date_maj*
-<br>
-<br>
+Paticularités(s) à noter :
+* Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé étrangère existe sur la table de valeur `est_inscri` (lien vers l'identifiant `code` de la table `lt__mob_etat_inscri`).
+* Une clé étrangère existe sur la table de valeur `niv_inscri` (lien vers l'identifiant `code` de la table `lt_mob_niv_inscri`).
+* Une clé étrangère existe sur la table de valeur `gest_iti` (lien vers l'identifiant `code` de la table `lt_mob_gest_iti`).
+* Une clé étrangère existe sur la table de valeur `usag` (lien vers l'identifiant `code` de la table `lt_mob_usage`).
+*  2 triggers :
+   * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
+   * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
+---
 
 `[geo_mob_troncon]` : table géométrique .
 
@@ -114,9 +121,33 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
 
-* triggers : *commune_g*, *commune_d*, *long_m*, *date_sai* et *date_maj*
-<br>
-<br>
+
+Paticularités(s) à noter :
+* Une clé primaire existe sur le champ `idtroncon` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé étrangère existe sur la table de valeur `typ_res` (lien vers l'identifiant `code` de la table `lt_mob_typres`).
+* Une clé étrangère existe sur la table de valeur `gest` (lien vers l'identifiant `code` de la table `lt_mob_gest`).
+* Une clé étrangère existe sur la table de valeur `propriete` (lien vers l'identifiant `code` de la table `lt_mob_gest`).
+* Une clé étrangère existe sur la table de valeur `trafic_vit` (lien vers l'identifiant `code` de la table `lt_mob_vitesse`).
+* Une clé étrangère existe sur la table de valeur `lumiere` (lien vers l'identifiant `code` de la table `lt_mob_booleen`).
+* Une clé étrangère existe sur la table de valeur `ame_g` (lien vers l'identifiant `code` de la table `lt_mob_ame`).
+* Une clé étrangère existe sur la table de valeur `ame_d` (lien vers l'identifiant `code` de la table `lt_mob_ame`).
+* Une clé étrangère existe sur la table de valeur `avanc_g` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
+* Une clé étrangère existe sur la table de valeur `avanc_d` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
+* Une clé étrangère existe sur la table de valeur `regime_g` (lien vers l'identifiant `code` de la table `lt_mob_regime`).
+* Une clé étrangère existe sur la table de valeur `regime_d` (lien vers l'identifiant `code` de la table `lt_mob_regime`).
+* Une clé étrangère existe sur la table de valeur `sens_g` (lien vers l'identifiant `code` de la table `lt_mob_sens`).
+* Une clé étrangère existe sur la table de valeur `sens_d` (lien vers l'identifiant `code` de la table `lt_mob_sens`).
+* Une clé étrangère existe sur la table de valeur `local_g` (lien vers l'identifiant `code` de la table `lt_mob_local`).
+* Une clé étrangère existe sur la table de valeur `local_d` (lien vers l'identifiant `code` de la table `lt_mob_local`).
+* Une clé étrangère existe sur la table de valeur `revet_g` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
+* Une clé étrangère existe sur la table de valeur `revet_d` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
+* Une clé étrangère existe sur la table de valeur `src_geom` (lien vers l'identifiant `code` de la table `lt_src_geom`).
+*  2 triggers :
+   * `t_t2_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
+   * `t_t3_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
+   * `t_t4_long_m` : avant insertion ou mise à jour, calcul la taille de l'objet.
+   * `t_t5_commune` : avant insertion, recherche le nom de la commune en fonction du code insee renseigné par l'utilisateur au moment de la saisie de l'objet.
+---
 
 `[geo_mob_carrefour]` : table géométrique .
 
@@ -134,6 +165,15 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
 
+Paticularités(s) à noter :
+* Une clé primaire existe sur le champ `idcarrefour` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé étrangère existe sur la table de valeur `typ_car` (lien vers l'identifiant `code` de la table `lt_mob_carrefour`).
+* Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
+* 2 triggers :
+   * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
+   * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
+
+---
 * triggers : *date_sai* et *date_maj*
 <br>
 <br>
