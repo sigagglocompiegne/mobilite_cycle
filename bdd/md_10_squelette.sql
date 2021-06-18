@@ -808,7 +808,7 @@ $BODY$;
 --################################################################# TRIGGER #######################################################
 -- Trigger t_t1_date_sai pour la fonction ecrivant la date de saisie
 CREATE TRIGGER t_t1_date_sai
-    BEFORE UPDATE 
+    BEFORE INSERT 
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
@@ -858,7 +858,7 @@ CREATE TRIGGER t_t5_commune
 --################################################################# TRIGGER #######################################################
 -- Trigger t_t1_date_sai pour la fonction ecrivant la date de saisie
 CREATE TRIGGER t_t1_date_sai
-    BEFORE UPDATE 
+    BEFORE INSERT 
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
