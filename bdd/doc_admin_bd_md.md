@@ -172,11 +172,7 @@ Paticularités(s) à noter :
 * 2 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
-
 ---
-* triggers : *date_sai* et *date_maj*
-<br>
-<br>
 
 `[lk_mob_ititroncon]` : table de relation .
 
@@ -185,10 +181,9 @@ Paticularités(s) à noter :
 |gid|Identifiant unique (clé primaire) de la relation|bigint| |
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
-
+* Une clé primaire existe sur le champ `gid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
 * triggers : aucun
-<br>
-<br>
+---
 
 `[an_mob_media]` : table alpanumérique .
 
@@ -203,9 +198,9 @@ Paticularités(s) à noter :
 |l_prec|Précision sur le document|character varying(1000)| |
 |op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie|timestamp without time zone| |
-
+* Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
 * triggers : aucun
-
+---
 
 
 ## Liste de valeurs
