@@ -71,7 +71,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
 Paticularités(s) à noter :
-* Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `est_inscri` (lien vers l'identifiant `code` de la table `lt__mob_etat_inscri`).
 * Une clé étrangère existe sur la table de valeur `niv_inscri` (lien vers l'identifiant `code` de la table `lt_mob_niv_inscri`).
 * Une clé étrangère existe sur la table de valeur `gest_iti` (lien vers l'identifiant `code` de la table `lt_mob_gest_iti`).
@@ -121,9 +121,8 @@ Paticularités(s) à noter :
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
 
-
 Paticularités(s) à noter :
-* Une clé primaire existe sur le champ `idtroncon` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé primaire existe sur le champ `idtroncon` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_res` (lien vers l'identifiant `code` de la table `lt_mob_typres`).
 * Une clé étrangère existe sur la table de valeur `gest` (lien vers l'identifiant `code` de la table `lt_mob_gest`).
 * Une clé étrangère existe sur la table de valeur `propriete` (lien vers l'identifiant `code` de la table `lt_mob_gest`).
@@ -166,7 +165,7 @@ Paticularités(s) à noter :
 |geom|Géométrie de l objet|USER-DEFINED| |
 
 Paticularités(s) à noter :
-* Une clé primaire existe sur le champ `idcarrefour` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+* Une clé primaire existe sur le champ `idcarrefour` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_car` (lien vers l'identifiant `code` de la table `lt_mob_carrefour`).
 * Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
 * 2 triggers :
@@ -181,8 +180,9 @@ Paticularités(s) à noter :
 |gid|Identifiant unique (clé primaire) de la relation|bigint| |
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
-* Une clé primaire existe sur le champ `gid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
-* triggers : aucun
+
+Paticularités(s) à noter :
+* Une clé primaire existe sur le champ `gid` lui-même contenant une séquence d'incrémentation automatique (mob_lk_gid).
 ---
 
 `[an_mob_media]` : table alpanumérique .
@@ -198,8 +198,9 @@ Paticularités(s) à noter :
 |l_prec|Précision sur le document|character varying(1000)| |
 |op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie|timestamp without time zone| |
+
+Paticularités(s) à noter :
 * Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
-* triggers : aucun
 ---
 
 
@@ -207,8 +208,15 @@ Paticularités(s) à noter :
 
 `[lt_mob_ame]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
-|Code | Valeur |
-|:---|:---|  
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
+|url|Lien URL vers la documentation nationale|character varying(255)| |
+|modele|Code du modèle d aménagement|character varying(3)| |
+
+|Code | Valeur | Url | Modele | 
+|:---|:---|:---|:---| 
 |10|Non aménagé|
 |11|Non aménagé (jalonnement)|
 |20|Piste cyclable|
