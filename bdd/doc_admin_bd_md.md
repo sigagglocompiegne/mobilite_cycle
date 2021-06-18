@@ -70,7 +70,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
-Paticularités(s) à noter :
+Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `est_inscri` (lien vers l'identifiant `code` de la table `lt__mob_etat_inscri`).
 * Une clé étrangère existe sur la table de valeur `niv_inscri` (lien vers l'identifiant `code` de la table `lt_mob_niv_inscri`).
@@ -121,7 +121,7 @@ Paticularités(s) à noter :
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
 
-Paticularités(s) à noter :
+Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idtroncon` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_res` (lien vers l'identifiant `code` de la table `lt_mob_typres`).
 * Une clé étrangère existe sur la table de valeur `gest` (lien vers l'identifiant `code` de la table `lt_mob_gest`).
@@ -164,7 +164,7 @@ Paticularités(s) à noter :
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
 
-Paticularités(s) à noter :
+Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idcarrefour` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_car` (lien vers l'identifiant `code` de la table `lt_mob_carrefour`).
 * Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
@@ -181,7 +181,7 @@ Paticularités(s) à noter :
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
 
-Paticularités(s) à noter :
+Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `gid` lui-même contenant une séquence d'incrémentation automatique (mob_lk_gid).
 ---
 
@@ -199,7 +199,7 @@ Paticularités(s) à noter :
 |op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie|timestamp without time zone| |
 
-Paticularités(s) à noter :
+Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
 ---
 
@@ -234,8 +234,10 @@ Paticularités(s) à noter :
 |71|Accotement revêtu hors CVCB|
 |99|Autre|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -250,8 +252,10 @@ Paticularités(s) à noter :
 |60|Supprimé|
 |70|Abandonné|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -261,8 +265,10 @@ Paticularités(s) à noter :
 |f|Non|
 |t|Oui|
 |z|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -272,8 +278,10 @@ Paticularités(s) à noter :
 |10|SAS vélo|
 |20|Traversée|
 |30|Feux aménagés|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -283,8 +291,10 @@ Paticularités(s) à noter :
 |10|Ne sais pas (inconnu)|
 |20|Non|
 |30|Oui|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -297,8 +307,10 @@ Paticularités(s) à noter :
 |40|Intercommunalité|
 |50|Commune|
 |60|Privé|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -307,8 +319,10 @@ Paticularités(s) à noter :
 |10|ARC|
 |20|CCPE|
 |30|CCLO|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -319,8 +333,10 @@ Paticularités(s) à noter :
 |20|Intermédiaire|
 |30|Chaussée|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -334,8 +350,10 @@ Paticularités(s) à noter :
 |50|Intercommunal|
 |60|Communal|
 |70|Infracommunal|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -349,8 +367,10 @@ Paticularités(s) à noter :
 |50|Hors agglomération
 |60|Autre|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -364,8 +384,10 @@ Paticularités(s) à noter :
 |30|Rugueux|
 |31|....|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .    
 
@@ -375,8 +397,10 @@ Paticularités(s) à noter :
 |10|Unidirectionnel|
 |20|Bidirectionnel|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -386,8 +410,10 @@ Paticularités(s) à noter :
 |10|REV|
 |20|STRUCTURANT|
 |30|AUTRE|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
@@ -395,8 +421,10 @@ Paticularités(s) à noter :
 |:---|:---|
 |10|Cyclable|
 |20|Piéton|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -415,8 +443,10 @@ Paticularités(s) à noter :
 |80|80|
 |90|90|
 |ZZ|Non concerné|
-<br>
-<br>
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 `[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -425,16 +455,12 @@ Paticularités(s) à noter :
 |00|Non renseigné|
 |10|Loisirs|
 |20|Utilitaire|
-<br>
-<br>
 
-
-
-
-
-
-
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
 ---
+
+
 
 
 ### classes d'objets applicatives de gestion :
