@@ -22,7 +22,6 @@ DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
 -- VUES
 
-DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
 
 
@@ -37,47 +36,7 @@ DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
 
 
 --##############################################################OUVELEC#############################################################
--- Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_iti
-AS
- SELECT
-  i.iditi,
-	i.num_iti,
-	i.nom_off,
-  i.num_loc,
-	i.nom_usage,
-  i.depart,
-	i.via,
-  i.arrivee,
-	i.est_inscri,
-	i.niv_inscri,
-	i.nom_schema,
-	i.an_inscri,
-	i.an_ouvert,
-	i.gest_iti,
-	i.usag,
-	i.usage_comm,
-	i.voca_iti,
-	i.typ_iti,
-	i.mao,
-	i.equip,
-	i.descrip,
-	i.cout,
-	i.esti,
-	i.url_site,
-  i.observ,
-	i.op_sai,
-	i.date_sai,
-	i.date_maj,
-	st_linemerge(ST_Union(tr.geom)) as geom
-  FROM m_mobilite_3v.lk_mob_ititroncon lk
-    JOIN m_mobilite_3v.an_mob_itineraire i  ON lk.iditi = i.iditi
-    JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
-	group by i.iditi;
-  
-  
-  
---##############################################################OUVELEC#############################################################
+
 -- Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données
 CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_troncon
  AS
@@ -146,5 +105,4 @@ CREATE TRIGGER t_t1_modif_troncon
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_troncon	IS 'Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données';
