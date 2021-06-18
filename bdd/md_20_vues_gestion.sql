@@ -7,8 +7,6 @@
 
 
 
-				IL Y A LES VUES D'AFFICHAGE DEDANS
-
 
 
 
@@ -26,8 +24,6 @@ DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
-DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
-DROP VIEW if exists x_opendata.xopendata_geo_v_mob_opendata;
 
 
 
@@ -122,18 +118,6 @@ CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_troncon
 	tr.date_maj, 
 	tr.geom
   FROM m_mobilite_3v.geo_mob_troncon tr;
-
-
-
-
---##############################################################OUVELEC#############################################################
--- Vue de modélisation des noeuds des tronçons purement cartographique pour géo
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_noeud
- AS
- SELECT
- 	tr.idtroncon,
-	st_Union(st_startpoint(tr.geom), st_endpoint(tr.geom)) as geom 
- FROM m_mobilite_3v.geo_mob_troncon tr;
   
   
   
@@ -164,4 +148,3 @@ CREATE TRIGGER t_t1_modif_troncon
 
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_troncon	IS 'Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données';
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
