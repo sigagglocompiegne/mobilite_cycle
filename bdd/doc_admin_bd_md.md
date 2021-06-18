@@ -20,6 +20,10 @@
 
 ## Dépendances
 
+**Je ne sais pas si c'est cela qu'il fallait mettre dedans**
+
+<br>
+
 La base de données des aménagements cyclables s'appuie sur d'anciennes données préexistantes mise en place avec le standard *3V*. Suite au nouveau standard des *Aménagements cyclables* mis en place par Etalab, Il a fallu migrer les anciennes données en essayant de perdre le moins d'information possible pour ensuite pouvoir enrichir celles-ci et les transférer vers le PAN (Point d'Accès National).
 
 |schéma | table | description | usage |
@@ -67,8 +71,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
 * triggers : *date_sai* et *date_maj*
-<br/>
-<br/>
+<br>
+<br>
 
 `[geo_mob_troncon]` : table géométrique .
 
@@ -111,8 +115,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |geom|Géométrie de l objet|USER-DEFINED| |
 
 * triggers : *commune_g*, *commune_d*, *long_m*, *date_sai* et *date_maj*
-<br/>
-<br/>
+<br>
+<br>
 
 `[geo_mob_carrefour]` : table géométrique .
 
@@ -131,8 +135,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |geom|Géométrie de l objet|USER-DEFINED| |
 
 * triggers : *date_sai* et *date_maj*
-<br/>
-<br/>
+<br>
+<br>
 
 `[lk_mob_ititroncon]` : table de relation .
 
@@ -143,8 +147,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |iditi|Identifiant unique de litinéraire|text| |
 
 * triggers : aucun
-<br/>
-<br/>
+<br>
+<br>
 
 `[an_mob_media]` : table alpanumérique .
 
@@ -187,8 +191,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |71|Accotement revêtu hors CVCB|
 |99|Autre|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -203,8 +207,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |60|Supprimé|
 |70|Abandonné|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -214,8 +218,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |f|Non|
 |t|Oui|
 |z|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -225,8 +229,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |10|SAS vélo|
 |20|Traversée|
 |30|Feux aménagés|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -236,8 +240,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |10|Ne sais pas (inconnu)|
 |20|Non|
 |30|Oui|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -250,8 +254,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |40|Intercommunalité|
 |50|Commune|
 |60|Privé|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -260,8 +264,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |10|ARC|
 |20|CCPE|
 |30|CCLO|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -272,8 +276,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |20|Intermédiaire|
 |30|Chaussée|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
@@ -287,8 +291,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |50|Intercommunal|
 |60|Communal|
 |70|Infracommunal|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -302,8 +306,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |50|Hors agglomération
 |60|Autre|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -317,8 +321,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |30|Rugueux|
 |31|....|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .    
 
@@ -328,8 +332,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |10|Unidirectionnel|
 |20|Bidirectionnel|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -339,8 +343,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |10|REV|
 |20|STRUCTURANT|
 |30|AUTRE|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
@@ -348,8 +352,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |:---|:---|
 |10|Cyclable|
 |20|Piéton|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
@@ -368,8 +372,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |80|80|
 |90|90|
 |ZZ|Non concerné|
-<br/>
-<br/>
+<br>
+<br>
 
 `[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
@@ -378,29 +382,8 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |00|Non renseigné|
 |10|Loisirs|
 |20|Utilitaire|
-<br/>
-<br/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<br>
+<br>
 
 
 
