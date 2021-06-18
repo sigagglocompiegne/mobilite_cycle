@@ -1,4 +1,4 @@
-/*Aménagement cyclable V0.5*/
+/*Mobilite douce V1.0*/
 /*Creation des triggers de la structure*/
 /*md_20_vues_gestion.sql */
 /*PostGIS*/
