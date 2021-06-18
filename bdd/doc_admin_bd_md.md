@@ -545,7 +545,8 @@ Paticularité(s) à noter :
 
 `[geo_v_mob_troncon]` : vue de gestion permettant la saisie des objets 
 
-* Fonction triggers : *t_t1_modif_troncon*
+Particularité(s) à noter :
+* triggers : `t_t1_modif_troncon` : avant insertion ou mise à jour, sert a mettre à jour la base de données `geo_mob_troncon`.
 
 
 ---
