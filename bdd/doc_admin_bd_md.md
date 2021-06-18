@@ -30,7 +30,7 @@ La base de données des espaces verts s'appuie sur des référentiels préexista
 
 ## Classes d'objets
 
-L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_espace_vert, celles dérivées et applicatives dans le schéma `x_apps`, celles dérivées pour les exports opendata dans le schéma `x_opendata`.
+L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_moblite_3v, celles dérivées et applicatives dans le schéma `x_apps`, celles dérivées pour les exports opendata dans le schéma `x_opendata`.
 
 ### Classe d'objet géographique et patrimoniale
 
