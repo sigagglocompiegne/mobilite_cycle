@@ -166,10 +166,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 ## Liste de valeurs
 
-`[lt_mob_ame]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_ame]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
 |Code | Valeur |
 |:---|:---|  
@@ -193,10 +190,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
 |Code | Valeur |
 |:---|:---|  
@@ -212,10 +206,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
 |Code | Valeur |
 |:---|:---|  
@@ -226,10 +217,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
 |Code | Valeur |
 |:---|:---|  
@@ -242,9 +230,6 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 `[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
-
 |Code | Valeur |
 |:---|:---|  
 |00|Non renseigné|
@@ -254,10 +239,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
 |Code | Valeur |
 |:---|:---|  
@@ -273,9 +255,6 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 `[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
 
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
-
 |Code | Valeur |
 |:---|:---|  
 |10|ARC|
@@ -285,9 +264,6 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 
 `[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
 
 |Code | Valeur |
 |:---|:---|  
@@ -299,10 +275,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
 
 |Code | Valeur |
 |:---|:---|  
@@ -317,10 +290,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
 |Code | Valeur |
 |:---|:---| 
@@ -335,10 +305,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
 |Code | Valeur |
 |:---|:---|
@@ -353,10 +320,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|    
+`[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .    
 
 |Code | Valeur |
 |:---|:---|
@@ -367,10 +331,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|   
+`[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
 |Code | Valeur |
 |:---|:---|
@@ -381,10 +342,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|   
+`[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
 
 |Code | Valeur |
 |:---|:---|
@@ -393,10 +351,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 <br/>
 
-`[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|   
+`[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
 
 |Code | Valeur |
 |:---|:---|
@@ -417,9 +372,6 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 <br/>
 
 `[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---|   
 
 |Code | Valeur |
 |:---|:---|
