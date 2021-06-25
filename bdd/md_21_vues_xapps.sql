@@ -19,7 +19,7 @@ DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1;
-
+DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab2;
 
 -- #################################################################################################################################
 -- ###                                                                                                                           ###
@@ -143,6 +143,74 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1
 	tab.long_km
  FROM req_t tab;
 
+
+
+--##############################################################OUVELEC#############################################################
+-- Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO
+CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2
+ AS
+	WITH
+	req_droite AS
+	(
+		select DISTINCT
+			lt.code,
+			lt.valeur,
+			round((sum(tr.long_m::decimal)/1000),2) as long_km 
+		from m_mobilite_3v.lt_mob_ame lt 
+		LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_d = lt.code
+		WHERE ame_d <> 'ZZ' and ame_d <> '10' and ame_d <> '11' and avanc_d = '50'
+		GROUP BY lt.code, lt.valeur
+			ORDER BY lt.code
+	),
+	req_gauche AS
+	(
+		select 
+			lt.code,
+			lt.valeur,
+			round((sum(tr.long_m::decimal)/1000),2) as long_km 
+		from m_mobilite_3v.geo_mob_troncon tr, m_mobilite_3v.lt_mob_ame lt 
+		where ame_g <> 'ZZ' and ame_g <> '10' and ame_g <> '11' and avanc_g = '50' AND tr.ame_g = lt.code
+		group by lt.code, lt.valeur
+	)
+SELECT
+	lt.code,
+	lt.valeur as nom_ame,
+	(CASE WHEN d.long_km IS NULL THEN 0 ELSE d.long_km END) +
+	(CASE WHEN g.long_km IS NULL THEN 0 ELSE g.long_km END) as long_km,
+	
+	round(
+		((CASE WHEN d.long_km IS NULL THEN 0 ELSE d.long_km END) +
+		(CASE WHEN g.long_km IS NULL THEN 0 ELSE g.long_km END))/
+		(
+			WITH
+				req_droite AS
+				(
+					select 1::integer as id, round((sum(long_m::decimal)/1000),2) as long_km from m_mobilite_3v.geo_mob_troncon 
+					where ame_d <> '10' and ame_d <> '11' and ame_d <> 'ZZ' AND avanc_d = '50'
+			),
+				req_gauche AS
+				(
+					select 1::integer as id, round((sum(long_m::decimal)/1000),2) as long_km from m_mobilite_3v.geo_mob_troncon 
+					where ame_g <> '10' and ame_g <> '11' and ame_g <> 'ZZ' AND avanc_g = '50'
+			)
+				SELECT
+				d.long_km + g.long_km as long_km
+				FROM
+				req_droite d, req_gauche g
+				WHERE d.id = g.id
+			)
+	*100,2)
+AS long_km_p
+
+FROM m_mobilite_3v.lt_mob_ame lt
+LEFT JOIN req_droite d ON d.code = lt.code
+LEFT JOIN req_gauche g ON g.code = lt.code
+GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
+
+
+
+
+
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
 -- ###                                                       COMMENTAIRES                                                      ###
@@ -153,6 +221,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
 
 
