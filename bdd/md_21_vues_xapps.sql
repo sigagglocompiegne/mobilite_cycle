@@ -18,7 +18,7 @@
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
-
+DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1;
 
 
 -- #################################################################################################################################
@@ -130,6 +130,18 @@ CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_noeud
 
 
 
+--##############################################################OUVELEC#############################################################
+-- Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO
+CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1
+ AS
+ WITH req_t AS (
+	select row_number() over() as gid, round((sum(long_m::decimal)/1000),2) as long_km from m_mobilite_3v.geo_mob_troncon 
+	where ((ame_d <> '10' and ame_d <> '11' and ame_d <> 'ZZ') or (ame_g <> '10' and ame_g <> '11' and ame_g <> 'ZZ')) and (avanc_d = '50' or avanc_g = '50')
+ )
+ SELECT
+    tab.gid,
+	tab.long_km
+ FROM req_t tab;
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
@@ -141,6 +153,6 @@ CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_noeud
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
-
+COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
 
 
