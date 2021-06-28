@@ -529,7 +529,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 
 -- Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires
 CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
-	gid bigint, -- Identifiant unique (clé primaire) de la relation
+	gid bigint NOT NULL DEFAULT nextval('m_mobilite_3v.mob_lk_gid'::regclass), -- Identifiant unique (clé primaire) de la relation
 	idtroncon text, -- Identifiant unique du tronçon
 	iditi text, -- Identifiant unique de l'itinéraire
 	CONSTRAINT lk_mob_ititroncon_pkey PRIMARY KEY (gid) -- Clé primaire de la table
