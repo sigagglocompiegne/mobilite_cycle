@@ -64,6 +64,7 @@ DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
 
 DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee() CASCADE;
 DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon() CASCADE;
+DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 
 -- TRIGGERS
 
@@ -80,7 +81,7 @@ DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
 
-
+DROP TRIGGER if exists t_t1_refresh_view_iti ON m_mobilite_3v.lk_mob_ititroncon;
 
 
 
@@ -793,7 +794,19 @@ END;
 $BODY$;
 
 
-
+--################################################################# FONCTION #######################################################
+-- fonction de rafraichissement de la vue materialisée
+CREATE FUNCTION m_mobilite_3v.ft_m_refresh_view_iti()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+   REFRESH MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti;
+   return new;
+END;
+$BODY$;
 
 
 -- ###############################################################################################################################
@@ -870,8 +883,13 @@ CREATE TRIGGER t_t2_date_maj
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
 
-
-
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t1_refresh_view_iti pour le rafraichissement de la vue métérialisée
+CREATE TRIGGER t_t1_refresh_view_iti
+    AFTER INSERT OR UPDATE OR DELETE 
+    ON m_mobilite_3v.lk_mob_ititroncon
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
 
 
 -- ###############################################################################################################################
@@ -1049,3 +1067,4 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai is 'Date de saisie';
 
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
