@@ -15,57 +15,19 @@
 
 --VUES
 
-DROP VIEW if exists m_mobilite_3v.geo_v_mob_iti;
 DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab2;
+
+DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
+
 
 -- #################################################################################################################################
 -- ###                                                                                                                           ###
 -- ###                                                      VUES APPLICATIVES                                                    ###
 -- ###                                                                                                                           ###
 -- #################################################################################################################################
-
-
---##############################################################OUVELEC#############################################################
--- Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons
-CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_iti
- AS
- SELECT
-    i.iditi,
-	i.num_iti,
-	i.nom_off,
-    i.num_loc,
-	i.nom_usage,
-    i.depart,
-	i.via,
-    i.arrivee,
-	i.est_inscri,
-	i.niv_inscri,
-	i.nom_schema,
-	i.an_inscri,
-	i.an_ouvert,
-	i.gest_iti,
-	i.usag,
-	i.usage_comm,
-	i.voca_iti,
-	i.typ_iti,
-	i.mao,
-	i.equip,
-	i.descrip,
-	i.cout,
-	i.esti,
-	i.url_site,
-    i.observ,
-	i.op_sai,
-	i.date_sai,
-	i.date_maj,
-	st_linemerge(ST_Union(tr.geom)) as geom
-   	FROM m_mobilite_3v.lk_mob_ititroncon lk
-     	JOIN m_mobilite_3v.an_mob_itineraire i  ON lk.iditi = i.iditi
-     	JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
-	group by i.iditi;
 
 
 
@@ -209,6 +171,45 @@ GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
 
 
 
+--##############################################################OUVELEC#############################################################
+-- Vue matérialisée regénérant les itinéraires à partir des tronçons
+CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti
+TABLESPACE pg_default
+AS
+ SELECT i.iditi,
+    i.num_iti,
+    i.nom_off,
+    i.num_loc,
+    i.nom_usage,
+    i.depart,
+    i.via,
+    i.arrivee,
+    i.est_inscri,
+    i.niv_inscri,
+    i.nom_schema,
+    i.an_inscri,
+    i.an_ouvert,
+    i.gest_iti,
+    i.usag,
+    i.usage_comm,
+    i.voca_iti,
+    i.typ_iti,
+    i.mao,
+    i.equip,
+    i.descrip,
+    i.cout,
+    i.esti,
+    i.url_site,
+    i.observ,
+    i.op_sai,
+    i.date_sai,
+    i.date_maj,
+    st_linemerge(st_union(tr.geom)) AS geom
+   FROM m_mobilite_3v.lk_mob_ititroncon lk
+     JOIN m_mobilite_3v.an_mob_itineraire i ON lk.iditi = i.iditi
+     JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
+  GROUP BY i.iditi
+WITH DATA;
 
 
 -- ###############################################################################################################################
@@ -218,10 +219,9 @@ GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
 -- ###############################################################################################################################
 
 
-COMMENT ON VIEW m_mobilite_3v.geo_v_mob_iti IS 'Vue applicative regénérant dynamiquement les itinéraires à partir des tronçons';
 COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en service dans GEO';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
 
-
+COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
