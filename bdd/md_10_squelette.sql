@@ -65,11 +65,14 @@ DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
 DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee() CASCADE;
 DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon() CASCADE;
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
+DROP FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk();
 
 -- TRIGGERS
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_itineraire;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_itineraire;
+DROP TRIGGER if exists t_t3_iti_delete ON m_mobilite_3v.an_mob_itineraire;
+DROP TRIGGER t_t4_refresh_view_after ON m_mobilite_3v.an_mob_itineraire;
 
 DROP TRIGGER if exists t_t2_date_sai ON m_mobilite_3v.geo_mob_troncon;
 DROP TRIGGER if exists t_t3_date_maj ON m_mobilite_3v.geo_mob_troncon;
@@ -82,6 +85,7 @@ DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
 
 DROP TRIGGER if exists t_t1_refresh_view_iti ON m_mobilite_3v.lk_mob_ititroncon;
+
 
 
 
@@ -809,6 +813,24 @@ END;
 $BODY$;
 
 
+--################################################################# FONCTION #######################################################
+-- fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon
+CREATE FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+   DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE iditi = old.iditi;
+   return new;
+END;
+$BODY$;
+
+
+
+
+
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
 -- ###                                                         TRIGGERS                                                        ###
@@ -832,7 +854,18 @@ CREATE TRIGGER t_t2_date_maj
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
-
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t3_iti_delete
+    BEFORE DELETE
+    ON m_mobilite_3v.an_mob_itineraire
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_itineraire_delete_lk();
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t4_refresh_view_after
+    AFTER DELETE
+    ON m_mobilite_3v.an_mob_itineraire
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
 
 
 -- Trigger sur la table geo_mob_troncon
@@ -864,8 +897,7 @@ CREATE TRIGGER t_t5_commune
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
-
-
+    
 
 -- Trigger sur la table geo_mob_carrefour
 --################################################################# TRIGGER #######################################################
@@ -883,6 +915,8 @@ CREATE TRIGGER t_t2_date_maj
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
 
+
+-- Trigger sur la table lk_mob_ititroncon
 --################################################################# TRIGGER #######################################################
 -- Trigger t_t1_refresh_view_iti pour le rafraichissement de la vue métérialisée
 CREATE TRIGGER t_t1_refresh_view_iti
@@ -890,8 +924,11 @@ CREATE TRIGGER t_t1_refresh_view_iti
     ON m_mobilite_3v.lk_mob_ititroncon
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
-
-
+    
+  
+    
+    
+    
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
 -- ###                                                       COMMENTAIRES                                                      ###
@@ -1068,3 +1105,4 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai is 'Date de saisie';
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
