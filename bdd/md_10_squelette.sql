@@ -58,7 +58,9 @@ DROP TABLE if exists m_mobilite_3v.lt_mob_carrefour;
 -- SEQUENCES 
 
 DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
--DROP SEQUENCE m_mobilite_3v.mob_lk_gid CASCADE;
+DROP SEQUENCE m_mobilite_3v.mob_lk_gid CASCADE;
+DROP SEQUENCE m_mobilite_3v.mob_media_seq_gid
+
 
 -- FONCTIONS
 
@@ -123,8 +125,13 @@ CREATE SEQUENCE m_mobilite_3v.mob_lk_gid
     START WITH 1000
     INCREMENT BY 1;
 
-
-
+--############################################################ OBJETS ##################################################
+CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
 
 
 -- ###############################################################################################################################
@@ -564,8 +571,8 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 
 -- Table alphanumérique gérant la liste des documents associés aux objets cyclables
 CREATE TABLE m_mobilite_3v.an_mob_media(
-	qid bigint, -- Identifiant unique (clé primaire) du média
-	gid text, -- Identifiant de l'objet référence
+	gid bigint NOT NULL DEFAULT nextval('m_mobilite_3v.mob_media_seq_gid'::regclass), -- Identifiant unique (clé primaire) du média
+	id text,  -- Identifiant de l'objet référence
 	media text, -- Champ Média de GEO
 	miniature bytea, -- Champ miniature de GEO
 	n_fichier text, -- Nom du fichier
