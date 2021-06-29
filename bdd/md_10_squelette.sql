@@ -546,7 +546,7 @@ CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 
 -- Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
-	idcarrefour text, -- Identifiant unique (clé primaire) du tronçon
+	idcarrefour text  NOT NULL DEFAULT ('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)), -- Identifiant unique (clé primaire) du tronçon
 	libelle varchar(255), -- 
 	typ_car varchar(2), -- Type de carrefour
 	avanc varchar(2), -- Niveau d'avancement en terme de projet
