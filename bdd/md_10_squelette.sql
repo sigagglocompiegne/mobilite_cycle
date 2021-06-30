@@ -617,7 +617,7 @@ CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 -- Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 	idcarrefour text  NOT NULL DEFAULT ('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)), -- Identifiant unique (clé primaire) du tronçon
-	libelle varchar(255), -- 
+	libelle varchar(255), -- Libellé
 	typ_car varchar(2), -- Type de carrefour
 	avanc varchar(2), -- Niveau d'avancement en terme de projet
 	insee varchar(5), -- Code insee de la commune d'implantation
@@ -660,84 +660,84 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 
 -- Table géographique représentant la localisation des lieux de stationnements cyclables
 CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
-	idlieustatio text NOT NULL DEFAULT ('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)),
-	id_osm varchar(30),
-	capacite integer,
-	capacite_gt integer, 
-	acces varchar(2),
-	protection varchar(2),
-	gratuit boolean default true,
-	surveillance boolean default false,
-	couverture boolean default false, 
-	lumiere boolean default false,
-	gest varchar(2),
-	propriete varchar(2),
-	a_service varchar(4),
-	avanc varchar(2),
-	url varchar(255),
-	adresse varchar(255),
-	cmplt_adr varchar(255),
-	insee varchar(5),
-	commune varchar(80), 
-	observ varchar(1000),
-	date_sai timestamp without time zone, 
-	date_maj timestamp without time zone, 
-	op_sai varchar(20), 
-	src_geom varchar(2),
-	x_l93 double precision,
-	y_l93 double precision,
-	x_wgs84 decimal(9,7),
-	y_wgs84 decimal(9,7),
-	geom geometry(Point,2154),
+	idlieustatio text NOT NULL DEFAULT ('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)), -- Identifiant unique (clé primaire) du lieu de stationnement
+	id_osm varchar(30), -- Identifiant unique du lieu de stationnement sur OpenStreetMap
+	capacite integer, -- Capacité de stationnement du lieu
+	capacite_gt integer, -- Capacité de stationnement du lieu pour des vélos de grandes tailles
+	acces varchar(2), -- Moyen d'accès au lieu
+	protection varchar(2), -- niveau de protection du lieu
+	gratuit boolean default true, -- Stationnement gratuit ou payant
+	surveillance boolean default false, -- Présence de surveillance
+	couverture boolean default false,  -- Présence d'un toit protégeant des intempéries
+	lumiere boolean default false, -- Présence d'éclairage
+	gest varchar(2), -- Gestionnaire de l'infrastructure
+	propriete varchar(2), -- Propriétaire de l'infrastructure
+	a_service varchar(4), -- Année d'installation
+	avanc varchar(2), -- Niveau d'avancement en terme de projet
+	url varchar(255), -- Lien vers un site d'information du lieu
+	adresse varchar(255), -- Adresse précise ou libellé de la voie d'implantation du lieu de stationnement
+	cmplt_adr varchar(255), -- Complément de l'adresse d'implantation du lieu de stationnement
+	insee varchar(5), -- code insee de la commune du stationnement
+	commune varchar(80),  -- nom de la commune du stationnement 
+	observ varchar(1000), -- commentaire
+	date_sai timestamp without time zone,  -- Date de saisie de la donnée
+	date_maj timestamp without time zone,  -- Date de mise à jour de la donnée
+	op_sai varchar(20),  -- opérateur de saisie de la donnée 
+	src_geom varchar(2), -- Référentiel utilisé pour la digitalisation de la géométrie
+	x_l93 double precision, -- Coordonnée X en Lambert 93
+	y_l93 double precision, -- Coordonnée Y en Lambert 93
+	x_wgs84 decimal(9,7), -- Longitude
+	y_wgs84 decimal(9,7), -- Latitude
+	geom geometry(Point,2154), -- géométrie de la donnée 
     CONSTRAINT geo_mob_lieustatio_pkey PRIMARY KEY (idlieustatio), -- Clé primaire de la table
     CONSTRAINT lt_mob_statio_acces_fkey FOREIGN KEY (acces)
         REFERENCES m_mobilite_3v.lt_mob_statio_acces (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_statio_acces
     CONSTRAINT lt_mob_statio_protec_fkey FOREIGN KEY (protection)
         REFERENCES m_mobilite_3v.lt_mob_statio_protec (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_statio_protec
     CONSTRAINT lt_mob_gest_fkey FOREIGN KEY (gest)
         REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_gest
     CONSTRAINT lt_mob_gest_proprio_fkey FOREIGN KEY (propriete)
         REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_gest
     CONSTRAINT lt_mob_avanc_fkey FOREIGN KEY (avanc)
         REFERENCES m_mobilite_3v.lt_mob_avanc (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_avanc
     CONSTRAINT lt_src_geom_fkey FOREIGN KEY (src_geom)
         REFERENCES r_objet.lt_src_geom (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE NO ACTION -- Liste de valeurs lt_src_geom
 );
 
 --################################################################# NOEUD #######################################################
 
 -- Table alphanumérique stockant les différents équipements cyclables
 CREATE TABLE m_mobilite_3v.an_mob_equstatio(
-    idequstatio integer NOT NULL DEFAULT nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass),
-	idlieustatio text,
-	typ_mobi varchar(2),
-	typ_accro varchar(2),
-	capacite_e integer,
-	capacite_gt_e integer, 
-	date_sai timestamp without time zone, 
-	date_maj timestamp without time zone, 
-	op_sai varchar(20),
+   	idequstatio integer NOT NULL DEFAULT nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass), -- Identifiant unique de l'équipement
+	idlieustatio text, -- Identifiant du lieu de stationnement
+	typ_mobi varchar(2), -- Type de mobilier du lieu de stationnement
+	typ_accro varchar(2), -- Type d'accroche du lieu de stationnement
+	capacite_e integer, -- Capacité de stationnement du type d'accroche
+	capacite_gt_e integer,  -- Capacité de stationnement en grande taille du type d'accroche
+	date_sai timestamp without time zone,  -- Date de saisie de la donnée
+	date_maj timestamp without time zone,  -- Date de mise à jour de la donnée
+	op_sai varchar(20), -- Opérateur de saisie de la donnée
     CONSTRAINT an_mob_equstatio_pkey PRIMARY KEY (idequstatio), -- Clé primaire de la table
     CONSTRAINT lt_mob_statio_mobi_fkey FOREIGN KEY (typ_mobi)
         REFERENCES m_mobilite_3v.lt_mob_statio_mobi (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_statio_mobi
     CONSTRAINT lt_mob_statio_accro_fkey FOREIGN KEY (typ_accro)
         REFERENCES m_mobilite_3v.lt_mob_statio_accro (code) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE NO ACTION -- Liste de valeurs lt_mob_statio_accro
 );
 
 
