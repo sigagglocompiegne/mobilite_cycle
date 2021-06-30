@@ -35,6 +35,8 @@ DROP TABLE if EXISTS m_mobilite_3v.geo_mob_troncon;
 DROP TABLE if EXISTS m_mobilite_3v.geo_mob_carrefour;
 DROP TABLE if EXISTS m_mobilite_3v.an_mob_media;
 DROP TABLE if EXISTS m_mobilite_3v.lk_mob_ititroncon;
+DROP TABLE if exists m_mobilite_3v.geo_mob_lieustatio;
+DROP TABLE if exists m_mobilite_3v.an_mob_equstatio;
 
 -- DOMAINE DE VALEUR
 
@@ -54,20 +56,26 @@ DROP TABLE if exists m_mobilite_3v.lt_mob_local;
 DROP TABLE if exists m_mobilite_3v.lt_mob_revet;
 DROP TABLE if exists m_mobilite_3v.lt_mob_vitesse;
 DROP TABLE if exists m_mobilite_3v.lt_mob_carrefour;
+DROP TABLE if exists m_mobilite_3v.lt_mob_statio_mobi;
+DROP TABLE if exists m_mobilite_3v.lt_mob_statio_accro;
+DROP TABLE if exists m_mobilite_3v.lt_mob_statio_acces;
+DROP TABLE if exists m_mobilite_3v.lt_mob_statio_protec;
 
 -- SEQUENCES 
 
-DROP SEQUENCE m_mobilite_3v.mob_objet_seq_id CASCADE;
-DROP SEQUENCE m_mobilite_3v.mob_lk_gid CASCADE;
-DROP SEQUENCE m_mobilite_3v.mob_media_seq_gid
-
+DROP SEQUENCE if exists m_mobilite_3v.mob_objet_seq_id;
+DROP SEQUENCE if exists m_mobilite_3v.mob_lk_gid;
+DROP SEQUENCE if exists m_mobilite_3v.mob_media_seq_gid;
+DROP SEQUENCE if exists m_mobilite_3v.an_mob_equstatio_seq_id;
 
 -- FONCTIONS
 
-DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee() CASCADE;
-DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon() CASCADE;
+DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee();
+DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk();
+DROP FUNCTION if exists m_mobilite_3v.ft_statio_capacite();
+DROP FUNCTION if exists m_mobilite_3v.ft_statio_capacite_e();
 
 -- TRIGGERS
 
@@ -88,7 +96,16 @@ DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
 
 DROP TRIGGER if exists t_t1_refresh_view_iti ON m_mobilite_3v.lk_mob_ititroncon;
 
+DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t3_coord_l93 ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t4_coord_longlat ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t6_capacite ON m_mobilite_3v.geo_mob_lieustatio;
 
+DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
+DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
+DROP TRIGGER if exists t_t4_capacite_e ON m_mobilite_3v.an_mob_equstatio;
 
 
 -- ###############################################################################################################################
@@ -133,6 +150,10 @@ CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
     MAXVALUE 9223372036854775807
     CACHE 1;
 
+--############################################################ OBJETS ##################################################
+CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
+    START WITH 1
+    INCREMENT BY 1;
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
@@ -353,9 +374,57 @@ CREATE TABLE m_mobilite_3v.lt_mob_carrefour(
 INSERT INTO m_mobilite_3v.lt_mob_carrefour (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'SAS vélo'), ('20', 'Traversée'), ('30', 'Feux aménagés');
 
+--############################################################ SITUATION ##################################################
 
+-- Liste de valeurs des types de mobilier des stationnements cyclables
+CREATE TABLE m_mobilite_3v.lt_mob_statio_mobi(
+	code varchar(2),
+	valeur varchar(50),
+-- Contrainte
+	CONSTRAINT lt_mob_statio_mobi_pkey PRIMARY KEY (code) -- Clé primaire de la table
+);
+-- Valeurs
+INSERT INTO m_mobilite_3v.lt_mob_statio_mobi (code, valeur)
+	VALUES  ('00', 'Non renseigné'), ('10', 'Arceau'), ('20', 'Ratelier'), ('30', 'Rack double étage'), ('40', 'Crochet'), ('50', 'Support guidon'), ('60', 'Potelet'), ('70', 'Arceau vélo grande taille'), ('80', 'Aucun équipement'), ('99', 'Autre');
 
+--############################################################ SITUATION ##################################################
 
+-- Liste de valeurs des types d'accroche des stationnements cyclables
+CREATE TABLE m_mobilite_3v.lt_mob_statio_accro(
+	code varchar(2),
+	valeur varchar(50),
+-- Contrainte
+	CONSTRAINT lt_mob_statio_accro_pkey PRIMARY KEY (code) -- Clé primaire de la table
+);
+-- Valeurs
+INSERT INTO m_mobilite_3v.lt_mob_statio_accro (code, valeur)
+	VALUES  ('00', 'Non renseigné'), ('10', 'Cadre'), ('20', 'Roue'), ('30', 'Cadre et roue'), ('40', 'Sans accroche'), ('99', 'Autre');
+
+--############################################################ SITUATION ##################################################
+
+-- Liste de valeurs des types d'accès aux stationnements cyclables
+CREATE TABLE m_mobilite_3v.lt_mob_statio_acces(
+	code varchar(2),
+	valeur varchar(50),
+-- Contrainte
+	CONSTRAINT lt_mob_statio_acces_pkey PRIMARY KEY (code) -- Clé primaire de la table
+);
+-- Valeurs
+INSERT INTO m_mobilite_3v.lt_mob_statio_acces (code, valeur)
+	VALUES  ('00', 'Non renseigné'), ('10', 'Libre accès'), ('20', 'Abonnement ou inscription préalable'), ('30', 'Privé');
+
+--############################################################ SITUATION ##################################################
+
+-- Liste de valeurs des types de protection des stationnements cyclables
+CREATE TABLE m_mobilite_3v.lt_mob_statio_protec(
+	code varchar(2),
+	valeur varchar(50),
+-- Contrainte
+	CONSTRAINT lt_mob_statio_protec_pkey PRIMARY KEY (code) -- Clé primaire de la table
+);
+-- Valeurs
+INSERT INTO m_mobilite_3v.lt_mob_statio_protec (code, valeur)
+	VALUES  ('00', 'Non renseigné'), ('10', 'Stationnement non fermé'), ('20', 'Consigne collective fermée'), ('30', 'Box individuel fermé'), ('99', 'Autre');
 
 
 -- ###############################################################################################################################
@@ -397,8 +466,8 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 	op_sai varchar(20), -- Opérateur de saisie
 	date_sai timestamp without time zone,  -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
-	
-	CONSTRAINT an_mob_itineraire_pkey PRIMARY KEY (iditi), -- Clé primaire de la table
+-- Contrainte
+    CONSTRAINT an_mob_itineraire_pkey PRIMARY KEY (iditi), -- Clé primaire de la table
     CONSTRAINT lt_mob_etat_inscri_fkey FOREIGN KEY (est_inscri)
         REFERENCES m_mobilite_3v.lt_mob_etat_inscri (code) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -407,11 +476,11 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
         REFERENCES m_mobilite_3v.lt_mob_niv_inscri (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeur lt_mob_niv_inscri
-	CONSTRAINT lt_mob_gest_iti_fkey FOREIGN KEY (gest_iti)
+    CONSTRAINT lt_mob_gest_iti_fkey FOREIGN KEY (gest_iti)
         REFERENCES m_mobilite_3v.lt_mob_gest_iti (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeur lt_mob_gest_iti
-	CONSTRAINT lt_mob_usage_fkey FOREIGN KEY (usag)
+    CONSTRAINT lt_mob_usage_fkey FOREIGN KEY (usag)
         REFERENCES m_mobilite_3v.lt_mob_usage (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeur lt_mob_usage
@@ -456,8 +525,8 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 	date_sai timestamp without time zone, -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
 	geom geometry(LineString, 2154), -- Géométrie de l'objet
-	
-	CONSTRAINT geo_mob_troncon_pkey PRIMARY KEY (idtroncon), -- Clé primaire de la table
+-- Contrainte
+    CONSTRAINT geo_mob_troncon_pkey PRIMARY KEY (idtroncon), -- Clé primaire de la table
     CONSTRAINT typres_fkey FOREIGN KEY (typ_res)
         REFERENCES m_mobilite_3v.lt_mob_typres (code) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -466,67 +535,67 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
         REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_gest
-	CONSTRAINT lt_mob_gest_proprio_fkey FOREIGN KEY (propriete)
+    CONSTRAINT lt_mob_gest_proprio_fkey FOREIGN KEY (propriete)
         REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_gest
-	CONSTRAINT lt_mob_vitesse_fkey FOREIGN KEY (trafic_vit)
+    CONSTRAINT lt_mob_vitesse_fkey FOREIGN KEY (trafic_vit)
         REFERENCES m_mobilite_3v.lt_mob_vitesse (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_vitesse
-	CONSTRAINT lt_mob_booleen_fkey FOREIGN KEY (lumiere)
+    CONSTRAINT lt_mob_booleen_fkey FOREIGN KEY (lumiere)
         REFERENCES m_mobilite_3v.lt_mob_booleen (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_booleen
-	CONSTRAINT lt_mob_ame_g_fkey FOREIGN KEY (ame_g)
+    CONSTRAINT lt_mob_ame_g_fkey FOREIGN KEY (ame_g)
         REFERENCES m_mobilite_3v.lt_mob_ame (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_ame
-	CONSTRAINT lt_mob_ame_d_fkey FOREIGN KEY (ame_d)
+    CONSTRAINT lt_mob_ame_d_fkey FOREIGN KEY (ame_d)
         REFERENCES m_mobilite_3v.lt_mob_ame (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_ame
-	CONSTRAINT lt_mob_avanc_g_fkey FOREIGN KEY (avanc_g)
+    CONSTRAINT lt_mob_avanc_g_fkey FOREIGN KEY (avanc_g)
         REFERENCES m_mobilite_3v.lt_mob_avanc (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_avanc
-	CONSTRAINT lt_mob_avanc_d_fkey FOREIGN KEY (avanc_d)
+    CONSTRAINT lt_mob_avanc_d_fkey FOREIGN KEY (avanc_d)
         REFERENCES m_mobilite_3v.lt_mob_avanc (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_avanc
-	CONSTRAINT lt_mob_regime_g_fkey FOREIGN KEY (regime_g)
+    CONSTRAINT lt_mob_regime_g_fkey FOREIGN KEY (regime_g)
         REFERENCES m_mobilite_3v.lt_mob_regime (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_regime
-	CONSTRAINT lt_mob_regime_d_fkey FOREIGN KEY (regime_d)
+    CONSTRAINT lt_mob_regime_d_fkey FOREIGN KEY (regime_d)
         REFERENCES m_mobilite_3v.lt_mob_regime (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_regime
-	CONSTRAINT lt_mob_sens_g_fkey FOREIGN KEY (sens_g)
+    CONSTRAINT lt_mob_sens_g_fkey FOREIGN KEY (sens_g)
         REFERENCES m_mobilite_3v.lt_mob_sens (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_sens
-	CONSTRAINT lt_mob_sens_d_fkey FOREIGN KEY (sens_d)
+    CONSTRAINT lt_mob_sens_d_fkey FOREIGN KEY (sens_d)
         REFERENCES m_mobilite_3v.lt_mob_sens (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_sens
-	CONSTRAINT lt_mob_local_g_fkey FOREIGN KEY (local_g)
+    CONSTRAINT lt_mob_local_g_fkey FOREIGN KEY (local_g)
         REFERENCES m_mobilite_3v.lt_mob_local (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_local
-	CONSTRAINT lt_mob_local_d_fkey FOREIGN KEY (local_d)
+    CONSTRAINT lt_mob_local_d_fkey FOREIGN KEY (local_d)
         REFERENCES m_mobilite_3v.lt_mob_local (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_local
-	CONSTRAINT lt_mob_revet_g_fkey FOREIGN KEY (revet_g)
+    CONSTRAINT lt_mob_revet_g_fkey FOREIGN KEY (revet_g)
         REFERENCES m_mobilite_3v.lt_mob_revet (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_revet
-	CONSTRAINT lt_mob_revet_d_fkey FOREIGN KEY (revet_d)
+    CONSTRAINT lt_mob_revet_d_fkey FOREIGN KEY (revet_d)
         REFERENCES m_mobilite_3v.lt_mob_revet (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_revet
-	CONSTRAINT lt_mob_src_geom_fkey FOREIGN KEY (src_geom)
+    CONSTRAINT lt_mob_src_geom_fkey FOREIGN KEY (src_geom)
         REFERENCES r_objet.lt_src_geom (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs des sources géométriques
@@ -539,7 +608,8 @@ CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 	gid bigint NOT NULL DEFAULT nextval('m_mobilite_3v.mob_lk_gid'::regclass), -- Identifiant unique (clé primaire) de la relation
 	idtroncon text, -- Identifiant unique du tronçon
 	iditi text, -- Identifiant unique de l'itinéraire
-	CONSTRAINT lk_mob_ititroncon_pkey PRIMARY KEY (gid) -- Clé primaire de la table
+-- Contrainte
+    CONSTRAINT lk_mob_ititroncon_pkey PRIMARY KEY (gid) -- Clé primaire de la table
 );
 
 --################################################################# NOEUD #######################################################
@@ -557,7 +627,8 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 	date_sai timestamp without time zone, -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
 	geom geometry(Point, 2154), -- Géométrie de l'objet
-	CONSTRAINT geo_mob_carrefour_pkey PRIMARY KEY (idcarrefour), -- Clé primaire de la table
+-- Contrainte
+    CONSTRAINT geo_mob_carrefour_pkey PRIMARY KEY (idcarrefour), -- Clé primaire de la table
     CONSTRAINT lt_mob_carrefour_fkey FOREIGN KEY (typ_car)
         REFERENCES m_mobilite_3v.lt_mob_carrefour (code) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -567,6 +638,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs lt_mob_avanc
 );
+
 --################################################################# NOEUD #######################################################
 
 -- Table alphanumérique gérant la liste des documents associés aux objets cyclables
@@ -580,8 +652,95 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 	l_prec varchar(1000), -- Précision sur le document
 	op_sai varchar(20), -- Opérateur de saisie
 	date_sai timestamp without time zone, -- Date de saisie
-	CONSTRAINT an_mob_media_pkey PRIMARY KEY (qid) -- Clé primaire de la table
+-- Contrainte
+    CONSTRAINT an_mob_media_pkey PRIMARY KEY (qid) -- Clé primaire de la table
 );
+
+--################################################################# NOEUD #######################################################
+
+-- Table géographique représentant la localisation des lieux de stationnements cyclables
+CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
+	idlieustatio text NOT NULL DEFAULT ('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)),
+	id_osm varchar(30),
+	capacite integer,
+	capacite_gt integer, 
+	acces varchar(2),
+	protection varchar(2),
+	gratuit boolean default true,
+	surveillance boolean default false,
+	couverture boolean default false, 
+	lumiere boolean default false,
+	gest varchar(2),
+	propriete varchar(2),
+	a_service varchar(4),
+	avanc varchar(2),
+	url varchar(255),
+	adresse varchar(255),
+	cmplt_adr varchar(255),
+	insee varchar(5),
+	commune varchar(80), 
+	observ varchar(1000),
+	date_sai timestamp without time zone, 
+	date_maj timestamp without time zone, 
+	op_sai varchar(20), 
+	src_geom varchar(2),
+	x_l93 double precision,
+	y_l93 double precision,
+	x_wgs84 decimal(9,7),
+	y_wgs84 decimal(9,7),
+	geom geometry(Point,2154),
+    CONSTRAINT geo_mob_lieustatio_pkey PRIMARY KEY (idlieustatio), -- Clé primaire de la table
+    CONSTRAINT lt_mob_statio_acces_fkey FOREIGN KEY (acces)
+        REFERENCES m_mobilite_3v.lt_mob_statio_acces (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_mob_statio_protec_fkey FOREIGN KEY (protection)
+        REFERENCES m_mobilite_3v.lt_mob_statio_protec (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_mob_gest_fkey FOREIGN KEY (gest)
+        REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_mob_gest_proprio_fkey FOREIGN KEY (propriete)
+        REFERENCES m_mobilite_3v.lt_mob_gest (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_mob_avanc_fkey FOREIGN KEY (avanc)
+        REFERENCES m_mobilite_3v.lt_mob_avanc (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_src_geom_fkey FOREIGN KEY (src_geom)
+        REFERENCES r_objet.lt_src_geom (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+--################################################################# NOEUD #######################################################
+
+-- Table alphanumérique stockant les différents équipements cyclables
+CREATE TABLE m_mobilite_3v.an_mob_equstatio(
+    idequstatio integer NOT NULL DEFAULT nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass),
+	idlieustatio text,
+	typ_mobi varchar(2),
+	typ_accro varchar(2),
+	capacite_e integer,
+	capacite_gt_e integer, 
+	date_sai timestamp without time zone, 
+	date_maj timestamp without time zone, 
+	op_sai varchar(20),
+    CONSTRAINT an_mob_equstatio_pkey PRIMARY KEY (idequstatio), -- Clé primaire de la table
+    CONSTRAINT lt_mob_statio_mobi_fkey FOREIGN KEY (typ_mobi)
+        REFERENCES m_mobilite_3v.lt_mob_statio_mobi (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT lt_mob_statio_accro_fkey FOREIGN KEY (typ_accro)
+        REFERENCES m_mobilite_3v.lt_mob_statio_accro (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+
 
 
 
