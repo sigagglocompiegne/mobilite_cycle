@@ -994,6 +994,41 @@ END;
 $BODY$;
 
 
+--################################################################# FONCTION #######################################################
+-- Fonction de geo_mob_lieustatio pour les capacités
+CREATE FUNCTION m_mobilite_3v.ft_statio_capacite()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	IF (new.capacite > new.capacite_gt) THEN
+			RETURN new;
+	ELSE
+		RETURN 'Le champs capacité est la somme des stationnements du champs capacite_gt plus des autres stationnements';
+	END IF;
+end;
+$BODY$;
+
+
+--################################################################# FONCTION #######################################################
+-- Fonction de an_mob_equstatio pour les capacités
+CREATE FUNCTION m_mobilite_3v.ft_statio_capacite_e()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	IF (new.capacite_e > new.capacite_gt_e) THEN
+			RETURN new;
+	ELSE
+		RETURN 'Le champs capacité est la somme des stationnements du champs capacite_gt plus des autres stationnements';
+	END IF;
+end;
+$BODY$;
+
 
 
 
@@ -1092,6 +1127,85 @@ CREATE TRIGGER t_t1_refresh_view_iti
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
     
   
+   
+-- Trigger sur la table geo_mob_lieustatio
+--################################################################# TRIGGER #######################################################
+-- Trigger pour l'insertion de la date
+-- Trigger: t_t1_date_sai
+CREATE TRIGGER t_t1_date_sai
+    BEFORE INSERT 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_timestamp_sai();
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t2_date_maj pour la mise a jour de la date
+CREATE TRIGGER t_t2_date_maj
+    BEFORE UPDATE 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_timestamp_maj();
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t3_coord_l93 pour l'insertion ou la mise a jour des coordonnées L93 
+CREATE TRIGGER t_t3_coord_l93
+    BEFORE INSERT OR UPDATE
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_xy_l93();
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t4_coord_longlat pour l'insertion ou la mise a jour des coordonnées long lat
+CREATE TRIGGER t_t4_coord_longlat
+    BEFORE INSERT OR UPDATE 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_xy_wgs84();
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t5_commune pour l'insertion ou la mise a jour des communes en fonction du code insee
+CREATE TRIGGER t_t5_commune
+    BEFORE INSERT OR UPDATE 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t6_capacite pour l'insertion ou la mise a jour de la capacite
+CREATE TRIGGER t_t6_capacite
+    BEFORE INSERT OR UPDATE 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_statio_capacite();
+    
+    
+ -- Trigger sur la table an_mob_equstatio
+ --################################################################# TRIGGER #######################################################
+-- Trigger t_t1_date_sai pour l'insertion de la date
+CREATE TRIGGER t_t1_date_sai
+    BEFORE INSERT 
+    ON m_mobilite_3v.an_mob_equstatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_timestamp_sai();
+ --################################################################# TRIGGER #######################################################
+-- Trigger t_t2_date_maj pour la mise a jour de la date
+CREATE TRIGGER t_t2_date_maj
+    BEFORE UPDATE 
+    ON m_mobilite_3v.an_mob_equstatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_timestamp_maj();
+ --################################################################# TRIGGER #######################################################
+-- Trigger t_t4_capacite_e pour l'insertion ou la mise a jour de la capacite
+CREATE TRIGGER t_t4_capacite_e
+    BEFORE INSERT OR UPDATE 
+    ON m_mobilite_3v.an_mob_equstatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_statio_capacite_e();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -1104,6 +1218,7 @@ CREATE TRIGGER t_t1_refresh_view_iti
 
 
 COMMENT ON SCHEMA m_mobilite_3v IS 'Données métiers sur le thème des aménagements cyclables';
+
 COMMENT ON TABLE m_mobilite_3v.lt_mob_etat_inscri IS 'Liste de valeurs d inscription à un schéma de développement des véloroutes';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_etat_inscri.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_etat_inscri.valeur IS 'Libellé de la valeur dinscription';
@@ -1171,6 +1286,22 @@ COMMENT ON TABLE m_mobilite_3v.lt_mob_carrefour IS 'Liste de valeurs des types d
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.valeur IS 'Libellé de la valeur des régimes';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.modele IS 'Code du modèle de carrefour';
+
+COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_mobi IS 'Liste de valeurs des différents mobilier de stationnement';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_mobi.code IS 'Code de la valeur';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_mobi.valeur IS 'Libellé de la valeur des équipements cyclables';
+
+COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_accro IS 'Liste de valeurs des différents type d accroche de stationnement';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_accro.code IS 'Code de la valeur';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_accro.valeur IS 'Libellé de la valeur des équipements cyclables';
+
+COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_acces IS 'Liste de valeurs des différents mode d accès aux lieux de stationnement';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_acces.code IS 'Code de la valeur';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_acces.valeur IS 'Libellé de la valeur des équipements cyclables';
+
+COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_protec IS 'Liste de valeurs des différents type de protection des stationnements';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.code IS 'Code de la valeur';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.valeur IS 'Libellé de la valeur des équipements cyclables';
 
 COMMENT ON TABLE m_mobilite_3v.an_mob_itineraire IS 'Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois (en projet ou ouvert)';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.iditi is 'Identifiant unique (clé primaire) de l itinéraire';
@@ -1268,7 +1399,52 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_media.l_prec is 'Précision sur le docume
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.op_sai is 'Opérateur de saisie';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai is 'Date de saisie';
 
+COMMENT ON TABLE m_mobilite_3v.geo_mob_lieustatio IS 'Table géographique représentant la localisation des lieux de stationnements cyclables sur le Pays Compiégnois';			
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.idlieustatio IS 'Identifiant unique (clé primaire) du lieu de stationnement';								                            
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.id_osm IS 'Identifiant unique du tronçon sur OpenStreetMap';                                                                      
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.capacite IS 'Capacité de stationnement du lieu';                                                                                    
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.capacite_gt IS 'Capacité de stationnement du lieu pour des vélos de grandes tailles';      
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.acces IS 'Moyen d accès au lieu';                       							
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.protection IS 'niveau de protection du lieu';                                             
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.gratuit IS 'Stationnement gratuit ou payant';                                          
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.surveillance IS 'Présence de surveillance';                                                 
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.couverture IS 'Présence d un toit protégeant des intempéries';                            
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.lumiere IS 'Présence d éclairage';                                                                      
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.gest IS 'gestionnaire de l infrastucture';                                                           
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.propriete IS 'Propriétaire de l infrastucture';                         	                                
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.a_service IS 'Année d installation';                                                                                                       
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.avanc IS 'Niveau d avancement en terme de projet';	                                                                                                
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.url IS 'Lien vers un site d information du lieu';       	                                                                                                
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.adresse IS 'Adresse précise ou libellé de la voie d implantation du lieu de stationnement';     
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.cmplt_adr IS 'Complément de l adresse d implantation du lieu de stationnement';     
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.insee IS 'Code insee de la commune du stationnement';                                                 
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.commune IS 'Nom de la commune du stationnement';                      
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.observ IS 'Commentaire';                                                                               
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.date_sai IS 'Date de saisie de la donnée';                                                               
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.date_maj IS 'Date de mise à jour de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.op_sai IS 'Opérateur de saisie de la donnée';	                
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.src_geom IS 'Référentiel utilisé pour la digitalisation de la géométrie';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.x_l93 IS 'Coordonnée X en Lambert 93';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.y_l93 IS 'Coordonnée Y en Lambert 93';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.x_wgs84 IS 'Longitude';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.y_wgs84 IS 'Latitude';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.geom IS 'Géométrie de la donnée';
+
+COMMENT ON TABLE m_mobilite_3v.an_mob_equstatio IS 'Table alphanumérique stockant les différents équipements cyclables sur le Pays Compiégnois';			
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.idequstatio IS 'Identifiant unique de l équipement';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.idlieustatio IS 'Identifiant du lieu de stationnement';	
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.typ_mobi IS 'Type de mobilier du lieu de stationnement';                                                 
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.typ_accro IS 'Type d accroche du lieu de stationnement';                                                  
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.capacite_e IS 'Capacité de stationnement du type d accroche';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.capacite_gt_e IS 'Capacité de stationnement en grande taille du type d accroche';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_sai IS 'Date de saisie de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_maj IS 'Date de mise à jour de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.op_sai IS 'opérateur de saisie de la donnée';
+
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
+COMMENT ON FUNCTION m_mobilite_3v.ft_statio_capacite() IS 'Fonction trigger permettant un contrôle sur l'attribut capacite et l'attribut capacite_gt';
+COMMENT ON FUNCTION m_mobilite_3v.ft_statio_capacite_e() IS 'Fonction trigger permettant un contrôle sur l'attribut capacite_e et l'attribut capacite_gt_e';
+
