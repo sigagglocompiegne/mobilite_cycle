@@ -722,7 +722,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
 CREATE TABLE m_mobilite_3v.an_mob_equstatio(
    	idequstatio integer NOT NULL DEFAULT nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass), -- Identifiant unique de l'équipement
 	idlieustatio text, -- Identifiant du lieu de stationnement
-	typ_mobi varchar(2), -- Type de mobilier du lieu de stationnement
+	typ_mobi varchar(40), -- Type de mobilier du lieu de stationnement
 	typ_accro varchar(2), -- Type d'accroche du lieu de stationnement
 	capacite_e integer, -- Capacité de stationnement du type d'accroche
 	capacite_gt_e integer,  -- Capacité de stationnement en grande taille du type d'accroche
@@ -730,10 +730,6 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
 	date_maj timestamp without time zone,  -- Date de mise à jour de la donnée
 	op_sai varchar(20), -- Opérateur de saisie de la donnée
     CONSTRAINT an_mob_equstatio_pkey PRIMARY KEY (idequstatio), -- Clé primaire de la table
-    CONSTRAINT lt_mob_statio_mobi_fkey FOREIGN KEY (typ_mobi)
-        REFERENCES m_mobilite_3v.lt_mob_statio_mobi (code) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_statio_mobi
     CONSTRAINT lt_mob_statio_accro_fkey FOREIGN KEY (typ_accro)
         REFERENCES m_mobilite_3v.lt_mob_statio_accro (code) MATCH SIMPLE
         ON UPDATE NO ACTION
