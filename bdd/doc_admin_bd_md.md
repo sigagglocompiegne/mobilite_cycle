@@ -692,7 +692,7 @@ Paticularité(s) à noter :
 
 ### classes d'objets applicatives de gestion :
 
-`[geo_v_mob_iti]` : vue de gestion permettant la saisie des objets 
+`[geo_vmr_mob_iti]` : vue de gestion permettant la saisie des objets 
 
 ---
 
@@ -703,9 +703,20 @@ Particularité(s) à noter :
 
 ---
 
+`[geo_vmr_mob_iti]` : vue de gestion permettant la saisie des objets 
+
+---
 ### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
  
 `[xapps_geo_v_mob_troncon_affiche]` : vue d'affichage permettant la visualisation des objets 
+
+---
+
+`[xapps_an_v_mob3v_tab1]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés (dans le schéma m_mobilite_3v)
+
+---
+
+`[xapps_an_v_mob3v_tab2]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés (dans le schéma m_mobilite_3v)
 
 ---
 
