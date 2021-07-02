@@ -70,7 +70,7 @@ DROP SEQUENCE if exists m_mobilite_3v.an_mob_equstatio_seq_id;
 
 -- FONCTIONS
 
-DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee();
+DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee_troncon_cy();
 DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_itineraire_delete_lk();
@@ -748,8 +748,8 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
 
 --################################################################# FONCTION #######################################################
 
--- Fonction m_mobilite_3v.ft_commune_via_insee() recupérant les noms des communes via leur code insee
-CREATE FUNCTION m_mobilite_3v.ft_commune_via_insee()
+-- Fonction m_mobilite_3v.ft_commune_via_insee_troncon_cy() recupérant les noms des communes via leur code insee
+CREATE FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -1069,7 +1069,7 @@ CREATE TRIGGER t_t5_commune
     BEFORE UPDATE OR INSERT
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
+    EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee_troncon_cy();
     
 
 -- Trigger sur la table geo_mob_carrefour
@@ -1137,6 +1137,27 @@ CREATE TRIGGER t_t5_commune
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
+    
+    z
+    z
+    z
+    z
+    z
+    z
+    zz
+    z
+    z
+    z
+    z
+    zz
+    z
+    z
+    z
+    zz
+    z
+    z
+    z
+    
 --################################################################# TRIGGER #######################################################
 -- Trigger: t_t6_capacite_sum pour l'insertion ou la mise a jour des capacités de stationnement cyclable
 CREATE TRIGGER t_t6_capacite_sum
@@ -1398,7 +1419,7 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_maj IS 'Date de mise à jo
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.op_sai IS 'opérateur de saisie de la donnée';
 
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
-COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
+COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
 COMMENT ON FUNCTION m_mobilite_3v.capacite_sum() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
