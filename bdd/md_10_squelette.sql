@@ -92,6 +92,7 @@ DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
+DROP TRIGGER if exists t_t3_commune ON m_mobilite_3v.geo_mob_carrefour;
 
 DROP TRIGGER if exists t_t1_refresh_view_iti ON m_mobilite_3v.lk_mob_ititroncon;
 
@@ -1087,7 +1088,13 @@ CREATE TRIGGER t_t2_date_maj
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
-
+--################################################################# TRIGGER #######################################################
+-- Trigger t_t3_commune pour la fonction ecrivant la commune avec une requête spatiale
+CREATE TRIGGER t_t3_commune
+    BEFORE INSERT OR UPDATE 
+    ON m_mobilite_3v.geo_mob_carrefour
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.ft_r_commune_pl();
 
 -- Trigger sur la table lk_mob_ititroncon
 --################################################################# TRIGGER #######################################################
@@ -1131,33 +1138,12 @@ CREATE TRIGGER t_t4_coord_longlat
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_xy_wgs84();
 --################################################################# TRIGGER #######################################################
--- Trigger t_t5_commune pour l'insertion ou la mise a jour des communes en fonction du code insee
+-- Trigger t_t5_commune pour la fonction ecrivant la commune avec une requête spatiale
 CREATE TRIGGER t_t5_commune
     BEFORE INSERT OR UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
-    
-    z
-    z
-    z
-    z
-    z
-    z
-    zz
-    z
-    z
-    z
-    z
-    zz
-    z
-    z
-    z
-    zz
-    z
-    z
-    z
-    
+    EXECUTE PROCEDURE public.ft_r_commune_pl();    
 --################################################################# TRIGGER #######################################################
 -- Trigger: t_t6_capacite_sum pour l'insertion ou la mise a jour des capacités de stationnement cyclable
 CREATE TRIGGER t_t6_capacite_sum
