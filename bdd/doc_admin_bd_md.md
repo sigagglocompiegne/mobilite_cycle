@@ -614,7 +614,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+|valeur|Libellé de la valeur des modes d accès aux lieux de stationnement|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -632,7 +632,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+|valeur|Libellé de la valeur des accroches de stationnement|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -652,7 +652,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+|valeur|Libellé de la valeur des mobiliers de stationnement|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -676,7 +676,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+|valeur|Libellé de la valeur des protections des stationnements|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
