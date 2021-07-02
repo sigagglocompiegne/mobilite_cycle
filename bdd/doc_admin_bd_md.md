@@ -38,34 +38,34 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
-|num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
-|num_loc|Numéro de l itinéraire local|character varying(10)| |
-|nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
-|nom_usage|Autre nom ou appellation de l itinéraire en usage|character varying(100)| |
-|depart|Nom de la localité située au départ|character varying(80)| |
-|via|Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire|character varying(254)| |
-|arrivee|Nom de la localité située à l arrivée|character varying(80)| |
-|est_inscri|Précise si l itinéraire est inscrit à un schéma de développement des véloroutes|character varying(2)| |
-|niv_inscri|Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(2)| |
-|nom_schema|Libellé du schéma d inscription|character varying(100)| |
-|an_inscri|Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(4)| |
-|an_ouvert|Indique l année d ouverture de l itinéraire|character varying(4)| |
-|gest_iti|Gestion sur l itinéraire en terme d action sur les données|character varying(2)| |
-|usag|Usage principal de l itinéraire|character varying(2)| |
-|usage_comm|diffusion des données au grand public|boolean|false|
-|voca_iti|Vocation de l itinéraire|character varying(10)| |
-|typ_iti|Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet|character varying(40)| |
-|mao|Maître d ouvrage de l itinéraire en projet ou en cours de travaux|character varying(100)| |
-|equip|Liste d équipements potentiellement proche ou desservis par l itinéraire|character varying(5000)| |
-|descrip|Description de l itinéraire (parcours, …)|character varying(5000)| |
-|cout|Estimation du coût au mètre linéaire de l aménagement de l itinéraire|character varying(10)| |
-|esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
-|url_site|Lien Http vers une page web|character varying(254)| |
-|observ|Commentaires|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)| |
-|date_sai|Date de saisie de la donnée|timestamp without time zone| |
-|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+"|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
+"|num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
+"|num_loc|Numéro de l itinéraire local|character varying(10)| |
+"|nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
+"|nom_usage|Autre nom ou appellation de l itinéraire en usage|character varying(100)| |
+"|depart|Nom de la localité située au départ|character varying(80)| |
+"|via|Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire|character varying(254)| |
+"|arrivee|Nom de la localité située à l arrivée|character varying(80)| |
+"|est_inscri|Précise si l itinéraire est inscrit à un schéma de développement des véloroutes|character varying(2)| |
+"|niv_inscri|Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(2)| |
+"|nom_schema|Libellé du schéma d inscription|character varying(100)| |
+"|an_inscri|Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(4)| |
+"|an_ouvert|Indique l année d ouverture de l itinéraire|character varying(4)| |
+"|gest_iti|Gestion sur l itinéraire en terme d action sur les données|character varying(2)| |
+"|usag|Usage principal de l itinéraire|character varying(2)| |
+"|usage_comm|diffusion des données au grand public|boolean|false|
+"|voca_iti|Vocation de l itinéraire|character varying(10)| |
+"|typ_iti|Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet|character varying(40)| |
+"|mao|Maître d ouvrage de l itinéraire en projet ou en cours de travaux|character varying(100)| |
+"|equip|Liste d équipements potentiellement proche ou desservis par l itinéraire|character varying(5000)| |
+"|descrip|Description de l itinéraire (parcours, …)|character varying(5000)| |
+"|cout|Estimation du coût au mètre linéaire de l aménagement de l itinéraire|character varying(10)| |
+"|esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
+"|url_site|Lien Http vers une page web|character varying(254)| |
+"|observ|Commentaires|character varying(1000)| |
+"|op_sai|Opérateur de saisie|character varying(20)| |
+"|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+"|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
@@ -149,7 +149,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idcarrefour|Identifiant unique (clé primaire) du tronçon|text| |
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |libelle|Libellé du carrefour|character varying(255)| |
 |typ_car|Type de carrefour|character varying(2)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
@@ -170,11 +170,86 @@ Paticularité(s) à noter :
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
 ---
 
+`[geo_mob_lieustatio]` : table géométrique .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|  
+|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
+|capacite|Capacité de stationnement du lieu|integer| |
+|capacite_gt|Capacité de stationnement du lieu pour des vélos de grandes tailles|integer| |
+|acces|Moyen d accès au lieu|character varying(2)| |
+|protection|niveau de protection du lieu|character varying(2)| |
+|gratuit|Stationnement gratuit ou payant|boolean|true|
+|surveillance|Présence de surveillance|boolean|false|
+|couverture|Présence d un toit protégeant des intempéries|boolean|false|
+|lumiere|Présence d éclairage|boolean|false|
+|gest|gestionnaire de l infrastucture|character varying(2)| |
+|propriete|Propriétaire de l infrastucture|character varying(2)| |
+|a_service|Année d installation|character varying(4)| |
+|avanc|Niveau d avancement en terme de projet|character varying(2)| |
+|url|Lien vers un site d information du lieu|character varying(255)| |
+|adresse|Adresse précise ou libellé de la voie d implantation du lieu de stationnement|character varying(255)| |
+|cmplt_adr|Complément de l adresse d implantation du lieu de stationnement|character varying(255)| |
+|insee|Code insee de la commune du stationnement|character varying(5)| |
+|commune|Nom de la commune du stationnement|character varying(80)| |
+|observ|Commentaire|character varying(1000)| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+|op_sai|Opérateur de saisie de la donnée|character varying(20)| |
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
+|x_l93|Coordonnée X en Lambert 93|double precision| |
+|y_l93|Coordonnée Y en Lambert 93|double precision| |
+|x_wgs84|Longitude|numeric| |
+|y_wgs84|Latitude|numeric| |
+|geom|Géométrie de la donnée|USER-DEFINED| |
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `idlieustatio` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
+* Une clé étrangère existe sur la table de valeur `acces` (lien vers l'identifiant `code` de la table `lt_mob_statio_acces`).
+* Une clé étrangère existe sur la table de valeur `protection` (lien vers l'identifiant `code` de la table `lt_mob_statio_protec`).
+* Une clé étrangère existe sur la table de valeur `gest` (lien vers l'identifiant `code` de la table `lt_mob_statio_gest`).
+* Une clé étrangère existe sur la table de valeur `propriete` (lien vers l'identifiant `code` de la table `lt_mob_statio_gest`).
+* Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
+* Une clé étrangère existe sur la table de valeur `src_geom` (lien vers l'identifiant `code` de la table `lt_src_geom`).
+
+* 5 triggers :
+   * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
+   * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
+   * `t_t3_coord_l93` : avant mise à jour, recherche les coordonnées exactes du point en Lambert 93.
+   * `t_t4_coord_longlat` : avant mise à jour, recherche les coordonnées exactes du point en Longitude et Latitude.
+   * `t_t5_commune` : avant mise à jour, recherche la commune en fonction du code insee.
+---
+
+`[geo_mob_lieustatio]` : table géométrique .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---|  
+|idequstatio|Identifiant unique de l équipement|integer|nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass)|
+|idlieustatio|Identifiant du lieu de stationnement|text| |
+|typ_mobi|Type de mobilier du lieu de stationnement|character varying(40)| |
+|typ_accro|Type d accroche du lieu de stationnement|character varying(2)| |
+|capacite_e|Capacité de stationnement du type d accroche|integer| |
+|capacite_gt_e|Capacité de stationnement en grande taille du type d accroche|integer| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+|op_sai|opérateur de saisie de la donnée|character varying(20)| |
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `idequstatio` lui-même contenant une séquence d'incrémentation automatique (an_mob_equstatio_seq_id).
+* Une clé étrangère existe sur la table de valeur `typ_mobi` (lien vers l'identifiant `code` de la table `lt_mob_statio_mobi`).
+* Une clé étrangère existe sur la table de valeur `typ_accro` (lien vers l'identifiant `code` de la table `lt_mob_statio_accro`).
+
+* 2 triggers :
+   * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
+   * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
+---
+
 `[lk_mob_ititroncon]` : table de relation .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|gid|Identifiant unique (clé primaire) de la relation|bigint| |
+|gid|Identifiant unique (clé primaire) de la relation|bigint|nextval('m_mobilite_3v.mob_lk_gid'::regclass)|
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
 
@@ -186,8 +261,8 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---| 
-|qid|Identifiant uniqueue (clé primaire) du média|bigint| |
-|gid|Identifiant de l objet référence|text| |
+|gid|Identifiant uniqueue (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_gid'::regclass)|
+|id|Identifiant de l objet référence|text| |
 |media|Champ Média de GEO|text| |
 |miniature|Champ miniature de GEO|bytea| |
 |n_fichier|Nom du fichier|text| |
