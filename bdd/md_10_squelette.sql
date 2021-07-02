@@ -1225,19 +1225,19 @@ COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.modele IS 'Code du modèle de c
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_mobi IS 'Liste de valeurs des différents mobilier de stationnement';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_mobi.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_mobi.valeur IS 'Libellé de la valeur des équipements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_mobi.valeur IS 'Libellé de la valeur des mobiliers de stationnement';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_accro IS 'Liste de valeurs des différents type d accroche de stationnement';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_accro.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_accro.valeur IS 'Libellé de la valeur des équipements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_accro.valeur IS 'Libellé de la valeur des accroches de stationnement';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_acces IS 'Liste de valeurs des différents mode d accès aux lieux de stationnement';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_acces.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_acces.valeur IS 'Libellé de la valeur des équipements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_acces.valeur IS 'Libellé de la valeur des modes d accès aux lieux de stationnement';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_protec IS 'Liste de valeurs des différents type de protection des stationnements';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.valeur IS 'Libellé de la valeur des équipements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.valeur IS 'Libellé de la valeur des protections des stationnements';
 
 COMMENT ON TABLE m_mobilite_3v.an_mob_itineraire IS 'Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois (en projet ou ouvert)';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.iditi is 'Identifiant unique (clé primaire) de l itinéraire';
