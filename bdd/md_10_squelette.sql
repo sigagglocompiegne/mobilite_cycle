@@ -74,8 +74,6 @@ DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee();
 DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk();
-DROP FUNCTION if exists m_mobilite_3v.ft_statio_capacite();
-DROP FUNCTION if exists m_mobilite_3v.ft_statio_capacite_e();
 
 -- TRIGGERS
 
@@ -101,11 +99,9 @@ DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t3_coord_l93 ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t4_coord_longlat ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
-DROP TRIGGER if exists t_t6_capacite ON m_mobilite_3v.geo_mob_lieustatio;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
-DROP TRIGGER if exists t_t4_capacite_e ON m_mobilite_3v.an_mob_equstatio;
 
 
 -- ###############################################################################################################################
@@ -990,41 +986,6 @@ END;
 $BODY$;
 
 
---################################################################# FONCTION #######################################################
--- Fonction de geo_mob_lieustatio pour les capacités
-CREATE FUNCTION m_mobilite_3v.ft_statio_capacite()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE NOT LEAKPROOF
-AS $BODY$
-BEGIN
-	IF (new.capacite > new.capacite_gt) THEN
-			RETURN new;
-	ELSE
-		RETURN 'Le champs capacité est la somme des stationnements du champs capacite_gt plus des autres stationnements';
-	END IF;
-end;
-$BODY$;
-
-
---################################################################# FONCTION #######################################################
--- Fonction de an_mob_equstatio pour les capacités
-CREATE FUNCTION m_mobilite_3v.ft_statio_capacite_e()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE NOT LEAKPROOF
-AS $BODY$
-BEGIN
-	IF (new.capacite_e > new.capacite_gt_e) THEN
-			RETURN new;
-	ELSE
-		RETURN 'Le champs capacité est la somme des stationnements du champs capacite_gt plus des autres stationnements';
-	END IF;
-end;
-$BODY$;
-
 
 
 
@@ -1161,13 +1122,7 @@ CREATE TRIGGER t_t5_commune
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee();
---################################################################# TRIGGER #######################################################
--- Trigger t_t6_capacite pour l'insertion ou la mise a jour de la capacite
-CREATE TRIGGER t_t6_capacite
-    BEFORE INSERT OR UPDATE 
-    ON m_mobilite_3v.geo_mob_lieustatio
-    FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.ft_statio_capacite();
+
     
     
  -- Trigger sur la table an_mob_equstatio
@@ -1185,22 +1140,7 @@ CREATE TRIGGER t_t2_date_maj
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
- --################################################################# TRIGGER #######################################################
--- Trigger t_t4_capacite_e pour l'insertion ou la mise a jour de la capacite
-CREATE TRIGGER t_t4_capacite_e
-    BEFORE INSERT OR UPDATE 
-    ON m_mobilite_3v.an_mob_equstatio
-    FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.ft_statio_capacite_e();
-    
-    
-    
-    
-    
-    
-    
-    
-    
+   
     
     
     
@@ -1441,6 +1381,4 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour l
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
-COMMENT ON FUNCTION m_mobilite_3v.ft_statio_capacite() IS 'Fonction trigger permettant un contrôle sur l'attribut capacite et l'attribut capacite_gt';
-COMMENT ON FUNCTION m_mobilite_3v.ft_statio_capacite_e() IS 'Fonction trigger permettant un contrôle sur l'attribut capacite_e et l'attribut capacite_gt_e';
 
