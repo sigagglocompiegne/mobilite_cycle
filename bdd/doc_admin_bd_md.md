@@ -138,7 +138,7 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `revet_g` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
 * Une clé étrangère existe sur la table de valeur `revet_d` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
 * Une clé étrangère existe sur la table de valeur `src_geom` (lien vers l'identifiant `code` de la table `lt_src_geom`).
-*  2 triggers :
+*  4 triggers :
    * `t_t2_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t3_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
    * `t_t4_long_m` : avant insertion ou mise à jour, calcul la taille de l'objet.
@@ -609,8 +609,86 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
+`[lt_mob_statio_acces]` : Liste permettant de décrire les différents accès aux lieux de stationnement .
 
+|Nom attribut | Définition | Type  |
+|:---|:---|:---|
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur d'inscription|character varying(50)| |
 
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Libre accès|
+|20|Abonnement ou inscription préalable|
+|30|Privé|
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
+
+`[lt_mob_statio_accro]` : Liste permettant de décrire les différents types d'accroche des lieux de stationnement .
+
+|Nom attribut | Définition | Type  |
+|:---|:---|:---|
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Cadre|
+|20|Roue|
+|30|Cadre et roue|
+|40|Sans accroche|
+|99|Autre|
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
+
+`[lt_mob_statio_mobi]` : Liste permettant de décrire les différents types de mobilier des lieux de stationnement .
+
+|Nom attribut | Définition | Type  |
+|:---|:---|:---|
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Arceau|
+|20|Ratelier|
+|30|Rack double étage|
+|40|Crochet|
+|50|Support guidon|
+|60|Potelet|
+|70|Arceau vélo grande taille|
+|80|Aucun équipement|
+|99|Autre|
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
+
+`[lt_mob_statio_protec]` : Liste permettant de décrire les différents types de protection des lieux de stationnement .
+
+|Nom attribut | Définition | Type  |
+|:---|:---|:---|
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur d'inscription|character varying(50)| |
+
+|Code | Valeur |
+|:---|:---|
+|00|Non renseigné|
+|10|Stationnement non fermé|
+|20|Consigne collective fermée|
+|30|Box individuel fermé|
+|99|Autre|
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `code`.
+---
 
 ### classes d'objets applicatives de gestion :
 
