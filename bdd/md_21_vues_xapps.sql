@@ -17,8 +17,8 @@
 
 DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
-DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1;
-DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab2;
+DROP VIEW if exists x_apps.xapps_an_v_mob3v_tab1;
+DROP VIEW if exists x_apps.xapps_an_v_mob3v_tab2;
 
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 
@@ -94,7 +94,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_noeud
 
 --##############################################################OUVELEC#############################################################
 -- Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO
-CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1
+CREATE OR REPLACE VIEW xapps.xapps_an_v_mob3v_tab1
  AS
  WITH req_t AS (
 	select row_number() over() as gid, round((sum(long_m::decimal)/1000),2) as long_km from m_mobilite_3v.geo_mob_troncon 
@@ -109,7 +109,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1
 
 --##############################################################OUVELEC#############################################################
 -- Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO
-CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2
+CREATE OR REPLACE VIEW xapps.xapps_an_v_mob3v_tab2
  AS
 	WITH
 	req_droite AS
@@ -221,7 +221,7 @@ WITH DATA;
 
 COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d aménagements des tronçons';
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en service dans GEO';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
+COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en service dans GEO';
+COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
 
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
