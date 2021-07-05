@@ -75,7 +75,7 @@ DROP FUNCTION if exists m_mobilite_3v.ft_commune_via_insee_troncon_cy();
 DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_itineraire_delete_lk();
-DROP FUNCTION if exists m_mobilite_3v.capacite_sum();
+DROP FUNCTION if exists m_mobilite_3v.ft_m_mobi_capacite();
 
 -- TRIGGERS
 
@@ -102,10 +102,10 @@ DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t3_coord_l93 ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t4_coord_longlat ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
-DROP TRIGGER if exists t_t6_capacite_sum ON m_mobilite_3v.geo_mob_lieustatio;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
+DROP TRIGGER t_t3_capacite_sum ON m_mobilite_3v.an_mob_equstatio;
 
 
 -- ###############################################################################################################################
@@ -992,18 +992,30 @@ $BODY$;
 
 --################################################################# FONCTION #######################################################
 -- fonction pour sommer les différentes capacités entre-elles
-CREATE FUNCTION m_mobilite_3v.capacite_sum()
+CREATE FUNCTION m_mobilite_3v.ft_m_mobi_capacite()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE NOT LEAKPROOF
 AS $BODY$
 BEGIN
-   new.capacite = (SELECT SUM(capacite_e) from m_mobilite_3v.an_mob_equstatio WHERE new.idlieustatio = idlieustatio);
-   new.capacite_gt = (SELECT SUM(capacite_gt_e) from m_mobilite_3v.an_mob_equstatio WHERE new.idlieustatio = idlieustatio);
-   return new;
+IF TG_OP = 'INSERT' THEN
+UPDATE m_mobilite_3v.geo_mob_lieustatio
+	set capacite = (SELECT SUM(capacite_e) FROM m_mobilite_3v.an_mob_equstatio e WHERE e.idlieustatio = NEW.idlieustatio),
+	    capacite_gt = (SELECT SUM(capacite_gt_e) FROM m_mobilite_3v.an_mob_equstatio e WHERE e.idlieustatio = NEW.idlieustatio)
+	where geo_mob_lieustatio.idlieustatio = NEW.idlieustatio;
+END IF;
+IF TG_OP IN ('UPDATE','DELETE') THEN
+UPDATE m_mobilite_3v.geo_mob_lieustatio
+	set capacite = (SELECT SUM(capacite_e) FROM m_mobilite_3v.an_mob_equstatio e WHERE e.idlieustatio = OLD.idlieustatio),
+	    capacite_gt = (SELECT SUM(capacite_gt_e) FROM m_mobilite_3v.an_mob_equstatio e WHERE e.idlieustatio = OLD.idlieustatio)
+	where geo_mob_lieustatio.idlieustatio = OLD.idlieustatio;	
+END IF;
+	return new;
 END;
 $BODY$;
+
+
 
 
 -- ###############################################################################################################################
@@ -1145,14 +1157,7 @@ CREATE TRIGGER t_t5_commune
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl();    
---################################################################# TRIGGER #######################################################
--- Trigger: t_t6_capacite_sum pour l'insertion ou la mise a jour des capacités de stationnement cyclable
-CREATE TRIGGER t_t6_capacite_sum
-    BEFORE INSERT OR UPDATE 
-    ON m_mobilite_3v.geo_mob_lieustatio
-    FOR EACH ROW
-    EXECUTE PROCEDURE m_mobilite_3v.capacite_sum();
-    
+
     
  -- Trigger sur la table an_mob_equstatio
 --################################################################# TRIGGER #######################################################
@@ -1169,8 +1174,13 @@ CREATE TRIGGER t_t2_date_maj
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
-   
-
+--################################################################# TRIGGER #######################################################
+-- Trigger: t_t3_capacite_sum pour l'insertion,la mise a jour ou la suppression des capacités de stationnement cyclable
+CREATE TRIGGER t_t3_capacite_sum
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.an_mob_equstatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
     
     
 -- ###############################################################################################################################
@@ -1409,9 +1419,7 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour l
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
-COMMENT ON FUNCTION m_mobilite_3v.capacite_sum() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
-
-
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
 
 
 -- ###############################################################################################################################
