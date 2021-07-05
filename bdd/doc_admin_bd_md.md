@@ -247,7 +247,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|gid|Identifiant unique (clé primaire) de la relation|bigint|nextval('m_mobilite_3v.mob_lk_gid'::regclass)|
+|gid|Identifiant unique (clé primaire) de la relation|bigint| |
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
 
@@ -259,7 +259,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---| 
-|gid|Identifiant uniqueue (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_gid'::regclass)|
+|gid|Identifiant uniqueue (clé primaire) du média|bigint| |
 |id|Identifiant de l objet référence|text| |
 |media|Champ Média de GEO|text| |
 |miniature|Champ miniature de GEO|bytea| |
