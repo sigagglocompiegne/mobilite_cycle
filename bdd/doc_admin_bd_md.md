@@ -20,38 +20,7 @@
 
 ## Dépendances
 
-`**Je ne sais pas si c'est cela qu'il fallait mettre dedans**
-La base de données des aménagements cyclables s'appuie sur d'anciennes données préexistantes mise en place avec le standard *3V*. Suite au nouveau standard des *Aménagements cyclables* mis en place par Etalab, Il a fallu migrer les anciennes données en essayant de perdre le moins d'information possible pour ensuite pouvoir enrichir celles-ci et les transférer vers le PAN (Point d'Accès National).`
-
-|schéma | table | description | usage |
-|:---|:---|:---|:---|   
-|m_mobilite_3v|an_mob_equstatio|Table alphanumérique stockant les différents équipements cyclables sur le Pays Compiégnois| |
-|m_mobilite_3v|an_mob_itineraire|Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois (en projet ou ouvert)| |
-|m_mobilite_3v|an_mob_media|Table alphanumérique gérant la liste des documents associés aux objets cyclables| |
-|m_mobilite_3v|geo_mob_carrefour|Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois| |
-|m_mobilite_3v|geo_mob_lieustatio|Table géographique représentant la localisation des lieux de stationnements cyclables sur le Pays Compiégnois| |
-|m_mobilite_3v|geo_mob_troncon|Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois| |
-|m_mobilite_3v|lk_mob_ititroncon|Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires| |
-|m_mobilite_3v|lt_mob_ame|Liste de valeurs des aménagements cyclables| |
-|m_mobilite_3v|lt_mob_avanc|Liste de valeurs des avancées de projets| |
-|m_mobilite_3v|lt_mob_booleen|Liste de valeurs des faux booléens| |
-|m_mobilite_3v|lt_mob_carrefour|Liste de valeurs des types de carrefour et leur modèle| |
-|m_mobilite_3v|lt_mob_etat_inscri|Liste de valeurs d'inscription à un schéma de développement des véloroutes| |
-|m_mobilite_3v|lt_mob_gest|Liste de valeurs des gestionnaires| |
-|m_mobilite_3v|lt_mob_gest_iti|Liste de valeurs des gestionnaires d'itinéraire| |
-|m_mobilite_3v|lt_mob_local|Liste de valeurs des localisations des aménagements| |
-|m_mobilite_3v|lt_mob_niv_inscri|Liste de valeurs du niveau adminsitratif du schéma de développement des véloroutes| |
-|m_mobilite_3v|lt_mob_regime|Liste de valeurs des régimes présents sur la voie adjacente| |
-|m_mobilite_3v|lt_mob_revet|Liste de valeurs des types de revêtements et leur coût (hors foncier)| |
-|m_mobilite_3v|lt_mob_sens|Liste de valeurs du sens de circulation des tronçons cyclables| |
-|m_mobilite_3v|lt_mob_statio_acces|Liste de valeurs des modes d'accès aux lieux de stationnement| |
-|m_mobilite_3v|lt_mob_statio_accro|Liste de valeurs des types d'accroche de stationnement| |
-|m_mobilite_3v|lt_mob_statio_mobi|Liste de valeurs des mobiliers de stationnement| |
-|m_mobilite_3v|lt_mob_statio_protec|Liste de valeurs des types de protection des stationnements| |
-|m_mobilite_3v|lt_mob_typres|Liste de valeurs des types de réseau| |
-|m_mobilite_3v|lt_mob_usage|Liste de valeurs des usages| |
-|m_mobilite_3v|lt_mob_vitesse|Liste de valeurs des vitesses présentes sur une voie adjacentes| |
-|m_mobilite_3v|lt_mob_voca_iti|Liste de valeurs de vocation de l'itinéraire| |
+SANS OBJET
 
 ---
 
