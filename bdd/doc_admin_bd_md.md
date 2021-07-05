@@ -59,7 +59,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
 |url_site|Lien Http vers une page web|character varying(254)| |
 |observ|Commentaires|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)| |
+|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
@@ -106,10 +106,10 @@ Paticularité(s) à noter :
 |local_d|Localisation de l aménagement de droite|character varying(2)| |
 |revet_d|Type de revêtement du tronçon de droite|character varying(2)| |
 |long_m|Longueur en mètre du tronçon|integer| |
-|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)|22 (dans géo)|
 |observ|Commentaires|character varying(1000)| |
 |verif|attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon|boolean|false|
-|op_sai|Opérateur de saisie|character varying(20)| |
+|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
@@ -152,7 +152,7 @@ Paticularité(s) à noter :
 |insee|Code insee de la commune d implantation|character varying(5)| |
 |commune|Nom de la commune d implantation|character varying(80)| |
 |observ|Commentaires|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)| |
+|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
@@ -192,8 +192,8 @@ Paticularité(s) à noter :
 |observ|Commentaire|character varying(1000)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
-|op_sai|Opérateur de saisie de la donnée|character varying(20)| |
-|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
+|op_sai|Opérateur de saisie de la donnée|character varying(20)|%USER_LOGIN% (dans géo)|
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)|22 (dans géo)|
 |x_l93|Coordonnée X en Lambert 93|double precision| |
 |y_l93|Coordonnée Y en Lambert 93|double precision| |
 |x_wgs84|Longitude|numeric| |
@@ -225,11 +225,11 @@ Paticularité(s) à noter :
 |idlieustatio|Identifiant du lieu de stationnement|text| |
 |typ_mobi|Type de mobilier du lieu de stationnement|character varying(40)| |
 |typ_accro|Type d accroche du lieu de stationnement|character varying(2)| |
-|capacite_e|Capacité de stationnement du type d accroche|integer| |
-|capacite_gt_e|Capacité de stationnement en grande taille du type d accroche|integer| |
+|capacite_e|Capacité de stationnement du type d accroche|integer|0 (dans géo)|
+|capacite_gt_e|Capacité de stationnement en grande taille du type d accroche|integer|0 (dans géo)|
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
-|op_sai|opérateur de saisie de la donnée|character varying(20)| |
+|op_sai|opérateur de saisie de la donnée|character varying(20)|%USER_LOGIN% (dans géo)|
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idequstatio` lui-même contenant une séquence d'incrémentation automatique (an_mob_equstatio_seq_id).
@@ -266,8 +266,8 @@ Paticularité(s) à noter :
 |n_fichier|Nom du fichier|text| |
 |t_fichier|Type de média dans GEO|text| |
 |l_prec|Précision sur le document|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)| |
-|date_sai|Date de saisie|timestamp without time zone| |
+|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
+|date_sai|Date de saisie|timestamp without time zone|%CURRENT_DATE% (dans géo)|
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
