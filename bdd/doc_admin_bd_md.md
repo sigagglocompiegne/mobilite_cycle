@@ -34,7 +34,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|iditi|Identifiant unique (clé primaire) de l itinéraire|text| `'C'||`|
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text|'I' nextval('m_mobilite_3v.mob_objet_seq_id')|
 |num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
 |num_loc|Numéro de l itinéraire local|character varying(10)| |
 |nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
@@ -145,7 +145,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idcarrefour|Identifiant unique (clé primaire) du tronçon|text| |
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|'C' nextval('m_mobilite_3v.mob_objet_seq_id')|
 |libelle|Libellé du carrefour|character varying(255)| |
 |typ_car|Type de carrefour|character varying(2)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
@@ -170,7 +170,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text| |
+|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|'S' nextval('m_mobilite_3v.mob_objet_seq_id')|
 |id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
 |capacite|Capacité de stationnement du lieu|integer| |
 |capacite_gt|Capacité de stationnement du lieu pour des vélos de grandes tailles|integer| |
@@ -221,7 +221,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idequstatio|Identifiant unique de l équipement|integer|nextval('m_mobilite_3v.an_mob_equstatio_seq_id'::regclass)|
+|idequstatio|Identifiant unique de l équipement|integer|nextval('m_mobilite_3v.an_mob_equstatio_seq_id')|
 |idlieustatio|Identifiant du lieu de stationnement|text| |
 |typ_mobi|Type de mobilier du lieu de stationnement|character varying(40)| |
 |typ_accro|Type d accroche du lieu de stationnement|character varying(2)| |
@@ -247,7 +247,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|gid|Identifiant unique (clé primaire) de la relation|bigint| |
+|gid|Identifiant unique (clé primaire) de la relation|bigint|nextval('m_mobilite_3v.mob_lk_gid')|
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
 
@@ -259,7 +259,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---| 
-|gid|Identifiant uniqueue (clé primaire) du média|bigint| |
+|gid|Identifiant uniqueue (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_id')|
 |id|Identifiant de l objet référence|text| |
 |media|Champ Média de GEO|text| |
 |miniature|Champ miniature de GEO|bytea| |
