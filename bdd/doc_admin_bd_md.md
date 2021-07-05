@@ -145,7 +145,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text| |
 |libelle|Libellé du carrefour|character varying(255)| |
 |typ_car|Type de carrefour|character varying(2)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
@@ -170,7 +170,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text| |
 |id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
 |capacite|Capacité de stationnement du lieu|integer| |
 |capacite_gt|Capacité de stationnement du lieu pour des vélos de grandes tailles|integer| |
