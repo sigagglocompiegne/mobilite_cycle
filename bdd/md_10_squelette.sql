@@ -15,6 +15,7 @@ SOMMAIRE :
  - FONCTIONS
  - TRIGGERS
  - COMMENTAIRES
+ - APPLICATIF
 */
 
 -- ###############################################################################################################################
@@ -1409,4 +1410,129 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d un itinéraire';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
 COMMENT ON FUNCTION m_mobilite_3v.capacite_sum() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
+
+
+
+
+-- ###############################################################################################################################
+-- ###                                                                                                                         ###
+-- ###                                                         APPLICATIF                                                      ###
+-- ###                                                                                                                         ###
+-- ###############################################################################################################################
+
+-- SUR LA TABLE geo_v_mob_troncon
+--########################################################### CHAMPS CALCULÉS ######################################################
+-- Affiche_message :
+		-- <center><font size=2 color="#FF0000"><b><i>La gauche ou la droite se détermine par rapport au sens de saisie du tronçon.</i></b></font></center>
+
+-- Amenagement_recherche : 
+		-- {ame_g};{ame_d}
+
+-- Avancement recherche :
+		-- {avanc_g};{avanc_d}
+
+-- Commune_recherche : 
+		-- {code_com_g};{code_com_d}
+
+-- Recherche_affiche :
+		-- Aménagement : {recherche_ame}
+
+-- Recherche_ame : 
+		(WITH
+		req_tot AS (
+			(WITH
+				req_d AS (select {idtroncon}, lt.valeur as valeur1, a.valeur as valeur11 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} <> 'ZZ' AND {ame_g} <> {ame_d}),
+				req_g AS (select {idtroncon}, lt.valeur as valeur2, a.valeur as valeur21 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_g} AND a.code = {avanc_g} AND {ame_g} <> 'ZZ' AND {ame_g} <> {ame_d})
+				SELECT {idtroncon}, valeur1 || ' (' || valeur11 || ') et ' || valeur2 || ' (' || valeur21 || ')' as ame_dg FROM req_d, req_g WHERE req_d.idtroncon = req_g.idtroncon)
+			UNION ALL
+			(WITH
+				req_d AS (select {idtroncon}, lt.valeur as ame_dg, a.valeur as valeura from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} = 'ZZ')
+				SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d)					
+			UNION ALL					
+			(WITH
+				req_d AS (select {idtroncon}, lt.valeur as ame_dg,
+				CASE WHEN ((SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) = (SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d})) THEN 
+					(SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d})
+				ELSE
+					(SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) || ', ' || (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d})
+				END as valeur
+				from m_mobilite_3v.lt_mob_ame lt where lt.code = {ame_d} AND {ame_g} <> 'ZZ' AND {ame_g} = {ame_d})
+				SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d)	
+		) 
+		SELECT ame_dg FROM req_tot)
+
+-- verif_topo :
+		(SELECT string_agg(ST_Crosses(a.geom,b.geom)::text,';') FROM m_mobilite_3v.geo_mob_troncon a, m_mobilite_3v.geo_mob_troncon b WHERE st_intersects(a.geom,b.geom) IS TRUE AND a.idtroncon = {idtroncon} AND b.idtroncon <> {idtroncon})
+
+
+
+-- SUR LA TABLE geo_mob_lieustatio
+--########################################################### CHAMPS CALCULÉS ######################################################
+-- recherche_affiche : 
+		-- Commune : {commune}
+		-- Adresse : {adresse}
+		-- Capacité totale : {capacite}
+		
+-- infobulle_affiche : 
+		-- Type : {recherche_typcar} ({recherche avanc})
+		
+-- recherche_avanc :
+		(select lt.valeur from m_mobilite_3v.lt_mob_avanc lt where lt.code = {avanc})
+		
+-- recherche_affiche : 
+		-- Commune : {commune}
+		-- Type : {recherche_typcar} ({recherche avanc})
+		
+-- recherche_typcar :
+		(select lt.valeur from m_mobilite_3v.lt_mob_carrefour lt where lt.code = {typ_car})
+
+
+
+-- SUR LA TABLE geo_vmr_mob_iti
+--########################################################### CHAMPS CALCULÉS ######################################################
+-- affiche_num_nom_iti : 
+		-- {num_loc} - {nom_off}
+
+-- infobulle_affiche :
+		-- Numéro : {num_loc}
+		-- Nom : {nom_off}
+
+
+
+-- SUR LA TABLE an_mob_itineraire
+--########################################################### CHAMPS CALCULÉS ######################################################
+-- affiche_iti :
+		-- {num_loc} - {nom_off}
+
+-- recherche_affiche :
+		-- Numéro : {num_loc}
+		-- Nom : {nom_off}
+
+
+
+-- SUR LA TABLE xapps_geo_v_mob_troncon_affiche
+--########################################################### CHAMPS CALCULÉS ######################################################
+-- infobulle_affiche :
+		-- {infobulle_ame} ({infobulle_avanc})
+
+-- infobulle_ame :
+		(select lt.valeur from m_mobilite_3v.lt_mob_ame lt where lt.code = {ame})
+		
+-- infobulle_avanc :
+		(select lt.valeur from m_mobilite_3v.lt_mob_avanc lt where lt.code = {avanc})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
