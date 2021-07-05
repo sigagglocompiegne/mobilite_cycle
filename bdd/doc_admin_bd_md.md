@@ -20,7 +20,7 @@
 
 ## Dépendances
 
-SANS OBJET
+Sans objet
 
 ---
 
