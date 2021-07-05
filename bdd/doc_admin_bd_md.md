@@ -25,6 +25,33 @@ La base de données des aménagements cyclables s'appuie sur d'anciennes donnée
 
 |schéma | table | description | usage |
 |:---|:---|:---|:---|   
+|m_mobilite_3v|an_mob_equstatio|Table alphanumérique stockant les différents équipements cyclables sur le Pays Compiégnois| |
+|m_mobilite_3v|an_mob_itineraire|Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois (en projet ou ouvert)| |
+|m_mobilite_3v|an_mob_media|Table alphanumérique gérant la liste des documents associés aux objets cyclables| |
+|m_mobilite_3v|geo_mob_carrefour|Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois| |
+|m_mobilite_3v|geo_mob_lieustatio|Table géographique représentant la localisation des lieux de stationnements cyclables sur le Pays Compiégnois| |
+|m_mobilite_3v|geo_mob_troncon|Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois| |
+|m_mobilite_3v|lk_mob_ititroncon|Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires| |
+|m_mobilite_3v|lt_mob_ame|Liste de valeurs des aménagements cyclables| |
+|m_mobilite_3v|lt_mob_avanc|Liste de valeurs des avancées de projets| |
+|m_mobilite_3v|lt_mob_booleen|Liste de valeurs des faux booléens| |
+|m_mobilite_3v|lt_mob_carrefour|Liste de valeurs des types de carrefour et leur modèle| |
+|m_mobilite_3v|lt_mob_etat_inscri|Liste de valeurs d'inscription à un schéma de développement des véloroutes| |
+|m_mobilite_3v|lt_mob_gest|Liste de valeurs des gestionnaires| |
+|m_mobilite_3v|lt_mob_gest_iti|Liste de valeurs des gestionnaires d'itinéraire| |
+|m_mobilite_3v|lt_mob_local|Liste de valeurs des localisations des aménagements| |
+|m_mobilite_3v|lt_mob_niv_inscri|Liste de valeurs du niveau adminsitratif du schéma de développement des véloroutes| |
+|m_mobilite_3v|lt_mob_regime|Liste de valeurs des régimes présents sur la voie adjacente| |
+|m_mobilite_3v|lt_mob_revet|Liste de valeurs des types de revêtements et leur coût (hors foncier)| |
+|m_mobilite_3v|lt_mob_sens|Liste de valeurs du sens de circulation des tronçons cyclables| |
+|m_mobilite_3v|lt_mob_statio_acces|Liste de valeurs des modes d'accès aux lieux de stationnement| |
+|m_mobilite_3v|lt_mob_statio_accro|Liste de valeurs des types d'accroche de stationnement| |
+|m_mobilite_3v|lt_mob_statio_mobi|Liste de valeurs des mobiliers de stationnement| |
+|m_mobilite_3v|lt_mob_statio_protec|Liste de valeurs des types de protection des stationnements| |
+|m_mobilite_3v|lt_mob_typres|Liste de valeurs des types de réseau| |
+|m_mobilite_3v|lt_mob_usage|Liste de valeurs des usages| |
+|m_mobilite_3v|lt_mob_vitesse|Liste de valeurs des vitesses présentes sur une voie adjacentes| |
+|m_mobilite_3v|lt_mob_voca_iti|Liste de valeurs de vocation de l'itinéraire| |
 
 ---
 
@@ -38,34 +65,34 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-"|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
-"|num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
-"|num_loc|Numéro de l itinéraire local|character varying(10)| |
-"|nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
-"|nom_usage|Autre nom ou appellation de l itinéraire en usage|character varying(100)| |
-"|depart|Nom de la localité située au départ|character varying(80)| |
-"|via|Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire|character varying(254)| |
-"|arrivee|Nom de la localité située à l arrivée|character varying(80)| |
-"|est_inscri|Précise si l itinéraire est inscrit à un schéma de développement des véloroutes|character varying(2)| |
-"|niv_inscri|Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(2)| |
-"|nom_schema|Libellé du schéma d inscription|character varying(100)| |
-"|an_inscri|Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(4)| |
-"|an_ouvert|Indique l année d ouverture de l itinéraire|character varying(4)| |
-"|gest_iti|Gestion sur l itinéraire en terme d action sur les données|character varying(2)| |
-"|usag|Usage principal de l itinéraire|character varying(2)| |
-"|usage_comm|diffusion des données au grand public|boolean|false|
-"|voca_iti|Vocation de l itinéraire|character varying(10)| |
-"|typ_iti|Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet|character varying(40)| |
-"|mao|Maître d ouvrage de l itinéraire en projet ou en cours de travaux|character varying(100)| |
-"|equip|Liste d équipements potentiellement proche ou desservis par l itinéraire|character varying(5000)| |
-"|descrip|Description de l itinéraire (parcours, …)|character varying(5000)| |
-"|cout|Estimation du coût au mètre linéaire de l aménagement de l itinéraire|character varying(10)| |
-"|esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
-"|url_site|Lien Http vers une page web|character varying(254)| |
-"|observ|Commentaires|character varying(1000)| |
-"|op_sai|Opérateur de saisie|character varying(20)| |
-"|date_sai|Date de saisie de la donnée|timestamp without time zone| |
-"|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
+|num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
+|num_loc|Numéro de l itinéraire local|character varying(10)| |
+|nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
+|nom_usage|Autre nom ou appellation de l itinéraire en usage|character varying(100)| |
+|depart|Nom de la localité située au départ|character varying(80)| |
+|via|Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire|character varying(254)| |
+|arrivee|Nom de la localité située à l arrivée|character varying(80)| |
+|est_inscri|Précise si l itinéraire est inscrit à un schéma de développement des véloroutes|character varying(2)| |
+|niv_inscri|Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(2)| |
+|nom_schema|Libellé du schéma d inscription|character varying(100)| |
+|an_inscri|Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté|character varying(4)| |
+|an_ouvert|Indique l année d ouverture de l itinéraire|character varying(4)| |
+|gest_iti|Gestion sur l itinéraire en terme d action sur les données|character varying(2)| |
+|usag|Usage principal de l itinéraire|character varying(2)| |
+|usage_comm|diffusion des données au grand public|boolean|false|
+|voca_iti|Vocation de l itinéraire|character varying(10)| |
+|typ_iti|Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet|character varying(40)| |
+|mao|Maître d ouvrage de l itinéraire en projet ou en cours de travaux|character varying(100)| |
+|equip|Liste d équipements potentiellement proche ou desservis par l itinéraire|character varying(5000)| |
+|descrip|Description de l itinéraire (parcours, …)|character varying(5000)| |
+|cout|Estimation du coût au mètre linéaire de l aménagement de l itinéraire|character varying(10)| |
+|esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
+|url_site|Lien Http vers une page web|character varying(254)| |
+|observ|Commentaires|character varying(1000)| |
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie de la donnée|timestamp without time zone| |
+|date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `iditi` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
