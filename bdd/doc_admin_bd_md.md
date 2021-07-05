@@ -34,7 +34,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|iditi|Identifiant unique (clé primaire) de l itinéraire|text| |
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text| `'C'||`|
 |num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
 |num_loc|Numéro de l itinéraire local|character varying(10)| |
 |nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
