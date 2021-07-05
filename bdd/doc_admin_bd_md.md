@@ -217,7 +217,7 @@ Paticularité(s) à noter :
    * `t_t5_commune` : avant mise à jour, recherche la commune en fonction du code insee.
 ---
 
-`[geo_mob_lieustatio]` : table géométrique .
+`[an_mob_equstatio]` : table alphanumérique .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
@@ -239,6 +239,8 @@ Paticularité(s) à noter :
 * 2 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
+   * `t_t3_capacite_sum` : avant insertion, mise à jour et suppression, fait la somme des capacités des stationnement et met à jour la capacité de la table geo_mob_lieustatio.
+
 ---
 
 `[lk_mob_ititroncon]` : table de relation .
