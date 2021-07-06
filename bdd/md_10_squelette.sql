@@ -152,7 +152,7 @@ CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
 
 --############################################################ OBJETS ##################################################
 CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
-    START WITH 1
+    START WITH 200
     INCREMENT BY 1;
 
 -- ###############################################################################################################################
@@ -1472,7 +1472,18 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant l
 -- verif_topo :
 		(SELECT string_agg(ST_Crosses(a.geom,b.geom)::text,';') FROM m_mobilite_3v.geo_mob_troncon a, m_mobilite_3v.geo_mob_troncon b WHERE st_intersects(a.geom,b.geom) IS TRUE AND a.idtroncon = {idtroncon} AND b.idtroncon <> {idtroncon})
 
-
+-- recherche_commune :
+		(WITH
+		req_tot AS(
+			(WITH
+				comm_d AS (select {idtroncon}, {commune_d} as comm_dg where {commune_d} = {commune_g})
+				SELECT {idtroncon}, comm_dg FROM comm_d)		
+			UNION ALL					
+			(WITH
+			comm_gd AS (select {idtroncon}, {commune_d} || ', ' || {commune_g} as comm_dg where {commune_d} <> {commune_g})
+			SELECT {idtroncon}, comm_dg FROM comm_gd)	
+		)
+		SELECT comm_dg FROM req_tot)
 
 -- SUR LA TABLE geo_mob_lieustatio
 --########################################################### CHAMPS CALCULÉS ######################################################
