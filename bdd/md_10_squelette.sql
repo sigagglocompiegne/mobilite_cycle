@@ -145,8 +145,8 @@ CREATE SEQUENCE m_mobilite_3v.mob_lk_gid
 --############################################################ OBJETS ##################################################
 CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
     INCREMENT 1
-    START 1
-    MINVALUE 1
+    START 200
+    MINVALUE 200
     MAXVALUE 9223372036854775807
     CACHE 1;
 
