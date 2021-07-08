@@ -688,6 +688,24 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
+
+`[lt_loc_ame]` : Liste permettant de décrire la localisation des aménagements (droite/gauche) .
+
+|Nom attribut | Définition | Type  |
+|:---|:---|:---|
+|code|Code de la valeur|character varying(2)| |
+|valeur|Libellé de la valeur de la localisation des aménagements|character varying(50)| |
+
+|Code | Valeur |
+|:---|:---|
+|10|Droite|
+|20|Gauche|
+|30|Droite et gauche|
+
+Paticularité(s) à noter :
+* cette liste est une liste statique créé dans Géo
+---
+
 ### classes d'objets applicatives de gestion :
 
 `[geo_vmr_mob_iti]` : vue de gestion permettant la saisie des objets 
