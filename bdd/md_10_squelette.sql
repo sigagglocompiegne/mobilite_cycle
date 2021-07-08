@@ -768,7 +768,7 @@ $BODY$;
 --################################################################# FONCTION #######################################################
 
 -- Fonction m_mobilite_3v.ft_modif_troncon() modifiant la table des troncons quand il y a une insertion, un update ou une suppression 
-CREATE FUNCTION m_mobilite_3v.ft_modif_troncon()
+CREATE OR REPLACE FUNCTION m_mobilite_3v.ft_modif_troncon()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -779,46 +779,389 @@ DECLARE v_count integer;
 BEGIN
 -- INSERTION D'UN NOUVELLE ELEMENT DANS LA TABLE
 	IF (TG_OP = 'INSERT') THEN
-		INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-			SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
-			new.id_osm,
-			new.id_on3v,
-			new.typ_res,
-			new.gest,
-			new.propriete,
-			new.d_service,
-			new.trafic_vit,
-			new.lumiere,
-			new.code_com_g,
-			new.commune_g,
-			new.ame_g,
-			new.avanc_g, 
-			new.regime_g,
-			new.sens_g,
-			new.largeur_g,
-			new.local_g, 
-			new.revet_g, 
-			new.code_com_d,
-			new.commune_d,
-			new.ame_d,
-			new.avanc_d,
-			new.regime_d, 
-			new.sens_d,
-			new.largeur_d,
-			new.local_d, 
-			new.revet_d, 
-			new.src_geom, 
-			new.observ,
-			new.verif,	
-			new.op_sai,
-			(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
--- mise A JOUR DU TRONCON
+		if new.loc_ame = '10' then
+			--condition si st_interesects NE REMONTE QUE DES LINES (st_geometrytype)
+			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+			     SELECT 
+				'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				new.id_osm,
+				new.id_on3v,
+				new.typ_res,
+				new.gest,
+				new.propriete,
+				new.d_service,
+				new.trafic_vit,
+				new.lumiere,
+				new.code_com_d,
+				new.commune_d,
+				'ZZ',
+				'ZZ', 
+				'ZZ',
+				'ZZ',
+				new.largeur_g,
+				'ZZ', 
+				'ZZ',
+				new.code_com_d,
+				new.commune_d,
+				new.ame_d,
+				new.avanc_d,
+				new.regime_d, 
+				new.sens_d,
+				new.largeur_d,
+				new.local_d, 
+				new.revet_d,
+				new.src_geom, 
+				new.observ,
+				new.verif,	
+				new.op_sai,
+				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
+		elsif new.loc_ame = '20' then
+			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+			    SELECT 
+			    	'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				new.id_osm,
+				new.id_on3v,
+				new.typ_res,
+				new.gest,
+				new.propriete,
+				new.d_service,
+				new.trafic_vit,
+				new.lumiere,
+				new.code_com_g,
+				new.commune_g,
+				new.ame_g,
+				new.avanc_g,
+				new.regime_g, 
+				new.sens_g,
+				new.largeur_g,
+				new.local_g, 
+				new.revet_g,
+				new.code_com_g,
+				new.commune_g,
+				'ZZ',
+				'ZZ', 
+				'ZZ',
+				'ZZ',
+				new.largeur_d,
+				'ZZ', 
+				'ZZ',
+				new.src_geom, 
+				new.observ,
+				new.verif,	
+				new.op_sai,
+				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
+		elsif new.loc_ame = '30' then
+			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+			    SELECT 
+			    	'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				new.id_osm,
+				new.id_on3v,
+				new.typ_res,
+				new.gest,
+				new.propriete,
+				new.d_service,
+				new.trafic_vit,
+				new.lumiere,
+				new.code_com_g,
+				new.commune_g,
+				new.ame_g,
+				new.avanc_g,
+				new.regime_g, 
+				new.sens_g,
+				new.largeur_g,
+				new.local_g, 
+				new.revet_g,
+				new.code_com_d,
+				new.commune_d,
+				new.ame_d,
+				new.avanc_d, 
+				new.regime_d,
+				new.sens_d,
+				new.largeur_d,
+				new.local_d, 
+				new.revet_d,
+				new.src_geom, 
+				new.observ,
+				new.verif,	
+				new.op_sai,
+				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
+		end if;
+-- MISE A JOUR DU TRONCON
 	ELSIF (TG_OP) = 'UPDATE' THEN
-		-- je vérifie si le tronçon a été modifié
-		IF st_equals(new.geom,old.geom) IS TRUE THEN
+		if new.loc_ame = '10' then
+			-- je vérifie si le tronçon a été modifié
+			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
 			-- je mets à jour les attribtus mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
-				SET id_osm 		 =  new.id_osm,	
+				    SET id_osm 		 =  new.id_osm,	
+					id_on3v 	 =  new.id_on3v, 
+					typ_res 	 =  new.typ_res, 
+					gest 		 =  new.gest, 		
+					propriete 	 =  new.propriete,
+					d_service 	 =  new.d_service,
+					trafic_vit 	 =  new.trafic_vit,
+					lumiere 	 =  new.lumiere, 
+					code_com_g	 =  new.code_com_d,
+					commune_g 	 =  new.commune_d,
+					ame_g		 =  'ZZ',		
+					avanc_g 	 =  'ZZ', 
+					regime_g 	 =  'ZZ', 
+					sens_g 		 =  'ZZ', 	
+					largeur_g	 =  new.largeur_g,
+					local_g 	 =  'ZZ', 
+					revet_g 	 =  'ZZ', 
+					code_com_d 	 =  new.code_com_d,
+					commune_d 	 =  new.commune_d,
+					ame_d 		 =  new.ame_d, 		
+					avanc_d 	 =  new.avanc_d, 
+					regime_d	 =  new.regime_d,
+					sens_d 		 =  new.sens_d, 	
+					largeur_d	 =  new.largeur_d,
+					local_d 	 =  new.local_d, 
+					revet_d 	 =  new.revet_d,
+					long_m		 =  new.long_m,
+					src_geom 	 =  new.src_geom, 
+					observ 		 =  new.observ,		
+					verif 		 =  new.verif, 		
+					op_sai       	 =  new.op_sai,
+					geom        	 =  new.geom
+				WHERE idtroncon = new.idtroncon;			
+		ELSE
+			-- je compte les intersections avec les communes
+			-- si le résultat est inférieur ou égale à 1, le tronçon est toujours dans la même commune mais modifié
+			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
+			    -- je mets à jour les données pour 1 tronçon
+				UPDATE  m_mobilite_3v.geo_mob_troncon 
+					SET id_osm 		 =  new.id_osm,	
+					    id_on3v 	 =  new.id_on3v, 
+					    typ_res 	 =  new.typ_res, 
+					    gest 		 =  new.gest, 		
+					    propriete 	 =  new.propriete,
+					    d_service 	 =  new.d_service,
+					    trafic_vit 	 =  new.trafic_vit,
+					    lumiere 	 =  new.lumiere, 
+					    code_com_g	 =  new.code_com_d,
+					    commune_g 	 =  new.commune_d,
+					    ame_g	 =  'ZZ',		
+					    avanc_g 	 =  'ZZ', 
+					    regime_g 	 =  'ZZ', 
+					    sens_g 	 =  'ZZ', 	
+					    largeur_g	 =  new.largeur_g,
+					    local_g 	 =  'ZZ', 
+					    revet_g 	 =  'ZZ', 
+					    code_com_d 	 =  new.code_com_d,
+					    commune_d 	 =  new.commune_d,
+					    ame_d 	 =  new.ame_d, 		
+					    avanc_d 	 =  new.avanc_d, 
+					    regime_d	 =  new.regime_d,
+					    sens_d 	 =  new.sens_d, 	
+					    largeur_d	 =  new.largeur_d,
+					    local_d 	 =  new.local_d, 
+					    revet_d 	 =  new.revet_d,
+					    long_m	 =  new.long_m,
+					    src_geom 	 =  new.src_geom, 
+					    observ 	 =  new.observ,		
+					    verif 	 =  new.verif, 		
+					    op_sai       =  new.op_sai,
+					    geom 	 =  new.geom 
+					WHERE idtroncon = new.idtroncon;
+				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
+			ELSE
+				-- suppression de l'ancien tronçon qui sera découpé
+				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
+				-- insertion des tronçons découpés
+			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+				    SELECT 
+					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+					new.id_osm,
+					new.id_on3v,
+					new.typ_res,
+					new.gest,
+					new.propriete,
+					new.d_service,
+					new.trafic_vit,
+					new.lumiere,
+					new.code_com_d,
+					new.commune_d,
+					'ZZ',		
+					'ZZ', 
+					'ZZ', 
+					'ZZ', 	
+					new.largeur_g,
+					'ZZ', 
+					'ZZ', 
+					new.code_com_d,
+					new.commune_d,
+					new.ame_d,
+					new.avanc_d,
+					new.regime_d, 
+					new.sens_d,
+					new.largeur_d,
+					new.local_d, 
+					new.revet_d, 
+					new.src_geom, 
+					new.observ,
+					new.verif,	
+					new.op_sai,
+					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
+					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+				-- j'initialise la variable v_count avec le nombre d'intersection remontée
+				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
+				-- requête mettant à jour la table des relations tronçon-itinéraire
+				WITH
+				--  je sélectionne les tronçons qui viennent d'être intégrés à la table des tronçons (ex : si 2 tronçons nouveaux, je récupère les 2 derniers dans la table des tronçons)
+				req_tr AS
+				(SELECT idtroncon FROM m_mobilite_3v.geo_mob_troncon ORDER BY date_sai DESC LIMIT v_count),
+				-- je sélectionne les itinéraires affectés à l'ancien tronçon supprimé car découpé
+				req_iti AS
+				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
+				-- insertion dans la table des relations troncon-itinéraire
+				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
+				select req_tr.idtroncon, req_iti.iditi,	nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
+				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
+			END IF;
+		END IF;
+		elsif new.loc_ame = '20' then
+		-- je vérifie si le tronçon a été modifié
+		IF st_equals(new.geom,OLD.geom) IS TRUE THEN
+			-- je mets à jour les attribtus mais pas la géométrie
+			UPDATE m_mobilite_3v.geo_mob_troncon 
+				    SET id_osm 		 =  new.id_osm,	
+					id_on3v 	 =  new.id_on3v, 
+					typ_res 	 =  new.typ_res, 
+					gest 		 =  new.gest, 		
+					propriete 	 =  new.propriete,
+					d_service 	 =  new.d_service,
+					trafic_vit 	 =  new.trafic_vit,
+					lumiere 	 =  new.lumiere, 
+					code_com_g	 =  new.code_com_g,
+					commune_g 	 =  new.commune_g,
+					ame_g		 =  new.ame_g,		
+					avanc_g 	 =  new.avanc_g, 
+					regime_g 	 =  new.regime_g, 
+					sens_g 		 =  new.sens_g, 	
+					largeur_g	 =  new.largeur_g,
+					local_g 	 =  new.local_g, 
+					revet_g 	 =  new.revet_g, 
+					code_com_d 	 =  new.code_com_g,
+					commune_d 	 =  new.commune_g,
+					ame_d 		 =  'ZZ', 		
+					avanc_d 	 =  'ZZ', 
+					regime_d	 =  'ZZ',
+					sens_d 		 =  'ZZ', 	
+					largeur_d	 =  'ZZ',
+					local_d 	 =  'ZZ', 
+					revet_d 	 =  'ZZ',
+					long_m		 =  new.long_m,
+					src_geom 	 =  new.src_geom, 
+					observ 		 =  new.observ,		
+					verif 		 =  new.verif, 		
+					op_sai     	 =  new.op_sai,
+					geom        	 =  new.geom
+				WHERE idtroncon = new.idtroncon;			
+		ELSE
+			-- je compte les intersections avec les communes
+			-- si le résultat est inférieur ou égale à 1, le tronçon est toujours dans la même commune mais modifié
+			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
+			    -- je mets à jour les données pour 1 tronçon
+				UPDATE  m_mobilite_3v.geo_mob_troncon 
+					SET id_osm       =  new.id_osm,	
+					    id_on3v 	 =  new.id_on3v, 
+					    typ_res 	 =  new.typ_res, 
+					    gest 	 =  new.gest, 		
+					    propriete 	 =  new.propriete,
+					    d_service 	 =  new.d_service,
+					    trafic_vit 	 =  new.trafic_vit,
+					    lumiere 	 =  new.lumiere, 
+					    code_com_g	 =  new.code_com_g,
+					    commune_g 	 =  new.commune_g,
+					    ame_g	 =  new.ame_g,		
+					    avanc_g 	 =  new.avanc_g, 
+					    regime_g 	 =  new.regime_g, 
+					    sens_g 	 =  new.sens_g, 	
+					    largeur_g	 =  new.largeur_g,
+					    local_g 	 =  new.local_g, 
+					    revet_g 	 =  new.revet_g, 
+					    code_com_d 	 =  new.code_com_g,
+					    commune_d 	 =  new.commune_g,
+					    ame_d 	 =  'ZZ', 		
+					    avanc_d 	 =  'ZZ', 
+					    regime_d	 =  'ZZ',
+					    sens_d 	 =  'ZZ', 	
+					    largeur_d	 =  'ZZ',
+					    local_d 	 =  'ZZ', 
+					    revet_d 	 =  'ZZ',
+					    long_m	 =  new.long_m,
+					    src_geom 	 =  new.src_geom, 
+					    observ 	 =  new.observ,		
+					    verif 	 =  new.verif, 		
+					    op_sai       =  new.op_sai,
+					    geom 	 =  new.geom 
+					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
+				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
+			ELSE
+				-- suppression de l'ancien tronçon qui sera découpé
+				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
+				-- insertion des tronçons découpés
+			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+				    SELECT 
+					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+					new.id_osm,
+					new.id_on3v,
+					new.typ_res,
+					new.gest,
+					new.propriete,
+					new.d_service,
+					new.trafic_vit,
+					new.lumiere,
+					new.code_com_g,
+					new.commune_g,
+					new.ame_g,
+					new.avanc_g, 
+					new.regime_g,
+					new.sens_g,
+					new.largeur_g,
+					new.local_g, 
+					new.revet_g, 
+					new.code_com_g,
+					new.commune_g,
+					'ZZ', 		
+					'ZZ', 
+					'ZZ',
+					'ZZ', 	
+					'ZZ',
+					'ZZ', 
+					'ZZ',
+					new.src_geom, 
+					new.observ,
+					new.verif,	
+					new.op_sai,
+					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
+					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+				-- j'initialise la variable v_count avec le nombre d'intersection remontée
+				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
+				-- requête mettant à jour la table des relations tronçon-itinéraire
+				WITH
+				--  je sélectionne les tronçons qui viennent d'être intégrés à la table des tronçons (ex : si 2 tronçons nouveaux, je récupère les 2 derniers dans la table des tronçons)
+				req_tr AS
+				(SELECT idtroncon FROM m_mobilite_3v.geo_mob_troncon ORDER BY date_sai DESC LIMIT v_count),
+				-- je sélectionne les itinéraires affectés à l'ancien tronçon supprimé car découpé
+				req_iti AS
+				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
+				-- insertion dans la table des relations troncon-itinéraire
+				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
+				select req_tr.idtroncon, req_iti.iditi,	nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
+				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
+			END IF;
+		END IF;
+		elsif new.loc_ame = '30' then
+		-- je vérifie si le tronçon a été modifié
+		IF st_equals(new.geom,OLD.geom) IS TRUE THEN
+			-- je mets à jour les attribtus mais pas la géométrie
+			UPDATE m_mobilite_3v.geo_mob_troncon 
+				    SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
 					typ_res 	 =  new.typ_res, 
 					gest 		 =  new.gest, 		
@@ -848,55 +1191,56 @@ BEGIN
 					src_geom 	 =  new.src_geom, 
 					observ 		 =  new.observ,		
 					verif 		 =  new.verif, 		
-					op_sai       =  new.op_sai,
-					geom         =  new.geom
+					op_sai           =  new.op_sai,
+					geom             =  new.geom
 				WHERE idtroncon = new.idtroncon;			
 		ELSE
 			-- je compte les intersections avec les communes
 			-- si le résultat est inférieur ou égale à 1, le tronçon est toujours dans la même commune mais modifié
 			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
-				-- je mets à jour les données pour 1 tronçon
+			    -- je mets à jour les données pour 1 tronçon
 				UPDATE  m_mobilite_3v.geo_mob_troncon 
-					SET id_osm 		 =  new.id_osm,	
-						id_on3v 	 =  new.id_on3v, 
-						typ_res 	 =  new.typ_res, 
-						gest 		 =  new.gest, 		
-						propriete 	 =  new.propriete,
-						d_service 	 =  new.d_service,
-						trafic_vit 	 =  new.trafic_vit,
-						lumiere 	 =  new.lumiere, 
-						code_com_g	 =  new.code_com_g,
-						commune_g 	 =  new.commune_g,
-						ame_g		 =  new.ame_g,		
-						avanc_g 	 =  new.avanc_g, 
-						regime_g 	 =  new.regime_g, 
-						sens_g 		 =  new.sens_g, 	
-						largeur_g	 =  new.largeur_g,
-						local_g 	 =  new.local_g, 
-						revet_g 	 =  new.revet_g, 
-						code_com_d 	 =  new.code_com_d,
-						commune_d 	 =  new.commune_d,
-						ame_d 		 =  new.ame_d, 		
-						avanc_d 	 =  new.avanc_d, 
-						regime_d	 =  new.regime_d,
-						sens_d 		 =  new.sens_d, 	
-						largeur_d	 =  new.largeur_d,
-						local_d 	 =  new.local_d, 
-						revet_d 	 =  new.revet_d,
-						long_m		 =  new.long_m,
-						src_geom 	 =  new.src_geom, 
-						observ 		 =  new.observ,		
-						verif 		 =  new.verif, 		
-						op_sai       =  new.op_sai,
-						geom 		 =  new.geom 
-					WHERE idtroncon = new.idtroncon ;
-			-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
+					SET id_osm       =  new.id_osm,	
+					    id_on3v 	 =  new.id_on3v, 
+					    typ_res 	 =  new.typ_res, 
+					    gest 	 =  new.gest, 		
+					    propriete 	 =  new.propriete,
+					    d_service 	 =  new.d_service,
+					    trafic_vit 	 =  new.trafic_vit,
+					    lumiere 	 =  new.lumiere, 
+					    code_com_g	 =  new.code_com_g,
+					    commune_g 	 =  new.commune_g,
+					    ame_g	 =  new.ame_g,		
+					    avanc_g 	 =  new.avanc_g, 
+					    regime_g 	 =  new.regime_g, 
+					    sens_g 	 =  new.sens_g, 	
+					    largeur_g	 =  new.largeur_g,
+					    local_g 	 =  new.local_g, 
+					    revet_g 	 =  new.revet_g, 
+					    code_com_d 	 =  new.code_com_d,
+					    commune_d 	 =  new.commune_d,
+					    ame_d 	 =  new.ame_d, 		
+					    avanc_d 	 =  new.avanc_d, 
+					    regime_d	 =  new.regime_d,
+					    sens_d 	 =  new.sens_d, 	
+					    largeur_d	 =  new.largeur_d,
+					    local_d 	 =  new.local_d, 
+					    revet_d 	 =  new.revet_d,
+					    long_m	 =  new.long_m,
+					    src_geom 	 =  new.src_geom, 
+					    observ 	 =  new.observ,		
+					    verif 	 =  new.verif, 		
+					    op_sai       =  new.op_sai,
+					    geom 	 =  new.geom 
+					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
+				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
 			ELSE
 				-- suppression de l'ancien tronçon qui sera découpé
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
-				INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+				    SELECT 
+					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
 					new.typ_res,
@@ -927,7 +1271,8 @@ BEGIN
 					new.observ,
 					new.verif,	
 					new.op_sai,
-					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
+					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
 				-- j'initialise la variable v_count avec le nombre d'intersection remontée
 				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
 				-- requête mettant à jour la table des relations tronçon-itinéraire
@@ -935,29 +1280,26 @@ BEGIN
 				--  je sélectionne les tronçons qui viennent d'être intégrés à la table des tronçons (ex : si 2 tronçons nouveaux, je récupère les 2 derniers dans la table des tronçons)
 				req_tr AS
 				(SELECT idtroncon FROM m_mobilite_3v.geo_mob_troncon ORDER BY date_sai DESC LIMIT v_count),
-				-- je sélectionne les itinéraires affectés à l'ancien tronçon (supprimé)
+				-- je sélectionne les itinéraires affectés à l'ancien tronçon supprimé car découpé
 				req_iti AS
-				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = old.idtroncon)
+				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select 
-					req_tr.idtroncon,
-					req_iti.iditi,
-					nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				select req_tr.idtroncon, req_iti.iditi, nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
-				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = old.idtroncon;
+				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
 		END IF;
--- SUPPRESSION DU TRONCON
+	end if;
+-- DELETE D'UN ELEMENT DE LA TABLE
 	ELSIF (TG_OP) = 'DELETE' THEN
-		-- Suppression du troncon dans la table des troncons
 		DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
-		-- Suppression du troncon dans la liste de lien troncon-itinéraire
 		DELETE FROM m_mobilite_3v.lk_mob_ititroncon i WHERE i.idtroncon = old.idtroncon;
 	END IF;
-RETURN new;
+	RETURN new;
 END;
 $BODY$;
+
 
 
 --################################################################# FONCTION #######################################################
