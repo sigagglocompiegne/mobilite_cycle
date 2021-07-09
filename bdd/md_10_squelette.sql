@@ -1542,7 +1542,7 @@ COMMENT ON SCHEMA m_mobilite_3v IS 'Données métiers sur le thème des aménage
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_etat_inscri IS 'Liste de valeurs d inscription à un schéma de développement des véloroutes';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_etat_inscri.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_etat_inscri.valeur IS 'Libellé de la valeur dinscription';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_etat_inscri.valeur IS 'Libellé de la valeur d'inscription';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_niv_inscri IS 'Liste de valeurs du niveau adminsitratif du schéma de développement des véloroutes';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_niv_inscri.code IS 'Code de la valeur';
@@ -1550,7 +1550,7 @@ COMMENT ON COLUMN m_mobilite_3v.lt_mob_niv_inscri.valeur IS 'Libellé de la vale
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_gest_iti IS 'Liste de valeurs des gestionnaires d itinéraire';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_gest_iti.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_gest_iti.valeur IS 'Libellé de la valeur du gestionnaire';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_gest_iti.valeur IS 'Libellé de la valeur des gestionnaires de l'itinéraire';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_usage IS 'Liste de valeurs des usages';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_usage.code IS 'Code de la valeur';
@@ -1572,12 +1572,12 @@ COMMENT ON TABLE m_mobilite_3v.lt_mob_ame IS 'Liste de valeurs des aménagements
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.valeur IS 'Libellé de la valeur des aménagements cyclables';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.url IS 'Lien URL vers la documentation nationale';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.modele IS 'Code du modèle d aménagement';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.modele IS 'Code du modèle d'aménagement';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.affichage IS 'Permet le tri de la liste dans géo';
 	
 COMMENT ON TABLE m_mobilite_3v.lt_mob_avanc IS 'Liste de valeurs des avancées de projets';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_avanc.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_avanc.valeur IS 'Libellé de la valeur des aménagements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_avanc.valeur IS 'Libellé de la valeur des avancements des aménagements cyclables';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_regime IS 'Liste de valeurs des régimes présent sur la voie adjacente';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_regime.code IS 'Code de la valeur';
@@ -1585,28 +1585,28 @@ COMMENT ON COLUMN m_mobilite_3v.lt_mob_regime.valeur IS 'Libellé de la valeur d
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_sens IS 'Liste de valeurs du sens de circulation des tronçons cyclables';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_sens.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_sens.valeur IS 'Libellé de la valeur des régimes';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_sens.valeur IS 'Libellé de la valeur des sens de circulation';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_voca_iti IS 'Liste de valeurs de vocation de l itinéraire';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_voca_iti.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_voca_iti.valeur IS 'Libellé de la valeur des vocations';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_voca_iti.valeur IS 'Libellé de la valeur des vocations des itinéraires';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_local IS 'Liste de valeurs des localisations des aménagements';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_local.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_local.valeur IS 'Libellé de la valeur des régimes';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_local.valeur IS 'Libellé de la valeur des localisations des aménagements';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_revet IS 'Liste de valeurs des types de revêtements et leur coût (hors foncier)';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_revet.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_revet.valeur IS 'Libellé de la valeur des régimes';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_revet.valeur IS 'Libellé de la valeur des revêtements';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_revet.prix_m IS 'Prix moyen au mètre linéaire';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_vitesse IS 'Liste de valeurs des vitesses présentes sur une voie adjacentes';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_vitesse.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_vitesse.valeur IS 'Libellé de la valeur des régimes';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_vitesse.valeur IS 'Libellé de la valeur des vitesses de circulation';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_carrefour IS 'Liste de valeurs des types de carrefour et leur modèle';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.code IS 'Code de la valeur';
-COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.valeur IS 'Libellé de la valeur des régimes';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.valeur IS 'Libellé de la valeur des carrefours';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_carrefour.modele IS 'Code du modèle de carrefour';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_statio_mobi IS 'Liste de valeurs des différents mobilier de stationnement';
