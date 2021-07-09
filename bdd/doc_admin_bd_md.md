@@ -289,6 +289,7 @@ Paticularité(s) à noter :
 |valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
 |url|Lien URL vers la documentation nationale|character varying(255)| |
 |modele|Code du modèle d aménagement|character varying(3)| |
+|affichage|permet le tri de la liste dans géo| |
 
 |Code | Valeur | Url | Modele | affichage |
 |:---|:---|:---|:---|:---| 
