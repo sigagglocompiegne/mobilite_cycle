@@ -239,11 +239,10 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `typ_mobi` (lien vers l'identifiant `code` de la table `lt_mob_statio_mobi`).
 * Une clé étrangère existe sur la table de valeur `typ_accro` (lien vers l'identifiant `code` de la table `lt_mob_statio_accro`).
 
-* 2 triggers :
+* 3 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
    * `t_t3_capacite_sum` : avant insertion, mise à jour et suppression, fait la somme des capacités des stationnement et met à jour la capacité de la table geo_mob_lieustatio.
-
 ---
 
 `[lk_mob_ititroncon]` : table de relation .
@@ -256,6 +255,9 @@ Paticularité(s) à noter :
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `gid` lui-même contenant une séquence d'incrémentation automatique (mob_lk_gid).
+
+* 1 trigger :
+   * `t_t1_refresh_view_iti` : après insertion, suppressionn ou mise à jour, rafraichit la table des itinéraires.
 ---
 
 `[an_mob_media]` : table alpanumérique .
@@ -718,13 +720,9 @@ Paticularité(s) à noter :
 `[geo_v_mob_troncon]` : vue de gestion permettant la saisie des objets 
 
 Particularité(s) à noter :
-* triggers : `t_t1_modif_troncon` : avant insertion ou mise à jour, sert a mettre à jour la base de données `geo_mob_troncon`.
-
+* triggers : `t_t1_modif_troncon` : avant insertion, mise à jour ou suppression, sert a mettre à jour la base de données `geo_mob_troncon`.
 ---
 
-`[geo_vmr_mob_iti]` : vue de gestion permettant la saisie des objets 
-
----
 ### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
  
 `[xapps_geo_v_mob_troncon_affiche]` : vue d'affichage permettant la visualisation des objets 
