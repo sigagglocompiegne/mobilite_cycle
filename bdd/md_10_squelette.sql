@@ -1537,7 +1537,6 @@ CREATE TRIGGER t_t3_capacite_sum
 -- ###############################################################################################################################
 
 
-
 COMMENT ON SCHEMA m_mobilite_3v IS 'Données métiers sur le thème des aménagements cyclables';
 
 COMMENT ON TABLE m_mobilite_3v.lt_mob_etat_inscri IS 'Liste de valeurs d inscription à un schéma de développement des véloroutes';
