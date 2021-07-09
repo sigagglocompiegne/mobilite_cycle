@@ -236,7 +236,6 @@ Paticularité(s) à noter :
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idequstatio` lui-même contenant une séquence d'incrémentation automatique (an_mob_equstatio_seq_id).
-* Une clé étrangère existe sur la table de valeur `typ_mobi` (lien vers l'identifiant `code` de la table `lt_mob_statio_mobi`).
 * Une clé étrangère existe sur la table de valeur `typ_accro` (lien vers l'identifiant `code` de la table `lt_mob_statio_accro`).
 
 * 3 triggers :
@@ -288,8 +287,8 @@ Paticularité(s) à noter :
 |code|Code de la valeur|character varying(2)| |
 |valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
 |url|Lien URL vers la documentation nationale|character varying(255)| |
-|modele|Code du modèle d aménagement|character varying(3)| |
-|affichage|permet le tri de la liste dans géo| integer | |
+|modele|Code du modèle d'aménagement|character varying(3)| |
+|affichage|Permet le tri de la liste dans géo| integer | |
 
 |Code | Valeur | Url | Modele | affichage |
 |:---|:---|:---|:---|:---| 
@@ -380,7 +379,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur dinscription|character varying(50)| |
+|valeur|Libellé de la valeur d'inscription|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -419,7 +418,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur du gestionnaire|character varying(50)| |
+|valeur|Libellé de la valeur des gestionnaires de l'itinéraire|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -436,7 +435,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|valeur|Libellé de la valeur de localisation des aménagements|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -455,7 +454,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur du niveau|character varying(50)| |
+|valeur|Libellé de la valeur du niveau d'isncription|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -499,7 +498,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|valeur|Libellé de la valeur des revêtements|character varying(50)| |
 |prix_m|Prix moyen au mètre linéaire|numeric| |
 
 |Code | Valeur | Prix_m|
@@ -522,7 +521,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|valeur|Libellé de la valeur des sens de direction|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -574,7 +573,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des régimes|character varying(20)| |
+|valeur|Libellé de la valeur des vitesses|character varying(20)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -601,7 +600,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des vocations|character varying(50)| |
+|valeur|Libellé de la valeur des vocations des itinéraires|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
