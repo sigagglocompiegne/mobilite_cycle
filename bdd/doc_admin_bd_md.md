@@ -299,7 +299,7 @@ Paticularité(s) à noter :
 |61|Couloir Bus+Vélo|||9|
 |62|Rampe|||14|
 |63|Goulotte|||15|
-|64|Aménagement mixte piéton-vélo (hors voie verte)v|7|
+|64|Aménagement mixte piéton-vélo (hors voie verte)|||7|
 |70|Chaussée à voie centrale banalisée|||11|
 |71|Accotement revêtu hors CVCB|||10|
 |99|Autre|||13|
