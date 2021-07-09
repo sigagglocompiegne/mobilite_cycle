@@ -105,7 +105,7 @@ DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
-DROP TRIGGER t_t3_capacite_sum ON m_mobilite_3v.an_mob_equstatio;
+DROP TRIGGER if exists t_t3_capacite_sum ON m_mobilite_3v.an_mob_equstatio;
 
 
 -- ###############################################################################################################################
