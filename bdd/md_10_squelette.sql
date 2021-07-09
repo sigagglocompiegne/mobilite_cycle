@@ -461,8 +461,8 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 	mao varchar(100), -- Maître d'ouvrage de l'itinéraire en projet ou en cours de travaux
 	equip varchar(5000), -- Liste d'équipements potentiellement proche ou desservis par l'itinéraire
 	descrip varchar(5000), -- Description de l'itinéraire (parcours, …)
-	cout varchar(10), -- Estimation du coût au mètre linéaire de l''aménagement de l''itinéraire
-	esti varchar(10), -- Estimation en euros de l''aménagement de l''itinéraire
+	cout varchar(10), -- Estimation du coût au mètre linéaire de l'aménagement de l'itinéraire
+	esti varchar(10), -- Estimation en euros de l'aménagement de l'itinéraire
 	url_site varchar(254), -- Lien Http vers une page web
 	observ varchar(1000), -- Commentaires
 	op_sai varchar(20), -- Opérateur de saisie
