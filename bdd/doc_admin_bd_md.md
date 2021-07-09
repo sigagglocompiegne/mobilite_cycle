@@ -281,7 +281,7 @@ Paticularité(s) à noter :
 
 ## Liste de valeurs
 
-`[lt_mob_ame]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
+`[lt_mob_ame]` : Liste permettant de décrire les types d'aménagements que prennent Vélo & Territoire .   
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -315,7 +315,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_avanc]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+`[lt_mob_avanc]` : Liste permettant de décrire les différents niveaux d'avancement des aménagements .  
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -338,7 +338,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_booleen]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+`[lt_mob_booleen]` : Liste permettant à l'utilisateur de faire un choix booléen . 
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -356,7 +356,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_carrefour]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+`[lt_mob_carrefour]` : Liste permettant de décrire les types de carrefours cyclables empruntés par les aménagements . 
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -375,7 +375,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_etat_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+`[lt_mob_etat_inscri]` : Liste permettant de dire si l'objet est inscrit à un schéma de développement des véloroutes  .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -393,7 +393,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_gest]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+`[lt_mob_gest]` : Liste permettant de décrire qui est le gestionnaire de l'objet . 
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -414,7 +414,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_gest_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+`[lt_mob_gest_iti]` : Liste permettant de décrire qui est le gestionnaire de l'itinéraire .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -431,7 +431,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_local]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+`[lt_mob_local]` : Liste permettant de décrire la localisation de l'objet .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -450,7 +450,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_niv_inscri]` : Liste permettant de décrire la nomenclature de niveau 1 des objets . 
+`[lt_mob_niv_inscri]` : Liste permettant de décrire à quel niveau/échelle l'objet est-il inscrit . 
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -472,7 +472,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_regime]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+`[lt_mob_regime]` : Liste permettant de décrire le régime de la zone de l'objet .  
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -494,7 +494,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_revet]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+`[lt_mob_revet]` : Liste permettant de décrire le revêtement/la texture du terrain emprunté par l'aménagement .  
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -517,7 +517,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_sens]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .    
+`[lt_mob_sens]` : Liste permettant de décrire le sens de direction de l'aménagement .    
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -535,7 +535,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_typres]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+`[lt_mob_typres]` : Liste permettant de décrire le type de réseau de l'aménagement .  
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -553,7 +553,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_usage]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .   
+`[lt_mob_usage]` : Liste permettant de décrire l'usage de l'aménagement .   
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -569,7 +569,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_vitesse]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .  
+`[lt_mob_vitesse]` : Liste permettant de décrire la vitesse maximale à laquelle les automobilistes peuvent rouler .  
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -596,7 +596,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_voca_iti]` : Liste permettant de décrire la nomenclature de niveau 1 des objets .
+`[lt_mob_voca_iti]` : Liste permettant de décrire la vocation de l'itinéraire .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -613,7 +613,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_statio_acces]` : Liste permettant de décrire les différents accès aux lieux de stationnement .
+`[lt_mob_statio_acces]` : Liste permettant de décrire les types d'accès aux lieux de stationnement .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -631,7 +631,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_statio_accro]` : Liste permettant de décrire les différents types d'accroche des lieux de stationnement .
+`[lt_mob_statio_accro]` : Liste permettant de décrire les types d'accroche des lieux de stationnement .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -651,7 +651,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_statio_mobi]` : Liste permettant de décrire les différents types de mobilier des lieux de stationnement .
+`[lt_mob_statio_mobi]` : Liste permettant de décrire les types de mobilier des lieux de stationnement .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
@@ -675,7 +675,7 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
 ---
 
-`[lt_mob_statio_protec]` : Liste permettant de décrire les différents types de protection des lieux de stationnement .
+`[lt_mob_statio_protec]` : Liste permettant de décrire les types de protection des lieux de stationnement .
 
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
