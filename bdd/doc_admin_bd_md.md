@@ -69,9 +69,11 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `niv_inscri` (lien vers l'identifiant `code` de la table `lt_mob_niv_inscri`).
 * Une clé étrangère existe sur la table de valeur `gest_iti` (lien vers l'identifiant `code` de la table `lt_mob_gest_iti`).
 * Une clé étrangère existe sur la table de valeur `usag` (lien vers l'identifiant `code` de la table `lt_mob_usage`).
-*  2 triggers :
+*  4 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
+   * `t_t3_iti_delete` : avant suppression, supprime les relations tronçons-itinéraire dans la table lk_mob_ititroncon.
+   * `t_t4_refresh_view_after` : après suppression, rafraichit la table .
 ---
 
 `[geo_mob_troncon]` : table géométrique .
@@ -164,6 +166,7 @@ Paticularité(s) à noter :
 * 2 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
+   * `t_t3_commune` : avant insertion ou mise à jour, recherche la commune via une relation spatiale.
 ---
 
 `[geo_mob_lieustatio]` : table géométrique .
