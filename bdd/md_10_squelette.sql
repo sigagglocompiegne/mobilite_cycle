@@ -261,12 +261,13 @@ CREATE TABLE m_mobilite_3v.lt_mob_ame(
 	valeur varchar(50),
 	url varchar(255),
 	modele varchar(3),
+	affichage integer,
 -- Contrainte
 	CONSTRAINT lt_mob_ame_pkey PRIMARY KEY (code) -- Clé primaire de la table
 );
 -- Valeurs
-INSERT INTO m_mobilite_3v.lt_mob_ame (code, valeur)
-	VALUES  ('10', 'Non aménagé'), ('11', 'Non aménagé (jalonnement)'), ('20', 'Piste cyclable'), ('30', 'Bande cyclable'),  ('41', 'Double sens cyclable piste'), ('42', 'Double sens cyclable bande'), ('43', 'Double sens cyclable non matérialisé'), ('50', 'Voie verte'), ('60', 'Vélo rue'), ('61', 'Couloir Bus+Vélo'), ('62', 'Rampe'), ('63', 'Goulotte'), ('64', 'Aménagement mixte piéton-vélo (hors voie verte)'), ('70', 'Chaussée à voie centrale banalisée'), ('71', 'Accotement revêtu hors CVCB'), ('99', 'Autre'), ('ZZ', 'Non concerné');
+INSERT INTO m_mobilite_3v.lt_mob_ame (code, valeur, affichage)
+	VALUES  ('10', 'Non aménagé', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
 
 --############################################################ SITUATION ##################################################
 
