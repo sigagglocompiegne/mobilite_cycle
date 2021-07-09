@@ -263,7 +263,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---| 
-|gid|Identifiant uniqueue (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_id')|
+|gid|Identifiant unique (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_id')|
 |id|Identifiant de l objet référence|text| |
 |media|Champ Média de GEO|text| |
 |miniature|Champ miniature de GEO|bytea| |
