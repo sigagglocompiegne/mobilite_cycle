@@ -655,7 +655,7 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 	op_sai varchar(20), -- Opérateur de saisie
 	date_sai timestamp without time zone, -- Date de saisie
 -- Contrainte
-    CONSTRAINT an_mob_media_pkey PRIMARY KEY (qid) -- Clé primaire de la table
+    CONSTRAINT an_mob_media_pkey PRIMARY KEY (gid) -- Clé primaire de la table
 );
 
 --################################################################# NOEUD #######################################################
@@ -1710,8 +1710,8 @@ COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.date_maj IS 'Date de mise à j
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.geom IS 'Géométrie de l''objet';
 
 COMMENT ON TABLE m_mobilite_3v.an_mob_media IS 'Table alphanumérique gérant la liste des documents associés aux objets cyclables';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.qid IS 'Identifiant unique (clé primaire) du média';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.gid IS 'Identifiant de l objet référence';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.gid IS 'Identifiant unique (clé primaire) du média';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.id IS 'Identifiant de l''objet référence';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.media IS 'Champ Média de GEO';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.miniature IS 'Champ miniature de GEO';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_media.n_fichier IS 'Nom du fichier';
