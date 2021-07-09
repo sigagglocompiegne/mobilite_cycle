@@ -76,6 +76,7 @@ DROP FUNCTION if exists m_mobilite_3v.ft_modif_troncon();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_itineraire_delete_lk();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_mobi_capacite();
+DROP FUNCTION if exists m_mobilite_3v.ft_m_equstatio_delete();
 
 -- TRIGGERS
 
@@ -102,6 +103,7 @@ DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t3_coord_l93 ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t4_coord_longlat ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t6_equ_delete ON m_mobilite_3v.geo_mob_lieustatio;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
@@ -1323,6 +1325,7 @@ $BODY$;
 
 
 --################################################################# FONCTION #######################################################
+
 -- Fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon
 CREATE FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk()
     RETURNS trigger
@@ -1331,13 +1334,14 @@ CREATE FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk()
     VOLATILE NOT LEAKPROOF
 AS $BODY$
 BEGIN
-   DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE iditi = old.iditi;
-   return new;
+     DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE iditi = old.iditi;
+     return old;
 END;
 $BODY$;
 
 
 --################################################################# FONCTION #######################################################
+
 -- Fonction pour sommer les différentes capacités entre-elles
 CREATE FUNCTION m_mobilite_3v.ft_m_mobi_capacite()
     RETURNS trigger
@@ -1361,6 +1365,23 @@ END IF;
 	return new;
 END;
 $BODY$;
+
+
+--################################################################# FONCTION #######################################################
+
+-- Fonction pour supprimer les équipements de stationnements liés au lieu de stationnement supprimé
+CREATE FUNCTION m_mobilite_3v.ft_m_equstatio_delete()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+     DELETE FROM m_mobilite_3v.an_mob_equstatio WHERE idlieustatio = old.idlieustatio;
+     return old;
+END;
+$BODY$;
+
 
 
 
@@ -1503,8 +1524,15 @@ CREATE TRIGGER t_t5_commune
     BEFORE INSERT OR UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
-    EXECUTE PROCEDURE public.ft_r_commune_pl();    
-
+    EXECUTE PROCEDURE public.ft_r_commune_pl(); 
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t6_equ_delete
+    AFTER DELETE
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_equstatio_delete();
+    
+    
     
  -- Trigger sur la table an_mob_equstatio
 --################################################################# TRIGGER #######################################################
@@ -1528,6 +1556,10 @@ CREATE TRIGGER t_t3_capacite_sum
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
+    
+    
+    
+    
     
     
 -- ###############################################################################################################################
@@ -1762,12 +1794,12 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_sai IS 'Date de saisie de 
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_maj IS 'Date de mise à jour de la donnée';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.op_sai IS 'opérateur de saisie de la donnée';
 
-COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction trigger pour la modification de la table geo_mob_troncon';
-COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction trigger recupérant les noms des communes via leur code insee';
-COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction trigger pour le rafraichissement de la vue des itinéraires après suppression d''un itinéraire';
-COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction trigger pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
+COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction pour la modification de la table geo_mob_troncon';
+COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction recupérant les noms des communes via leur code insee';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction pour le rafraichissement de la vue des itinéraires après suppression d''un itinéraire';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
-
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la suppression des relations équipements et lieux de stationnements dans la table an_mob_equstatio';
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
