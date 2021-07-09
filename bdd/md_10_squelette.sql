@@ -130,24 +130,28 @@ CREATE SCHEMA m_mobilite_3v
 
 --############################################################ OBJETS ##################################################
 
--- Sequence pour nos nouveaux troncons, itinéraires et carrefours 
+-- Sequence pour nos nouveaux troncons, itinéraires, carrefours et stationnements (geo_mob_troncon, an_mob_itineraire, geo_mob_carrefour, geo_mob_lieustatio)
 CREATE SEQUENCE m_mobilite_3v.mob_objet_seq_id
     START WITH 3000
     INCREMENT BY 1;
 	
 --############################################################ OBJETS ##################################################
 
--- Sequence pour nos gid
+-- Sequence sur la liste de liens itinéraires-tronçons (lk_mib_ititroncon)
 CREATE SEQUENCE m_mobilite_3v.mob_lk_gid
     START WITH 1000
     INCREMENT BY 1;
 
 --############################################################ OBJETS ##################################################
+
+-- Sequence sur la table des médias (an_mob_media)
 CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
     START WITH 66
     INCREMENT BY 1;
 
 --############################################################ OBJETS ##################################################
+
+-- Sequence sur la table des équipements de stationnement (an_mob_equstatio)
 CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
     START WITH 200
     INCREMENT BY 1;
@@ -161,7 +165,7 @@ CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
 
 --############################################################ SITUATION ##################################################
 
--- Liste de valeurs d inscription à un schéma de développement des véloroutes
+-- Liste de valeurs d'inscription à un schéma de développement des véloroutes
 CREATE TABLE m_mobilite_3v.lt_mob_etat_inscri(
 	code varchar(2),
 	valeur varchar(50),
@@ -187,7 +191,7 @@ INSERT INTO m_mobilite_3v.lt_mob_niv_inscri (code, valeur)
 
 --############################################################ SITUATION ##################################################
 
--- Liste de valeurs des gestionnaires d itinéraire
+-- Liste de valeurs des gestionnaires d'itinéraire
 CREATE TABLE m_mobilite_3v.lt_mob_gest_iti(
 	code varchar(2),
 	valeur varchar(50),
@@ -307,7 +311,7 @@ INSERT INTO m_mobilite_3v.lt_mob_sens (code, valeur)
 
 --############################################################ SITUATION ##################################################
 
--- Liste de valeurs de vocation de l itinéraire
+-- Liste de valeurs de vocation de l'itinéraire
 CREATE TABLE m_mobilite_3v.lt_mob_voca_iti(
 	code varchar(2),
 	valeur varchar(50),
@@ -434,7 +438,7 @@ INSERT INTO m_mobilite_3v.lt_mob_statio_protec (code, valeur)
 
 --################################################################# NOEUD #######################################################
 
--- TABLE Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois
+-- Table alphanumérique recensant l'ensemble des itinéraires déclarés sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 	iditi text, --Identifiant unique (clé primaire) de l'itinéraire
 	num_iti varchar(10), -- Numéro de l'itinéraire des schémas supra-intercommunaux
@@ -464,7 +468,7 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 	op_sai varchar(20), -- Opérateur de saisie
 	date_sai timestamp without time zone,  -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
--- Contrainte
+-- Contraintes
     CONSTRAINT an_mob_itineraire_pkey PRIMARY KEY (iditi), -- Clé primaire de la table
     CONSTRAINT lt_mob_etat_inscri_fkey FOREIGN KEY (est_inscri)
         REFERENCES m_mobilite_3v.lt_mob_etat_inscri (code) MATCH SIMPLE
@@ -486,7 +490,7 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 
 --################################################################# NOEUD #######################################################
 
--- Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois
+-- Table géographique représentant les tronçons d'aménagements cyclables sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 	idtroncon text, -- Identifiant unique (clé primaire) du tronçon
 	id_osm varchar(30), -- Identifiant unique du tronçon sur OpenStreetMap
@@ -523,9 +527,9 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 	date_sai timestamp without time zone, -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
 	geom geometry(LineString, 2154), -- Géométrie de l'objet
--- Contrainte
+-- Contraintes
     CONSTRAINT geo_mob_troncon_pkey PRIMARY KEY (idtroncon), -- Clé primaire de la table
-    CONSTRAINT typres_fkey FOREIGN KEY (typ_res)
+    CONSTRAINT lt_mob_typres_fkey FOREIGN KEY (typ_res)
         REFERENCES m_mobilite_3v.lt_mob_typres (code) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION, -- Liste de valeurs lt_mob_typres
@@ -601,7 +605,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 
 --################################################################# NOEUD #######################################################
 
--- Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires
+-- Table de relations permettant le rattachement des tronçons à un ou plusieurs itinéraires
 CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 	gid bigint NOT NULL DEFAULT nextval('m_mobilite_3v.mob_lk_gid'::regclass), -- Identifiant unique (clé primaire) de la relation
 	idtroncon text, -- Identifiant unique du tronçon
@@ -625,7 +629,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 	date_sai timestamp without time zone, -- Date de saisie de la donnée
 	date_maj timestamp without time zone, -- Date de mise à jour de la donnée
 	geom geometry(Point, 2154), -- Géométrie de l'objet
--- Contrainte
+-- Contraintes
     CONSTRAINT geo_mob_carrefour_pkey PRIMARY KEY (idcarrefour), -- Clé primaire de la table
     CONSTRAINT lt_mob_carrefour_fkey FOREIGN KEY (typ_car)
         REFERENCES m_mobilite_3v.lt_mob_carrefour (code) MATCH SIMPLE
@@ -686,7 +690,8 @@ CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
 	y_l93 double precision, -- Coordonnée Y en Lambert 93
 	x_wgs84 decimal(9,7), -- Longitude
 	y_wgs84 decimal(9,7), -- Latitude
-	geom geometry(Point,2154), -- géométrie de la donnée 
+	geom geometry(Point,2154), -- géométrie de la donnée
+-- Contraintes
     CONSTRAINT geo_mob_lieustatio_pkey PRIMARY KEY (idlieustatio), -- Clé primaire de la table
     CONSTRAINT lt_mob_statio_acces_fkey FOREIGN KEY (acces)
         REFERENCES m_mobilite_3v.lt_mob_statio_acces (code) MATCH SIMPLE
@@ -727,6 +732,7 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
 	date_sai timestamp without time zone,  -- Date de saisie de la donnée
 	date_maj timestamp without time zone,  -- Date de mise à jour de la donnée
 	op_sai varchar(20), -- Opérateur de saisie de la donnée
+-- Contraintes
     CONSTRAINT an_mob_equstatio_pkey PRIMARY KEY (idequstatio), -- Clé primaire de la table
     CONSTRAINT lt_mob_statio_accro_fkey FOREIGN KEY (typ_accro)
         REFERENCES m_mobilite_3v.lt_mob_statio_accro (code) MATCH SIMPLE
@@ -765,7 +771,7 @@ $BODY$;
 
 --################################################################# FONCTION #######################################################
 
--- Fonction m_mobilite_3v.ft_modif_troncon() modifiant la table des troncons quand il y a une insertion, un update ou une suppression 
+-- Fonction m_mobilite_3v.ft_modif_troncon() modifiant la table des tronçons quand il y a une insertion, un update ou une suppression 
 CREATE OR REPLACE FUNCTION m_mobilite_3v.ft_modif_troncon()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -1301,7 +1307,8 @@ $BODY$;
 
 
 --################################################################# FONCTION #######################################################
--- fonction de rafraichissement de la vue materialisée
+
+-- Fonction de rafraichissement de la vue materialisée
 CREATE FUNCTION m_mobilite_3v.ft_m_refresh_view_iti()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -1316,7 +1323,7 @@ $BODY$;
 
 
 --################################################################# FONCTION #######################################################
--- fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon
+-- Fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon
 CREATE FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -1331,7 +1338,7 @@ $BODY$;
 
 
 --################################################################# FONCTION #######################################################
--- fonction pour sommer les différentes capacités entre-elles
+-- Fonction pour sommer les différentes capacités entre-elles
 CREATE FUNCTION m_mobilite_3v.ft_m_mobi_capacite()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -1413,14 +1420,14 @@ CREATE TRIGGER t_t3_date_maj
 --################################################################# TRIGGER #######################################################
 -- Trigger t_t4_long_m pour la fonction calculant la longueur du tracé
 CREATE TRIGGER t_t4_long_m
-    BEFORE UPDATE OR INSERT
+    BEFORE INSERT OR UPDATE
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_longm_maj();
 --################################################################# TRIGGER #######################################################
 -- Trigger t_t5_commune pour la fonction recuperant le nom de la commune (CHANGER LE NOM DE LA TABLE (Oise))
 CREATE TRIGGER t_t5_commune
-    BEFORE UPDATE OR INSERT
+    BEFORE INSERT OR UPDATE
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee_troncon_cy();
@@ -1517,7 +1524,7 @@ CREATE TRIGGER t_t2_date_maj
 --################################################################# TRIGGER #######################################################
 -- Trigger: t_t3_capacite_sum pour l'insertion,la mise a jour ou la suppression des capacités de stationnement cyclable
 CREATE TRIGGER t_t3_capacite_sum
-    AFTER INSERT OR DELETE OR UPDATE 
+    AFTER INSERT OR UPDATE OR DELETE
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
@@ -1557,7 +1564,7 @@ COMMENT ON TABLE m_mobilite_3v.lt_mob_gest IS 'Liste de valeurs des gestionnaire
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_gest.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_gest.valeur IS 'Libellé de la valeur des gestionnaires';
 
-COMMENT ON TABLE m_mobilite_3v.lt_mob_booleen 	IS 'Liste de valeurs des faux booléens';
+COMMENT ON TABLE m_mobilite_3v.lt_mob_booleen IS 'Liste de valeurs des faux booléens';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_booleen.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_booleen.valeur IS 'Libellé de la valeur des faux booléens';
 
@@ -1566,6 +1573,7 @@ COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.code IS 'Code de la valeur';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.valeur IS 'Libellé de la valeur des aménagements cyclables';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.url IS 'Lien URL vers la documentation nationale';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.modele IS 'Code du modèle d aménagement';
+COMMENT ON COLUMN m_mobilite_3v.lt_mob_ame.affichage IS 'Permet le tri de la liste dans géo';
 	
 COMMENT ON TABLE m_mobilite_3v.lt_mob_avanc IS 'Liste de valeurs des avancées de projets';
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_avanc.code IS 'Code de la valeur';
@@ -1618,100 +1626,100 @@ COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.code IS 'Code de la valeur'
 COMMENT ON COLUMN m_mobilite_3v.lt_mob_statio_protec.valeur IS 'Libellé de la valeur des protections des stationnements';
 
 COMMENT ON TABLE m_mobilite_3v.an_mob_itineraire IS 'Table alphanumérique recensant l ensemble des itinéraires déclarés sur le Pays Compiégnois (en projet ou ouvert)';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.iditi is 'Identifiant unique (clé primaire) de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.num_iti is 'Numéro de l itinéraire des schémas supra-intercommunaux';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.num_loc is 'Numéro de l itinéraire local';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_off is 'Nom officiel ou à défaut celui mentionné dans un document de communication grand public';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_usage is 'Autre nom ou appellation de l itinéraire en usage';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.depart is 'Nom de la localité située au départ';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.arrivee is 'Nom de la localité située à l arrivée';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.est_inscri is 'Précise si l itinéraire est inscrit à un schéma de développement des véloroutes';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.niv_inscri is 'Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_schema is 'Libellé du schéma d inscription';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.an_inscri is 'Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.an_ouvert is 'Indique l année d ouverture de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.gest_iti is 'Gestion sur l itinéraire en terme d action sur les données';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.usag is 'Usage principal de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.observ is 'Commentaires';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.op_sai is 'Opérateur de saisie';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.date_sai is 'Date de saisie de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.date_maj is 'Date de mise à jour de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.usage_comm is 'diffusion des données au grand public';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.via is 'Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.voca_iti is 'Vocation de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.typ_iti is 'Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.mao is 'Maître d ouvrage de l itinéraire en projet ou en cours de travaux';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.equip is 'Liste d équipements potentiellement proche ou desservis par l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.descrip is 'Description de l itinéraire (parcours, …)';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.cout is 'Estimation du coût au mètre linéaire de l aménagement de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.esti is 'Estimation en euros de l aménagement de l itinéraire';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.url_site is 'Lien Http vers une page web';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.iditi IS 'Identifiant unique (clé primaire) de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.num_iti IS 'Numéro de l itinéraire des schémas supra-intercommunaux';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.num_loc IS 'Numéro de l itinéraire local';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_off IS 'Nom officiel ou à défaut celui mentionné dans un document de communication grand public';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_usage IS 'Autre nom ou appellation de l itinéraire en usage';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.depart IS 'Nom de la localité située au départ';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.arrivee IS 'Nom de la localité située à l arrivée';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.est_inscri IS 'Précise si l itinéraire est inscrit à un schéma de développement des véloroutes';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.niv_inscri IS 'Niveau administratif du schéma dans lequel l itinéraire est inscrit et numéroté';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.nom_schema IS 'Libellé du schéma d inscription';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.an_inscri IS 'Année d approbation du schéma dans lequel l itinéraire est inscrit et numéroté';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.an_ouvert IS 'Indique l année d ouverture de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.gest_iti IS 'Gestion sur l itinéraire en terme d action sur les données';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.usag IS 'Usage principal de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.observ IS 'Commentaires';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.date_sai IS 'Date de saisie de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.date_maj IS 'Date de mise à jour de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.usage_comm IS 'diffusion des données au grand public';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.via IS 'Localité ou lieu intermédiaire entre le départ et l arrivée de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.voca_iti IS 'Vocation de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.typ_iti IS 'Typologie des aménagements cyclables prévus dans le cadre d un projet d itinéraires en projet';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.mao IS 'Maître d ouvrage de l itinéraire en projet ou en cours de travaux';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.equip IS 'Liste d équipements potentiellement proche ou desservis par l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.descrip IS 'Description de l itinéraire (parcours, …)';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.cout IS 'Estimation du coût au mètre linéaire de l aménagement de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.esti IS 'Estimation en euros de l aménagement de l itinéraire';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_itineraire.url_site IS 'Lien Http vers une page web';
 
 COMMENT ON TABLE m_mobilite_3v.geo_mob_troncon IS 'Table géographique représentant les tronçons d aménagement cyclables sur le Pays Compiégnois';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.idtroncon is 'Identifiant unique (clé primaire) du tronçon';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.id_osm is 'Identifiant unique du tronçon sur OpenStreetMap';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.id_on3v is 'Identifiant unique du tronçon sur le standard 3V';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.typ_res is 'Type de réseau local';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.gest is 'Gestionnaire de l infrastructure';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.propriete is 'Propriétaire de l infrastructure';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.d_service is 'Année de mise en service';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.trafic_vit is 'Vitesse maximale du trafic adjacent';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.lumiere is 'Présence d éclairage';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.code_com_g is 'Code insee de la commune à gauche de l aménagement';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.commune_g is 'Libellé de la commune à gauche de l aménagement';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.ame_g is 'Type d aménagement de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.avanc_g is 'Niveau d avancement en terme de projet à gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.regime_g is 'Régime présent sur la voie de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.sens_g is 'Sens de circulation de l aménagement de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.largeur_g is 'Largeur en mètre de l aménagement de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.local_g is 'Localisation de l aménagement de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.revet_g is 'Type de revêtement du tronçon de gauche';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.code_com_d is 'Code insee de la commune à droite de l aménagement';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.commune_d is 'Libellé de la commune à droite de l aménagement';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.ame_d is 'Type d aménagement de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.avanc_d is 'Niveau d avancement en terme de projet à droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.regime_d is 'Régime présent sur la voie de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.sens_d is 'Sens de circulation de l aménagement de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.largeur_d is 'Largeur en mètre de l aménagement de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.local_d is 'Localisation de l aménagement de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.revet_d is 'Type de revêtement du tronçon de droite';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.long_m is 'Longueur en mètre du tronçon';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.src_geom is 'Référentiel utilisé pour la digitalisation de la géométrie';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.observ is 'Commentaires';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.op_sai is 'Opérateur de saisie';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.date_sai is 'Date de saisie de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.date_maj is 'Date de mise à jour de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.geom is 'Géométrie de l objet';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.verif is 'attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.idtroncon IS 'Identifiant unique (clé primaire) du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.id_osm IS 'Identifiant unique du tronçon sur OpenStreetMap';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.id_on3v IS 'Identifiant unique du tronçon sur le standard 3V';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.typ_res IS 'Type de réseau local';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.gest IS 'Gestionnaire de l infrastructure';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.propriete IS 'Propriétaire de l infrastructure';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.d_service IS 'Année de mise en service';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.trafic_vit IS 'Vitesse maximale du trafic adjacent';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.lumiere IS 'Présence d éclairage';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.code_com_g IS 'Code insee de la commune à gauche de l aménagement';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.commune_g IS 'Libellé de la commune à gauche de l aménagement';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.ame_g IS 'Type d aménagement de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.avanc_g IS 'Niveau d avancement en terme de projet à gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.regime_g IS 'Régime présent sur la voie de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.sens_g IS 'Sens de circulation de l aménagement de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.largeur_g IS 'Largeur en mètre de l aménagement de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.local_g IS 'Localisation de l aménagement de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.revet_g IS 'Type de revêtement du tronçon de gauche';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.code_com_d IS 'Code insee de la commune à droite de l aménagement';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.commune_d IS 'Libellé de la commune à droite de l aménagement';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.ame_d IS 'Type d aménagement de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.avanc_d IS 'Niveau d avancement en terme de projet à droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.regime_d IS 'Régime présent sur la voie de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.sens_d IS 'Sens de circulation de l aménagement de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.largeur_d IS 'Largeur en mètre de l aménagement de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.local_d IS 'Localisation de l aménagement de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.revet_d IS 'Type de revêtement du tronçon de droite';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.long_m IS 'Longueur en mètre du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.src_geom IS 'Référentiel utilisé pour la digitalisation de la géométrie';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.observ IS 'Commentaires';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.date_sai IS 'Date de saisie de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.date_maj IS 'Date de mise à jour de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.verif IS 'attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_troncon.geom IS 'Géométrie de l objet';
 
 COMMENT ON TABLE m_mobilite_3v.lk_mob_ititroncon IS 'Table de relation permettant le rattachement des tronçons à un ou plusieurs itinéraires';
-COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.gid is 'Identifiant unique (clé primaire) de la relation';
-COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.idtroncon is 'Identifiant unique du tronçon';
-COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.iditi is 'Identifiant unique de litinéraire';
+COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.gid IS 'Identifiant unique (clé primaire) de la relation';
+COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.idtroncon IS 'Identifiant unique du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.iditi IS 'Identifiant unique de litinéraire';
 
 COMMENT ON TABLE m_mobilite_3v.geo_mob_carrefour IS 'Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.idcarrefour is 'Identifiant unique (clé primaire) du tronçon';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.libelle is 'Libellé du carrefour';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car is 'Type de carrefour';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.avanc is 'Niveau d avancement en terme de projet';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.insee is 'Code insee de la commune d implantation';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.commune is 'Nom de la commune d implantation';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.observ is 'Commentaires';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.op_sai is 'Opérateur de saisie';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.date_sai is 'Date de saisie de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.date_maj is 'Date de mise à jour de la donnée';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.geom is 'Géométrie de l objet';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.idcarrefour IS 'Identifiant unique (clé primaire) du tronçon';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.libelle IS 'Libellé du carrefour';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car IS 'Type de carrefour';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.avanc IS 'Niveau d avancement en terme de projet';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.insee IS 'Code insee de la commune d implantation';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.commune IS 'Nom de la commune d implantation';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.observ IS 'Commentaires';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.date_sai IS 'Date de saisie de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.date_maj IS 'Date de mise à jour de la donnée';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.geom IS 'Géométrie de l objet';
 
 COMMENT ON TABLE m_mobilite_3v.an_mob_media IS 'Table alphanumérique gérant la liste des documents associés aux objets cyclables';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.qid is 'Identifiant uniqueue (clé primaire) du média';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.gid is 'Identifiant de l objet référence';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.media is 'Champ Média de GEO';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.miniature is 'Champ miniature de GEO';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.n_fichier is 'Nom du fichier';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.t_fichier is 'Type de média dans GEO';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.l_prec is 'Précision sur le document';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.op_sai is 'Opérateur de saisie';
-COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai is 'Date de saisie';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.qid IS 'Identifiant uniqueue (clé primaire) du média';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.gid IS 'Identifiant de l objet référence';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.media IS 'Champ Média de GEO';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.miniature IS 'Champ miniature de GEO';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.n_fichier IS 'Nom du fichier';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.t_fichier IS 'Type de média dans GEO';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.l_prec IS 'Précision sur le document';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_media.date_sai IS 'Date de saisie';
 
 COMMENT ON TABLE m_mobilite_3v.geo_mob_lieustatio IS 'Table géographique représentant la localisation des lieux de stationnements cyclables sur le Pays Compiégnois';			
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_lieustatio.idlieustatio IS 'Identifiant unique (clé primaire) du lieu de stationnement';								                            
