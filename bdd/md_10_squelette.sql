@@ -1788,9 +1788,13 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant l
 
 -- Commune_recherche : 
 		-- {code_com_g};{code_com_d}
-
+		
+-- Revetement_recherche :
+		-- {revet_g};{revet_d}
+		
 -- Recherche_affiche :
-		-- Aménagement : {recherche_ame}
+		-- Commune(s) : {recherche_commune}
+		-- Aménagement(s) : {recherche_ame}
 
 -- Recherche_ame : 
 		(WITH
@@ -1832,13 +1836,19 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant l
 		)
 		SELECT comm_dg FROM req_tot)
 
+
+
 -- SUR LA TABLE geo_mob_lieustatio
 --########################################################### CHAMPS CALCULÉS ######################################################
 -- recherche_affiche : 
 		-- Commune : {commune}
 		-- Adresse : {adresse}
 		-- Capacité totale : {capacite}
-		
+
+
+
+-- SUR LA TABLE geo_mob_carrefour
+--########################################################### CHAMPS CALCULÉS ######################################################
 -- infobulle_affiche : 
 		-- Type : {recherche_typcar} ({recherche avanc})
 		
