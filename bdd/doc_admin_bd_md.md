@@ -319,7 +319,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
+|valeur|Libellé de la valeur des avancements des aménagements cyclables|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -360,7 +360,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des régimes|character varying(50)| |
+|valeur|Libellé de la valeur des carrefours|character varying(50)| |
 |modele|Code du modèle de carrefour|character varying(3)| |
 
 |Code | Valeur | Modele |
@@ -435,7 +435,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur de localisation des aménagements|character varying(50)| |
+|valeur|Libellé de la valeur des localisations des aménagements|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -521,7 +521,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des sens de direction|character varying(50)| |
+|valeur|Libellé de la valeur des sens de circulation|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
@@ -573,7 +573,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des vitesses|character varying(20)| |
+|valeur|Libellé de la valeur des vitesses de circulation|character varying(20)| |
 
 |Code | Valeur |
 |:---|:---|
