@@ -228,7 +228,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_typres(
 );
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_typres (code, valeur)
-	VALUES  ('00', 'Non renseigné'), ('10', 'REV'), ('20', 'STRUCTURANT'), ('30', 'AUTRE');
+	VALUES  ('00', 'Non renseigné'), ('10', 'REV (Réseau Express Vélo)'), ('20', 'STRUCTURANT'), ('30', 'AUTRE');
 
 --############################################################ SITUATION ##################################################
 
