@@ -174,9 +174,10 @@ GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
 --##############################################################OUVELEC#############################################################
 -- Vue matérialisée regénérant les itinéraires à partir des tronçons
 CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti
+TABLESPACE pg_default
 AS
  SELECT 
-    ROW_NUMBER() OVER () AS gid,
+    row_number() OVER () AS gid,
     i.iditi,
     i.num_iti,
     i.nom_off,
@@ -205,12 +206,14 @@ AS
     i.op_sai,
     i.date_sai,
     i.date_maj,
-    t.ame,
-    st_linemerge(st_union(t.geom)) AS geom
+    tr.idtroncon,
+    (CASE WHEN tr.ame = '10' or tr.ame = '11' or tr.ame = 'ZZ' THEN 'non aménagé' ELSE 'aménagé' END) as ame,
+    st_linemerge(st_union(tr.geom)) AS geom
    FROM m_mobilite_3v.lk_mob_ititroncon lk
      JOIN m_mobilite_3v.an_mob_itineraire i ON lk.iditi = i.iditi
-     JOIN x_apps.xapps_geo_v_mob_troncon_affiche t ON lk.idtroncon = t.idtroncon
-   GROUP BY i.iditi, t.ame
+     JOIN x_apps.xapps_geo_v_mob_troncon_affiche tr ON lk.idtroncon = tr.idtroncon
+  GROUP BY i.iditi, tr.idtroncon, tr.ame
+WITH DATA;
 
 
 -- ###############################################################################################################################
@@ -225,4 +228,4 @@ COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeud
 COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en service dans GEO';
 COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
 
-COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue permettant d afficher la longueur totale d aménagements cyclables en services dans GEO';
+COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
