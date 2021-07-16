@@ -102,7 +102,7 @@ CREATE OR REPLACE VIEW xapps.xapps_an_v_mob3v_tab1
  )
  SELECT
     tab.gid,
-	tab.long_km
+    tab.long_km
  FROM req_t tab;
 
 
