@@ -174,9 +174,10 @@ GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
 --##############################################################OUVELEC#############################################################
 -- Vue matérialisée regénérant les itinéraires à partir des tronçons
 CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti
-TABLESPACE pg_default
 AS
- SELECT i.iditi,
+ SELECT 
+    ROW_NUMBER() OVER () AS gid,
+    i.iditi,
     i.num_iti,
     i.nom_off,
     i.num_loc,
@@ -204,12 +205,12 @@ AS
     i.op_sai,
     i.date_sai,
     i.date_maj,
-    st_linemerge(st_union(tr.geom)) AS geom
+    t.ame,
+    st_linemerge(st_union(t.geom)) AS geom
    FROM m_mobilite_3v.lk_mob_ititroncon lk
      JOIN m_mobilite_3v.an_mob_itineraire i ON lk.iditi = i.iditi
-     JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
-  GROUP BY i.iditi
-WITH DATA;
+     JOIN x_apps.xapps_geo_v_mob_troncon_affiche t ON lk.idtroncon = t.idtroncon
+   GROUP BY i.iditi, t.ame
 
 
 -- ###############################################################################################################################
