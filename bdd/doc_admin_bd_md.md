@@ -544,7 +544,7 @@ Paticularité(s) à noter :
 |Code | Valeur |
 |:---|:---|
 |00|Non renseigné|
-|10|REV|
+|10|REV (Réseau Express Vélo)|
 |20|STRUCTURANT|
 |30|AUTRE|
 
