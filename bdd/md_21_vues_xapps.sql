@@ -176,8 +176,7 @@ GROUP BY lt.code, lt.valeur,d.long_km,g.long_km;
 CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti
 TABLESPACE pg_default
 AS
- SELECT 
-    row_number() OVER () AS gid,
+ SELECT row_number() OVER () AS gid,
     i.iditi,
     i.num_iti,
     i.nom_off,
@@ -207,7 +206,11 @@ AS
     i.date_sai,
     i.date_maj,
     tr.idtroncon,
-    (CASE WHEN tr.ame = '10' or tr.ame = '11' or tr.ame = 'ZZ' THEN 'non aménagé' ELSE 'aménagé' END) as ame,
+        CASE
+            WHEN tr.ame::text = '10'::text OR tr.ame::text = '11'::text THEN 'non aménagé'::text
+	    WHEN tr.ame::text = 'ZZ'::text THEN 'non concerné'::text
+            ELSE 'aménagé'::text
+        END AS ame,
     st_linemerge(st_union(tr.geom)) AS geom
    FROM m_mobilite_3v.lk_mob_ititroncon lk
      JOIN m_mobilite_3v.an_mob_itineraire i ON lk.iditi = i.iditi
