@@ -1840,29 +1840,29 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 		(WITH
 		 -- LES DEUX ET <> ZZ
 		 req_tot AS(
-			-- A DROITE SI GAUCHE <> ZZ
 			(WITH
-	 		 req_d AS (select {idtroncon}, lt.valeur as valeur1, a.valeur as valeur11 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} <> {ame_d}),
-			
-			-- A GAUCHE SI DROITE <> ZZ
-			req_g AS (select {idtroncon}, lt.valeur as valeur2, a.valeur as valeur21 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_g} AND a.code = {avanc_g} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} <> {ame_d})
-			SELECT {idtroncon}, valeur1 || ' (' || valeur11 || ') et ' || valeur2 || ' (' || valeur21 || ')' as ame_dg FROM req_d, req_g WHERE req_d.idtroncon = req_g.idtroncon)
-		UNION ALL
-		(WITH
-		 -- A DROITE SI GAUCHE = ZZ
-			req_d AS (select {idtroncon}, lt.valeur as ame_dg, a.valeur as valeura from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} = 'ZZ')
-			SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d)
-		UNION ALL
-		(WITH
-		 -- A GAUCHE SI DROITE = ZZ
-		 	req_g AS (select {idtroncon}, lt.valeur as ame_dg, a.valeur as valeurb from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_g} AND a.code = {avanc_g} AND {ame_d} = 'ZZ')
-			SELECT {idtroncon}, ame_dg || ' (' || valeurb || ')' FROM req_g)
-		UNION ALL
-		(WITH
-		 -- UNE SORTIE SI DROITE = GAUCHE ET SI <> ZZ
-			req_d AS (select {idtroncon}, lt.valeur as ame_dg, CASE WHEN ((SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) = (SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d})) THEN (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d}) ELSE (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) || ', ' || (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d}) END as valeura from m_mobilite_3v.lt_mob_ame lt where lt.code = {ame_d} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} = {ame_d})
-			SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d )
-		 )
+			 	-- A DROITE SI GAUCHE <> ZZ
+	 			req_d AS (select {idtroncon}, lt.valeur as valeur1, a.valeur as valeur11 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} <> {ame_d}),
+				
+				-- A GAUCHE SI DROITE <> ZZ
+				req_g AS (select {idtroncon}, lt.valeur as valeur2, a.valeur as valeur21 from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_g} AND a.code = {avanc_g} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} <> {ame_d})
+				SELECT {idtroncon}, valeur1 || ' (' || valeur11 || ') et ' || valeur2 || ' (' || valeur21 || ')' as ame_dg FROM req_d, req_g WHERE req_d.idtroncon = req_g.idtroncon)
+			UNION ALL
+			(WITH
+				 -- A DROITE SI GAUCHE = ZZ
+				req_d AS (select {idtroncon}, lt.valeur as ame_dg, a.valeur as valeura from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_d} AND a.code = {avanc_d} AND {ame_g} = 'ZZ')
+				SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d)
+			UNION ALL
+			(WITH
+			 	-- A GAUCHE SI DROITE = ZZ
+			 	req_g AS (select {idtroncon}, lt.valeur as ame_dg, a.valeur as valeurb from m_mobilite_3v.lt_mob_ame lt, m_mobilite_3v.lt_mob_avanc a where lt.code = {ame_g} AND a.code = {avanc_g} AND {ame_d} = 'ZZ')
+				SELECT {idtroncon}, ame_dg || ' (' || valeurb || ')' FROM req_g)
+			UNION ALL
+			(WITH
+			 	-- UNE SORTIE SI DROITE = GAUCHE ET SI <> ZZ
+				req_d AS (select {idtroncon}, lt.valeur as ame_dg, CASE WHEN ((SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) = (SELECT a.code FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d})) THEN (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d}) ELSE (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_g}) || ', ' || (SELECT a.valeur FROM m_mobilite_3v.lt_mob_avanc a WHERE a.code = {avanc_d}) END as valeura from m_mobilite_3v.lt_mob_ame lt where lt.code = {ame_d} AND {ame_g} <> 'ZZ' AND {ame_d} <> 'ZZ' AND {ame_g} = {ame_d})
+				SELECT {idtroncon}, ame_dg || ' (' || valeura || ')' FROM req_d )
+			 )
 		 SELECT ame_dg FROM req_tot)
 
 -- verif_topo :
