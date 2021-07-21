@@ -16,15 +16,14 @@
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
--- TRIGGERS
-
-DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
-
 -- VUES
 
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
 
+-- TRIGGERS
 
+DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_v_mob_troncon;
 
 
 
