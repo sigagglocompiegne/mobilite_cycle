@@ -32,12 +32,13 @@ DROP SCHEMA if exits m_mobilite_3v;
 -- CLASSES
 
 DROP TABLE if exists m_mobilite_3v.an_mob_itineraire;
+DROP TABLE if exists m_mobilite_3v.an_mob_media;
+DROP TABLE if exists m_mobilite_3v.an_mob_equstatio;
+DROP TABLE if exists m_mobilite_3v.an_mob_log;
+DROP TABLE if exists m_mobilite_3v.lk_mob_ititroncon;
 DROP TABLE if exists m_mobilite_3v.geo_mob_troncon;
 DROP TABLE if exists m_mobilite_3v.geo_mob_carrefour;
-DROP TABLE if exists m_mobilite_3v.an_mob_media;
-DROP TABLE if exists m_mobilite_3v.lk_mob_ititroncon;
 DROP TABLE if exists m_mobilite_3v.geo_mob_lieustatio;
-DROP TABLE if exists m_mobilite_3v.an_mob_equstatio;
 
 -- DOMAINE DE VALEUR
 
@@ -85,6 +86,7 @@ DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_itineraire;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_itineraire;
 DROP TRIGGER if exists t_t3_iti_delete ON m_mobilite_3v.an_mob_itineraire;
 DROP TRIGGER if exists t_t4_refresh_view_after ON m_mobilite_3v.an_mob_itineraire;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.an_mob_itineraire;
 
 DROP TRIGGER if exists t_t2_date_sai ON m_mobilite_3v.geo_mob_troncon;
 DROP TRIGGER if exists t_t3_date_maj ON m_mobilite_3v.geo_mob_troncon;
@@ -93,12 +95,15 @@ DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_troncon;
 DROp TRIGGER if exists t_t6_refresh_view_iti ON m_mobilite_3v.geo_mob_troncon
 
 DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_v_mob_troncon;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t3_commune ON m_mobilite_3v.geo_mob_carrefour;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_mob_carrefour;
 
 DROP TRIGGER if exists t_t1_refresh_view_iti ON m_mobilite_3v.lk_mob_ititroncon;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.lk_mob_ititroncon;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_lieustatio;
@@ -106,10 +111,12 @@ DROP TRIGGER if exists t_t3_coord_l93 ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t4_coord_longlat ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_lieustatio;
 DROP TRIGGER if exists t_t6_equ_delete ON m_mobilite_3v.geo_mob_lieustatio;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_mob_lieustatio;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.an_mob_equstatio;
 DROP TRIGGER if exists t_t3_capacite_sum ON m_mobilite_3v.an_mob_equstatio;
+DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.an_mob_equstatio;
 
 
 -- ###############################################################################################################################
@@ -1501,6 +1508,13 @@ CREATE TRIGGER t_t4_refresh_view_after
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.an_mob_itineraire
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
+
 
 
 -- Trigger sur la table geo_mob_troncon
@@ -1563,6 +1577,14 @@ CREATE TRIGGER t_t3_commune
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl();
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.geo_mob_carrefour
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
+
+
 
 -- Trigger sur la table lk_mob_ititroncon
 --################################################################# TRIGGER #######################################################
@@ -1572,8 +1594,14 @@ CREATE TRIGGER t_t1_refresh_view_iti
     ON m_mobilite_3v.lk_mob_ititroncon
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
-    
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.lk_mob_ititroncon
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
   
+   
    
 -- Trigger sur la table geo_mob_lieustatio
 --################################################################# TRIGGER #######################################################
@@ -1618,6 +1646,12 @@ CREATE TRIGGER t_t6_equ_delete
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_equstatio_delete();
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.geo_mob_lieustatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
     
     
     
@@ -1643,8 +1677,12 @@ CREATE TRIGGER t_t3_capacite_sum
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
-    
-    
+--################################################################# TRIGGER #######################################################
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    AFTER INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.an_mob_equstatio
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
     
     
     
