@@ -22,13 +22,19 @@ DROP VIEW if exists x_apps.xapps_an_v_mob3v_tab2;
 
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 
+-- TABLES D'ERREUR
+
+DROP TABLE if exists x_apps.xapps_an_v_mob_erreur;
+
+-- INDEX
+
+ DROP INDEX if exists x_apps.idx_xapps_an_v_mob_erreur_id;
 
 -- #################################################################################################################################
 -- ###                                                                                                                           ###
 -- ###                                                      VUES APPLICATIVES                                                    ###
 -- ###                                                                                                                           ###
 -- #################################################################################################################################
-
 
 
 --##############################################################OUVELEC#############################################################
@@ -218,6 +224,43 @@ AS
   GROUP BY i.iditi, tr.idtroncon, tr.ame
 WITH DATA;
 
+-- #################################################################################################################################
+-- ###                                                                                                                           ###
+-- ###                                                      TABLES D'ERREUR                                                      ###
+-- ###                                                                                                                           ###
+-- #################################################################################################################################
+
+--##############################################################OUVELEC#############################################################
+CREATE TABLE x_apps.xapps_an_v_mob_erreur(
+    gid integer NOT NULL,
+    id text COLLATE pg_catalog."default",
+    erreur character varying(500) COLLATE pg_catalog."default",
+    horodatage timestamp without time zone,
+    CONSTRAINT xapps_an_v_mob_erreur_pkey PRIMARY KEY (gid)
+)
+WITH (OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE x_apps.xapps_an_v_mob_erreur TO sig_edit;
+GRANT SELECT ON TABLE x_apps.xapps_an_v_mob_erreur TO sig_read;
+
+
+
+-- #################################################################################################################################
+-- ###                                                                                                                           ###
+-- ###                                                      	  INDEX     	                                                 ###
+-- ###                                                                                                                           ###
+-- #################################################################################################################################
+
+--##############################################################INDEX#############################################################
+
+CREATE INDEX idx_xapps_an_v_mob_erreur_id
+    ON x_apps.xapps_an_v_mob_erreur USING btree
+    (id COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
@@ -232,3 +275,8 @@ COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab1 IS 'Vue permettant d afficher la lon
 COMMENT ON VIEW xapps.xapps_an_v_mob3v_tab2 IS 'Vue permettant d afficher le pourcentage d aménagements cyclables différents dans GEO';
 
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
+COMMENT ON TABLE x_apps.xapps_an_v_mob_erreur IS 'Table gérant les messages d''erreurs de sécurité remontés dans GEO suite à des enregistrements sur la donnée aménagement cyclable';
+COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.gid IS 'Identifiant unique';
+COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.id IS 'Identifiant de l''objet';
+COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.erreur IS 'Message';
+COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.horodatage IS 'Date (avec heure) de génération du message (ce champ permet de filtrer l''affichage < x secondsdans GEo)';
