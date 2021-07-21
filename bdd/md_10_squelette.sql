@@ -757,8 +757,24 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
 );
 
 
+--################################################################# NOEUD #######################################################
 
-
+-- Table alphanumérique stockant les différents équipements cyclables
+CREATE TABLE m_mobilite_3v.an_mob_log(
+    idlog integer NOT NULL,
+    tablename character varying(80) COLLATE pg_catalog."default" NOT NULL,
+    type_ope text COLLATE pg_catalog."default" NOT NULL,
+    dataold character varying(10000) COLLATE pg_catalog."default",
+    datanew character varying(10000) COLLATE pg_catalog."default",
+    date_maj timestamp without time zone,
+    CONSTRAINT an_mob_log_pkey PRIMARY KEY (idlog)
+)
+WITH (OIDS = FALSE)
+TABLESPACE pg_default;
+GRANT SELECT ON TABLE m_mobilite_3v.an_mob_log TO sig_read;
+GRANT ALL ON TABLE m_mobilite_3v.an_mob_log TO sig_stage WITH GRANT OPTION;
+GRANT ALL ON TABLE m_mobilite_3v.an_mob_log TO sig_create;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_mobilite_3v.an_mob_log TO sig_edit;
 
 
 
@@ -1915,6 +1931,14 @@ COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.capacite_gt_e IS 'Capacité de 
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_sai IS 'Date de saisie de la donnée';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.date_maj IS 'Date de mise à jour de la donnée';
 COMMENT ON COLUMN m_mobilite_3v.an_mob_equstatio.op_sai IS 'opérateur de saisie de la donnée';
+
+COMMENT ON TABLE m_mobilite_3v.an_mob_log IS 'Table des opérations sur les données aménagements cyclables';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.idlog IS 'Identifiant unique de l''opération';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.tablename IS 'Nom de la table concernée par l''opération sur l''entité';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.type_ope IS 'Type l''opération sur l''entité';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.dataold IS 'Valeur ancienne avant l''opération sur l''entité';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.datanew IS 'Valeur nouvelle après l''opération sur l''entité';
+COMMENT ON COLUMN m_mobilite_3v.an_mob_log.date_maj IS 'Horodatage de l''opération sur la donnée aménagements cyclables';
 
 COMMENT ON FUNCTION m_mobilite_3v.ft_modif_troncon() IS 'Fonction pour la modification de la table geo_mob_troncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() IS 'Fonction recupérant les noms des communes via leur code insee';
