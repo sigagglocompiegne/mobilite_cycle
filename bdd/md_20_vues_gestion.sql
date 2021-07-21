@@ -99,7 +99,13 @@ CREATE TRIGGER t_t1_modif_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_modif_troncon();
     
-    
+
+-- Trigger t_t9_geo_mobilite_3v_log
+CREATE TRIGGER t_t9_geo_mobilite_3v_log
+    INSTEAD OF INSERT OR DELETE OR UPDATE 
+    ON m_mobilite_3v.geo_v_mob_troncon
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_geo_mobilite_3v_log();
     
     
     
