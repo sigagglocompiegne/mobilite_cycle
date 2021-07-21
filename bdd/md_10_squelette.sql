@@ -68,6 +68,7 @@ DROP SEQUENCE if exists m_mobilite_3v.mob_objet_seq_id;
 DROP SEQUENCE if exists m_mobilite_3v.mob_lk_gid;
 DROP SEQUENCE if exists m_mobilite_3v.mob_media_seq_gid;
 DROP SEQUENCE if exists m_mobilite_3v.an_mob_equstatio_seq_id;
+DROP SEQUENCE if exists m_mobilite_3v.an_mob_log_seq_id;
 
 -- FONCTIONS
 
@@ -158,6 +159,14 @@ CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
 CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
     START WITH 200
     INCREMENT BY 1;
+
+--############################################################ OBJETS ##################################################
+
+CREATE SEQUENCE m_mobilite_3v.an_mob_log_seq_id
+    START WITH 1
+    INCREMENT BY 1;
+
+
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
@@ -775,7 +784,7 @@ $BODY$;
 --################################################################# FONCTION #######################################################
 
 -- Fonction m_mobilite_3v.ft_modif_troncon() modifiant la table des tronçons quand il y a une insertion, un update ou une suppression 
-CREATE OR REPLACE FUNCTION m_mobilite_3v.ft_modif_troncon()
+CREATE FUNCTION m_mobilite_3v.ft_modif_troncon()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -786,11 +795,20 @@ DECLARE v_count integer;
 BEGIN
 -- INSERTION D'UN NOUVELLE ELEMENT DANS LA TABLE
 	IF (TG_OP = 'INSERT') THEN
+	    -- SI aménagement à droite
 		if new.loc_ame = '10' then
+			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			IF new.ame_d = '20' AND new.revet_d NOT LIKE '1%' THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES	(
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse. Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
 			--condition si st_interesects NE REMONTE QUE DES LINES (st_geometrytype)
 			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-			     SELECT 
-				'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
 				new.id_osm,
 				new.id_on3v,
 				new.typ_res,
@@ -822,10 +840,19 @@ BEGIN
 				new.verif,	
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
+		-- SI aménagement à gauche
 		elsif new.loc_ame = '20' then
+			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			IF new.ame_g = '20' AND new.revet_g NOT LIKE '1%' THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES	(
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse. Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
 			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-			    SELECT 
-			    	'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
 				new.id_osm,
 				new.id_on3v,
 				new.typ_res,
@@ -857,10 +884,19 @@ BEGIN
 				new.verif,	
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
+		-- SI AMENAGEMENT à gauche et à droite
 		elsif new.loc_ame = '30' then
+			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			IF (new.ame_d = '20' AND new.revet_d NOT LIKE '1%') OR (new.ame_g = '20' AND new.revet_g NOT LIKE '1%') THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse. Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
 			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-			    SELECT 
-			    	'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
+				SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
 				new.id_osm,
 				new.id_on3v,
 				new.typ_res,
@@ -893,14 +929,24 @@ BEGIN
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
 		end if;
--- MISE A JOUR DU TRONCON
+-- mise à jour du tronçon
 	ELSIF (TG_OP) = 'UPDATE' THEN
+	    	-- SI aménagement à droite
 		if new.loc_ame = '10' then
+			-- CONTROLE SI PISTE CYCLEBLE ET REVETEMENT <> LISSE
+			IF new.ame_d = '20' AND new.revet_d NOT LIKE '1%' THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse.' || 'Vous avez saisi <b><u>' || (SELECT valeur FROM m_mobilite_3v.lt_mob_revet WHERE code=new.revet_d) || '</u></b> Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
 			-- je vérifie si le tronçon a été modifié
 			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
 			-- je mets à jour les attribtus mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
-				    SET id_osm 		 =  new.id_osm,	
+				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
 					typ_res 	 =  new.typ_res, 
 					gest 		 =  new.gest, 		
@@ -930,8 +976,8 @@ BEGIN
 					src_geom 	 =  new.src_geom, 
 					observ 		 =  new.observ,		
 					verif 		 =  new.verif, 		
-					op_sai       	 =  new.op_sai,
-					geom        	 =  new.geom
+					op_sai           =  new.op_sai,
+					geom             =  new.geom
 				WHERE idtroncon = new.idtroncon;			
 		ELSE
 			-- je compte les intersections avec les communes
@@ -939,10 +985,10 @@ BEGIN
 			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
 			    -- je mets à jour les données pour 1 tronçon
 				UPDATE  m_mobilite_3v.geo_mob_troncon 
-					SET id_osm 		 =  new.id_osm,	
+					SET id_osm 	 =  new.id_osm,	
 					    id_on3v 	 =  new.id_on3v, 
 					    typ_res 	 =  new.typ_res, 
-					    gest 		 =  new.gest, 		
+					    gest 	 =  new.gest, 		
 					    propriete 	 =  new.propriete,
 					    d_service 	 =  new.d_service,
 					    trafic_vit 	 =  new.trafic_vit,
@@ -971,15 +1017,14 @@ BEGIN
 					    verif 	 =  new.verif, 		
 					    op_sai       =  new.op_sai,
 					    geom 	 =  new.geom 
-					WHERE idtroncon = new.idtroncon;
+					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
 				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
 			ELSE
 				-- suppression de l'ancien tronçon qui sera découpé
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
 			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-				    SELECT 
-					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
 					new.typ_res,
@@ -1011,7 +1056,8 @@ BEGIN
 					new.verif,	
 					new.op_sai,
 					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
-					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+					WHERE st_intersects(new.geom,c.geom) IS TRUE 
+					AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
 				-- j'initialise la variable v_count avec le nombre d'intersection remontée
 				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
 				-- requête mettant à jour la table des relations tronçon-itinéraire
@@ -1024,17 +1070,32 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select req_tr.idtroncon, req_iti.iditi,	nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				select 
+					req_tr.idtroncon,
+					req_iti.iditi,
+					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
 				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
 		END IF;
+		-- SI aménagement est à gauche
 		elsif new.loc_ame = '20' then
-		-- je vérifie si le tronçon a été modifié
-		IF st_equals(new.geom,OLD.geom) IS TRUE THEN
+			-- CONTROLE SI PISTE CYCLEBLE ET REVETEMENT <> LISSE
+				IF new.ame_g = '20' AND new.revet_g NOT LIKE '1%' THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse. Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
+		
+			-- je vérifie si le tronçon a été modifié
+			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
 			-- je mets à jour les attribtus mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
-				    SET id_osm 		 =  new.id_osm,	
+				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
 					typ_res 	 =  new.typ_res, 
 					gest 		 =  new.gest, 		
@@ -1064,8 +1125,8 @@ BEGIN
 					src_geom 	 =  new.src_geom, 
 					observ 		 =  new.observ,		
 					verif 		 =  new.verif, 		
-					op_sai     	 =  new.op_sai,
-					geom        	 =  new.geom
+					op_sai       	 =  new.op_sai,
+					geom       	 =  new.geom
 				WHERE idtroncon = new.idtroncon;			
 		ELSE
 			-- je compte les intersections avec les communes
@@ -1073,7 +1134,7 @@ BEGIN
 			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
 			    -- je mets à jour les données pour 1 tronçon
 				UPDATE  m_mobilite_3v.geo_mob_troncon 
-					SET id_osm       =  new.id_osm,	
+					SET id_osm 	 =  new.id_osm,	
 					    id_on3v 	 =  new.id_on3v, 
 					    typ_res 	 =  new.typ_res, 
 					    gest 	 =  new.gest, 		
@@ -1112,8 +1173,7 @@ BEGIN
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
 			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-				    SELECT 
-					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
 					new.typ_res,
@@ -1145,7 +1205,8 @@ BEGIN
 					new.verif,	
 					new.op_sai,
 					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
-					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+					WHERE st_intersects(new.geom,c.geom) IS TRUE 
+					AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
 				-- j'initialise la variable v_count avec le nombre d'intersection remontée
 				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
 				-- requête mettant à jour la table des relations tronçon-itinéraire
@@ -1158,17 +1219,32 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select req_tr.idtroncon, req_iti.iditi,	nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				select 
+					req_tr.idtroncon,
+					req_iti.iditi,
+					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
 				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
 		END IF;
+		-- SI AMENAGEMENT A DROITE ET A GAUCHE
 		elsif new.loc_ame = '30' then
-		-- je vérifie si le tronçon a été modifié
-		IF st_equals(new.geom,OLD.geom) IS TRUE THEN
+			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			IF (new.ame_d = '20' AND new.revet_d NOT LIKE '1%') OR (new.ame_g = '20' AND new.revet_g NOT LIKE '1%') THEN
+				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
+					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
+					new.idtroncon,
+					'Une piste cyclable est forcément avec un revêtement lisse. Merci de modifier votre saisie.',
+					now()
+				);
+			END IF;
+		
+			-- je vérifie si le tronçon a été modifié
+			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
 			-- je mets à jour les attribtus mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
-				    SET id_osm 		 =  new.id_osm,	
+				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
 					typ_res 	 =  new.typ_res, 
 					gest 		 =  new.gest, 		
@@ -1198,8 +1274,8 @@ BEGIN
 					src_geom 	 =  new.src_geom, 
 					observ 		 =  new.observ,		
 					verif 		 =  new.verif, 		
-					op_sai           =  new.op_sai,
-					geom             =  new.geom
+					op_sai       	 =  new.op_sai,
+					geom        	 =  new.geom
 				WHERE idtroncon = new.idtroncon;			
 		ELSE
 			-- je compte les intersections avec les communes
@@ -1207,7 +1283,7 @@ BEGIN
 			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
 			    -- je mets à jour les données pour 1 tronçon
 				UPDATE  m_mobilite_3v.geo_mob_troncon 
-					SET id_osm       =  new.id_osm,	
+					SET id_osm 	 =  new.id_osm,	
 					    id_on3v 	 =  new.id_on3v, 
 					    typ_res 	 =  new.typ_res, 
 					    gest 	 =  new.gest, 		
@@ -1246,8 +1322,7 @@ BEGIN
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
 			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
-				    SELECT 
-					'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
+					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
 					new.typ_res,
@@ -1279,7 +1354,8 @@ BEGIN
 					new.verif,	
 					new.op_sai,
 					(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c
-					WHERE st_intersects(new.geom,c.geom) IS TRUE AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
+					WHERE st_intersects(new.geom,c.geom) IS TRUE 
+					AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString';
 				-- j'initialise la variable v_count avec le nombre d'intersection remontée
 				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
 				-- requête mettant à jour la table des relations tronçon-itinéraire
@@ -1292,7 +1368,11 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select req_tr.idtroncon, req_iti.iditi, nextval('m_mobilite_3v.mob_lk_gid'::regclass) FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
+				select 
+					req_tr.idtroncon,
+					req_iti.iditi,
+					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
 				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
@@ -1306,7 +1386,6 @@ BEGIN
 	RETURN new;
 END;
 $BODY$;
-
 
 
 --################################################################# FONCTION #######################################################
