@@ -1967,8 +1967,16 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 -- Commune_recherche : 
 		-- {code_com_g};{code_com_d}
 		
--- Revetement_recherche :
-		-- {revet_g};{revet_d}
+-- Controle_d_service :
+		CASE WHEN {d_service} IS NULL OR {d_service} = '' THEN
+			'non'
+		ELSE
+			CASE WHEN {d_service}::integer BETWEEN 0 AND 1980 THEN 'oui'
+			     WHEN {d_service}::integer <0 THEN 'oui'
+			     WHEN {d_service}::integer > to_char(now(),'YYYY')::integer+10 THEN 'oui'
+			     ELSE 'non'
+		        END
+		END;
 		
 -- Recherche_affiche :
 		-- <tr><td><b><u>Commune(s) :</u></b> {recherche_commune}</td></tr><br>
@@ -2003,9 +2011,6 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 			 )
 		 SELECT ame_dg FROM req_tot)
 
--- verif_topo :
-		(SELECT string_agg(ST_Crosses(a.geom,b.geom)::text,';') FROM m_mobilite_3v.geo_mob_troncon a, m_mobilite_3v.geo_mob_troncon b WHERE st_intersects(a.geom,b.geom) IS TRUE AND a.idtroncon = {idtroncon} AND b.idtroncon <> {idtroncon})
-
 -- recherche_commune :
 		(WITH
 		 req_tot AS(
@@ -2019,10 +2024,35 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 		)
 		SELECT comm_dg FROM req_tot)
 
+-- Revetement_recherche :
+		-- {revet_g};{revet_d}
+		
+-- verif_topo :
+		(SELECT string_agg(ST_Crosses(a.geom,b.geom)::text,';') FROM m_mobilite_3v.geo_mob_troncon a, m_mobilite_3v.geo_mob_troncon b WHERE st_intersects(a.geom,b.geom) IS TRUE AND a.idtroncon = {idtroncon} AND b.idtroncon <> {idtroncon})
+
 
 
 -- SUR LA TABLE geo_mob_lieustatio
 --########################################################### CHAMPS CALCULÉS ######################################################
+-- Controle_a_service :
+		CASE WHEN {a_service} IS NULL OR {a_service} = '' THEN
+			'non'
+		ELSE
+			CASE WHEN {a_service}::integer BETWEEN 0 AND 1980 THEN 'oui'
+		             WHEN {a_service}::integer <0 THEN 'oui'
+		             WHEN {a_service}::integer > to_char(now(),'YYYY')::integer+10 THEN 'oui'
+			     ELSE 'non'
+		        END
+		END;
+		
+-- Controle_protection :
+		CASE WHEN {acces} = '10' THEN
+			CASE WHEN {protection} = '00' OR {protection} = '99' OR {protection} = '10' THEN 'non'
+		    	ELSE 'oui'
+		   	END
+		ELSE 'non'
+		END;
+
 -- recherche_affiche : 
 		-- <tr ><td><b><u>Commune :</u></b> {commune}<td></tr><br>
 		-- <tr ><td><b><u>Adresse :</u></b> {adresse}<td></tr><br>
@@ -2051,7 +2081,9 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 -- SUR LA TABLE geo_vmr_mob_iti
 --########################################################### CHAMPS CALCULÉS ######################################################
 -- affiche_num_nom_iti : 
-		-- {num_loc} - {nom_off}
+		CASE WHEN {num_loc} IS NULL THEN ({nom_off} )
+		 ELSE ( {num_loc} || ' - ' || {nom_off} )
+		 END
 
 -- infobulle_affiche :
 		-- <tr><td bgcolor="#79C24D"><b>{affiche_num_nom_iti}</b></td></tr>
@@ -2063,8 +2095,33 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la s
 
 -- SUR LA TABLE an_mob_itineraire
 --########################################################### CHAMPS CALCULÉS ######################################################
+-- affiche_analyse :
+		-- Tracé de l'itinéraire
+
 -- affiche_iti :
-		-- {num_loc} - {nom_off}
+		CASE WHEN {num_loc} is null then ({nom_off} )
+		ELSE ( {num_loc} || ' - ' || {nom_off} )
+		END;
+
+-- controle_an_inscri :
+		CASE WHEN {an_inscri} IS NULL OR {an_inscri} = '' THEN 'non'
+		ELSE
+			CASE WHEN {an_inscri}::integer BETWEEN 0 AND 1980 THEN 'oui'
+		        WHEN {an_inscri}::integer <0 THEN 'oui'
+		        WHEN {an_inscri}::integer > to_char(now(),'YYYY')::integer+10 THEN 'oui'
+			ELSE 'non'
+		        END
+		END;
+		
+-- controle_an_ouvert :
+		CASE WHEN {an_ouvert} IS NULL OR {an_ouvert} = '' THEN 'non'
+		ELSE
+			CASE WHEN {an_ouvert}::integer BETWEEN 0 AND 1980 THEN 'oui'
+		        WHEN {an_ouvert}::integer <0 THEN 'oui'
+		        WHEN {an_ouvert}::integer > to_char(now(),'YYYY')::integer+10 THEN 'oui'
+			ELSE 'non'
+		        END
+		END;
 
 -- info_bulle_affiche :
 		-- <tr><td bgcolor="#79C24D"><b>{affiche_iti}</b></td></tr><br>
