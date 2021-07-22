@@ -27,7 +27,7 @@ SOMMAIRE :
 
 -- SCHEMA
 
-DROP SCHEMA if exits m_mobilite_3v;
+DROP SCHEMA if exists m_mobilite_3v;
 
 -- CLASSES
 
