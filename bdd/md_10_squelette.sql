@@ -92,7 +92,7 @@ DROP TRIGGER if exists t_t2_date_sai ON m_mobilite_3v.geo_mob_troncon;
 DROP TRIGGER if exists t_t3_date_maj ON m_mobilite_3v.geo_mob_troncon;
 DROP TRIGGER if exists t_t4_long_m ON m_mobilite_3v.geo_mob_troncon;
 DROP TRIGGER if exists t_t5_commune ON m_mobilite_3v.geo_mob_troncon;
-DROp TRIGGER if exists t_t6_refresh_view_iti ON m_mobilite_3v.geo_mob_troncon
+DROp TRIGGER if exists t_t6_refresh_view_iti ON m_mobilite_3v.geo_mob_troncon;
 
 DROP TRIGGER if exists t_t1_date_sai ON m_mobilite_3v.geo_mob_carrefour;
 DROP TRIGGER if exists t_t2_date_maj ON m_mobilite_3v.geo_mob_carrefour;
