@@ -26,6 +26,7 @@ DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab2_epci;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab3;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab31;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab32;
+DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab11_apc;
 
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.old_geo_vmr_mob_iti;
@@ -304,6 +305,22 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32
 ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab32 OWNER TO sig_stage;
 
 
+--##############################################################OUVELEC#############################################################
+-- Vue permettant d afficher le tableau des informations des stationnements cyclables en service dans GEO
+CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc
+ AS
+ SELECT sta.idlieustatio,
+    	sta.commune,
+   	 sta.gratuit,
+    	sta.capacite,
+    	sta.capacite_gt,
+    	(SELECT DISTINCT lt.valeur
+         FROM m_mobilite_3v.lt_mob_avanc lt, m_mobilite_3v.geo_mob_lieustatio p
+         WHERE p.avanc::text = lt.code::text AND p.avanc::text = '50'::text) AS avanc
+ FROM m_mobilite_3v.geo_mob_lieustatio sta
+ WHERE geo_mob_lieustatio.avanc::text = '50'::text;
+ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab11_apc OWNER TO sig_stage;
+
 
 --##############################################################OUVELEC#############################################################
 -- Vue matérialisée regénérant les itinéraires à partir des tronçons
@@ -480,6 +497,7 @@ COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci IS 'Vue permettant d af
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab3 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables) afficher avec le filtre du paramètre global';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab31 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables)';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO. Attention résultat non vérifié (à faire)';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc IS 'Vue permettant d afficher le tableau des informations des stationnements cyclables en service dans GEO';
 
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.old_geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
