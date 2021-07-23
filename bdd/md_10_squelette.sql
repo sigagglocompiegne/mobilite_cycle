@@ -79,6 +79,7 @@ DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_iti();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_itineraire_delete_lk();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_mobi_capacite();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_equstatio_delete();
+DROP FUNCTION if exists m_mobilite_3v.ft_m_geo_mobilite_3v_log();
 
 -- TRIGGERS
 
@@ -124,8 +125,6 @@ DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.an_mob_equstati
 
 -- Données métiers sur le thème des aménagements cyclables
 CREATE SCHEMA m_mobilite_3v
-
-
 
 
 
@@ -191,6 +190,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_etat_inscri(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_etat_inscri (code, valeur)
 	VALUES ('00', 'Non renseigné'), ('10', 'Ne sais pas (inconnu)'), ('20', 'Non'), ('30', 'Oui');
+ALTER TABLE m_mobilite_3v.lt_mob_etat_inscri OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -204,6 +204,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_niv_inscri(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_niv_inscri (code, valeur)
 	VALUES ('00', 'Non renseigné'), ('10', 'Européen'), ('20', 'National'), ('30', 'Régional'), ('40', 'Départemental'), ('50', 'Intercommunal'), ('60', 'Communal'), ('70', 'Infracommunal');
+ALTER TABLE m_mobilite_3v.lt_mob_niv_inscri OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -217,6 +218,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_gest_iti(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_gest_iti (code, valeur)
 	VALUES ('10', 'ARC'), ('20', 'CCPE'), ('30', 'CCLO');
+ALTER TABLE m_mobilite_3v.lt_mob_gest_iti OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -230,6 +232,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_usage(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_usage (code, valeur)
 	VALUES  ('10', 'Cyclable'), ('20', 'Piéton');
+ALTER TABLE m_mobilite_3v.lt_mob_usage OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -243,6 +246,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_typres(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_typres (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'REV (Réseau Express Vélo)'), ('20', 'STRUCTURANT'), ('30', 'AUTRE');
+ALTER TABLE m_mobilite_3v.lt_mob_typres OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -256,6 +260,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_gest(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_gest (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'État'), ('20', 'Région'), ('30', 'Département'), ('40', 'Intercommunalité'), ('50', 'Commune'), ('60', 'Privé');
+ALTER TABLE m_mobilite_3v.lt_mob_gest OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -269,6 +274,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_booleen(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_booleen (code, valeur)
 	VALUES  ('0', 'Non renseigné'), ('f', 'Non'), ('t', 'Oui'), ('z', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_booleen OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -284,7 +290,8 @@ CREATE TABLE m_mobilite_3v.lt_mob_ame(
 );
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_ame (code, valeur, affichage)
-	VALUES  ('10', 'Non aménagé', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
+	VALUES  ('10', 'Non aménagé (route)', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
+ALTER TABLE m_mobilite_3v.lt_mob_ame OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -298,6 +305,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_avanc(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_avanc (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Esquisse'), ('20', 'Avant-projet'), ('30', 'Provisoire'), ('40', 'En travaux'), ('50', 'En service'), ('60', 'Supprimé'), ('70', 'Abandonné'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_avanc OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -311,6 +319,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_regime(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_regime (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Zone 30'), ('20', 'Aire piétonne'), ('30', 'Zone de rencontre'), ('40', 'En agglomération'), ('50', 'Hors agglomération'), ('60', 'Autre'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_regime OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -324,6 +333,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_sens(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_sens (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Unidirectionnel'), ('20', 'Bidirectionnel'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_sens OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -337,6 +347,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_voca_iti(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_voca_iti (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Loisirs'), ('20', 'Utilitaire');
+ALTER TABLE m_mobilite_3v.lt_mob_voca_iti OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -350,6 +361,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_local(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_local (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Trottoir'), ('20', 'Intermédiaire'), ('30', 'Chaussée'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_local OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -364,6 +376,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_revet(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_revet (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Lisse'), ('11', '....'), ('20', 'Meuble'), ('21', '....'), ('30', 'Rugueux'), ('31', '....'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_revet OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -377,6 +390,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_vitesse(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_vitesse (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', '10'), ('11', '15'), ('20', '20'), ('21', '25'), ('30', '30'), ('40', '40'), ('50', '50'), ('60', '60'), ('70', '70'), ('80', '80'), ('90', '90'), ('ZZ', 'Non concerné');
+ALTER TABLE m_mobilite_3v.lt_mob_vitesse OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -391,6 +405,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_carrefour(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_carrefour (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'SAS vélo'), ('20', 'Traversée'), ('30', 'Feux aménagés');
+ALTER TABLE m_mobilite_3v.lt_mob_carrefour OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -404,6 +419,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_statio_mobi(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_statio_mobi (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Arceau'), ('20', 'Ratelier'), ('30', 'Rack double étage'), ('40', 'Crochet'), ('50', 'Support guidon'), ('60', 'Potelet'), ('70', 'Arceau vélo grande taille'), ('80', 'Aucun équipement'), ('99', 'Autre');
+ALTER TABLE m_mobilite_3v.lt_mob_statio_mobi OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -417,6 +433,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_statio_accro(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_statio_accro (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Cadre'), ('20', 'Roue'), ('30', 'Cadre et roue'), ('40', 'Sans accroche'), ('99', 'Autre');
+ALTER TABLE m_mobilite_3v.lt_mob_statio_accro OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -430,6 +447,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_statio_acces(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_statio_acces (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Libre accès'), ('20', 'Abonnement ou inscription préalable'), ('30', 'Privé');
+ALTER TABLE m_mobilite_3v.lt_mob_statio_acces OWNER to sig_stage;
 
 --############################################################ SITUATION ##################################################
 
@@ -443,6 +461,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_statio_protec(
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_statio_protec (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Stationnement non fermé'), ('20', 'Consigne collective fermée'), ('30', 'Box individuel fermé'), ('99', 'Autre');
+ALTER TABLE m_mobilite_3v.lt_mob_statio_protec OWNER to sig_stage;
 
 
 -- ###############################################################################################################################
@@ -503,6 +522,7 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeur lt_mob_usage
 );
+ALTER TABLE m_mobilite_3v.an_mob_itineraire OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -618,6 +638,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs des sources géométriques
 );
+ALTER TABLE m_mobilite_3v.geo_mob_troncon OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -629,6 +650,7 @@ CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 -- Contrainte
     CONSTRAINT lk_mob_ititroncon_pkey PRIMARY KEY (gid) -- Clé primaire de la table
 );
+ALTER TABLE m_mobilite_3v.lk_mob_ititroncon OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -656,6 +678,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs lt_mob_avanc
 );
+ALTER TABLE m_mobilite_3v.geo_mob_carrefour OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -673,6 +696,7 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 -- Contrainte
     CONSTRAINT an_mob_media_pkey PRIMARY KEY (gid) -- Clé primaire de la table
 );
+ALTER TABLE m_mobilite_3v.an_mob_media OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -734,6 +758,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs lt_src_geom
 );
+ALTER TABLE m_mobilite_3v.geo_mob_lieustatio OWNER to sig_stage;
 
 --################################################################# NOEUD #######################################################
 
@@ -755,6 +780,7 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION -- Liste de valeurs lt_mob_statio_accro
 );
+ALTER TABLE m_mobilite_3v.an_mob_equstatio OWNER to sig_stage;
 
 
 --################################################################# NOEUD #######################################################
@@ -771,10 +797,7 @@ CREATE TABLE m_mobilite_3v.an_mob_log(
 )
 WITH (OIDS = FALSE)
 TABLESPACE pg_default;
-GRANT SELECT ON TABLE m_mobilite_3v.an_mob_log TO sig_read;
-GRANT ALL ON TABLE m_mobilite_3v.an_mob_log TO sig_stage WITH GRANT OPTION;
-GRANT ALL ON TABLE m_mobilite_3v.an_mob_log TO sig_create;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_mobilite_3v.an_mob_log TO sig_edit;
+ALTER TABLE m_mobilite_3v.an_mob_log OWNER to sig_stage;
 
 
 
@@ -800,6 +823,7 @@ new.commune_d = (SELECT c.commune FROM r_osm.geo_vm_osm_commune_oise c WHERE c.i
 return new;
 end;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() OWNER TO sig_stage;
 
 --################################################################# FONCTION #######################################################
 
@@ -1406,6 +1430,7 @@ BEGIN
 	RETURN new;
 END;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_modif_troncon() OWNER TO sig_stage;
 
 
 --################################################################# FONCTION #######################################################
@@ -1422,6 +1447,7 @@ BEGIN
    return new;
 END;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() OWNER TO sig_stage;
 
 
 --################################################################# FONCTION #######################################################
@@ -1438,6 +1464,7 @@ BEGIN
      return old;
 END;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() OWNER TO sig_stage;
 
 
 --################################################################# FONCTION #######################################################
@@ -1465,6 +1492,7 @@ END IF;
 	return new;
 END;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_mobi_capacite() OWNER TO sig_stage;
 
 
 --################################################################# FONCTION #######################################################
@@ -1481,9 +1509,67 @@ BEGIN
      return old;
 END;
 $BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_equstatio_delete() OWNER TO sig_stage;
 
+--################################################################# FONCTION #######################################################
 
-
+CREATE FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE v_idlog integer;
+DECLARE v_dataold character varying(10000);
+DECLARE v_datanew character varying(10000);
+DECLARE v_name_table character varying(254);
+BEGIN
+	-- INSERT
+	IF (TG_OP = 'INSERT') THEN
+		v_idlog := nextval('m_mobilite_3v.an_mob_log_seq_id'::regclass); 
+		v_datanew := ROW(NEW.*); ------------------------------------ On concatène tous les attributs dans un seul
+		INSERT INTO m_mobilite_3v.an_mob_log (idlog, tablename, type_ope, dataold, datanew, date_maj)
+			SELECT
+			   v_idlog,
+			   TG_TABLE_NAME,
+			   'INSERT',
+			   NULL,
+			   v_datanew,
+			   now();
+	  	RETURN NEW;
+	-- UPDATE
+	ELSIF (TG_OP = 'UPDATE') THEN 
+	  	v_idlog := nextval('m_mobilite_3v.an_mob_log_seq_id'::regclass);
+	  	v_dataold := ROW(OLD.*);------------------------------------ On concatène tous les anciens attributs dans un seul
+	  	v_datanew := ROW(NEW.*);------------------------------------ On concatène tous les nouveaux attributs dans un seul	
+	  	v_name_table := TG_TABLE_NAME;
+	  	INSERT INTO m_mobilite_3v.an_mob_log (idlog, tablename,  type_ope, dataold, datanew, date_maj)
+	  		SELECT
+	  		   v_idlog,
+	  		   v_name_table,
+	  		   'UPDATE',
+	  		   v_dataold,
+	  		   v_datanew,
+	  		   now();
+	  	RETURN NEW;
+	-- DELETE
+	ELSIF (TG_OP = 'DELETE') THEN 
+	        v_idlog := nextval('m_mobilite_3v.an_mob_log_seq_id'::regclass);
+	        v_dataold := ROW(OLD.*);------------------------------------ On concatène tous les anciens attributs dans un seul
+	        v_name_table := TG_TABLE_NAME;
+	        INSERT INTO m_mobilite_3v.an_mob_log (idlog, tablename,  type_ope, dataold, datanew, date_maj)
+	        	SELECT
+	        	   v_idlog,
+	        	   v_name_table,
+	        	   'DELETE',
+	        	   v_dataold,
+	        	   null,
+	        	   now();
+	        RETURN NEW;
+	END IF;
+END;
+$BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log() OWNER TO sig_stage;
 
 
 -- ###############################################################################################################################
@@ -1946,6 +2032,7 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() IS 'Fonction pour le r
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la suppression des relations équipements et lieux de stationnements dans la table an_mob_equstatio';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log() IS 'Fonction permettant de recenser toutes les modifications effectuées';
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
