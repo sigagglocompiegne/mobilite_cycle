@@ -216,7 +216,7 @@ ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab2_apc OWNER TO sig_stage;
 CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci
  AS
  WITH req_tot AS (
-	   -- 
+	   -- selection du nom de l'aménagement et de la somme (en km) des longueurs des tronçons de droite aménagés et en service par EPCI
            (SELECT DISTINCT e.lib_epci_m AS epci, lt_1.code, lt_1.valeur, round(sum(tr.long_m::numeric) / 1000::numeric, 2) AS long_km
            FROM m_mobilite_3v.lt_mob_ame lt_1
                LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_d::text = lt_1.code::text
@@ -226,6 +226,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci
            GROUP BY lt_1.code, lt_1.valeur, e.lib_epci_m
            ORDER BY e.lib_epci_m, lt_1.code)
         UNION ALL
+	   -- selection du nom de l'aménagement et de la somme (en km) des longueurs des tronçons de gauche aménagés et en service par EPCI
            (SELECT e.lib_epci_m AS epci, lt_1.code, lt_1.valeur, round(sum(tr.long_m::numeric) / 1000::numeric, 2) AS long_km
            FROM m_mobilite_3v.lt_mob_ame lt_1
               LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_g::text = lt_1.code::text
@@ -538,10 +539,10 @@ COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour u
 
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
 
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1_apc IS 'Vue permettant d afficher la longueur totale d''aménagements cyclables en service dans GEO à l''échelle du Pays';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1_epci IS 'Vue permettant d afficher la longueur totale d''aménagements cyclables en service par EPCI  dans GEO et la capacité en stationnement ouvert';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_apc IS 'Vue permettant d afficher le pourcentage d''aménagements cyclables différents dans GEO à l''échelle de l''APC';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci IS 'Vue permettant d afficher le pourcentage d''aménagements cyclables par EPCI dans GEO (graphique)';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1_apc IS 'Vue permettant d''afficher la longueur totale d''aménagements cyclables en service dans GEO à l''échelle du Pays';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab1_epci IS 'Vue permettant d''afficher la longueur totale d''aménagements cyclables en service par EPCI  dans GEO et la capacité en stationnement ouvert';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_apc IS 'Vue permettant d''afficher le pourcentage d''aménagements cyclables différents dans GEO à l''échelle de l''APC';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci IS 'Vue permettant d''afficher le pourcentage d''aménagements cyclables par EPCI dans GEO (graphique)';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab3 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables) afficher avec le filtre du paramètre global';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab31 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables)';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d''afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO. Attention résultat non vérifié (à faire)';
