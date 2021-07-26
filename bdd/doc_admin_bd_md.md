@@ -20,6 +20,8 @@
 
 ## Dépendances
 
+La base de données des aménagements cyclables s'appuie sur des référentiels préexistants constituant autant de dépendances nécessaires.
+
 |Schéma | Table | Description | Usage |
 |:---|:---|:---|:---|  
 |r_objet|lt_src_geom| domaine de valeur générique d'une table géographique| référentiel utilisé pour la saisie des données|
