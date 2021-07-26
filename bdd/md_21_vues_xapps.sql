@@ -31,6 +31,7 @@ DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab11_apc;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.old_geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr;
+DROP MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_triti_nonamenage;
 
 -- TABLES D'ERREUR
 
@@ -441,6 +442,19 @@ WITH DATA;
 ALTER TABLE m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr OWNER TO sig_stage;
 
 
+--##############################################################OUVELEC#############################################################
+-- Vue matérialisée regénérant les itinéraires à partir des tronçons
+CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_triti_nonamenage
+TABLESPACE pg_default
+AS
+ SELECT row_number() OVER () AS gid, i.iditi, tr.geom
+ FROM m_mobilite_3v.lk_mob_ititroncon lk
+     JOIN m_mobilite_3v.an_mob_itineraire i ON lk.iditi = i.iditi
+     JOIN m_mobilite_3v.geo_mob_troncon tr ON lk.idtroncon = tr.idtroncon
+ WHERE tr.ame_d::text = '10'::text OR tr.ame_d::text = '11'::text OR tr.ame_g::text = '10'::text OR tr.ame_g::text = '11'::text
+WITH DATA;
+ALTER TABLE m_mobilite_3v.geo_vmr_mob_triti_nonamenage OWNER TO sig_stage;
+
 
 -- #################################################################################################################################
 -- ###                                                                                                                           ###
@@ -459,9 +473,7 @@ CREATE TABLE x_apps.xapps_an_v_mob_erreur(
 WITH (OIDS = FALSE
 )
 TABLESPACE pg_default;
-
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE x_apps.xapps_an_v_mob_erreur TO sig_edit;
-GRANT SELECT ON TABLE x_apps.xapps_an_v_mob_erreur TO sig_read;
+ALTER TABLE x_apps.xapps_an_v_mob_erreur OWNER to create_sig;
 
 
 
@@ -502,6 +514,7 @@ COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc IS 'Vue permettant d af
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.old_geo_vmr_mob_iti IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
 COMMENT ON MATERIALIZED VIEW m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
+COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_triti_nonamenage IS 'Vue matérialisée regénérant les itinéraires à partir des tronçons';
 
 COMMENT ON TABLE x_apps.xapps_an_v_mob_erreur IS 'Table gérant les messages d''erreurs de sécurité remontés dans GEO suite à des enregistrements sur la donnée aménagement cyclable';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.gid IS 'Identifiant unique';
