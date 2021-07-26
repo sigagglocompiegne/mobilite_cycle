@@ -34,7 +34,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|iditi|Identifiant unique (clé primaire) de l itinéraire|text|'I' nextval('m_mobilite_3v.mob_objet_seq_id')|
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text|('I'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
 |num_loc|Numéro de l itinéraire local|character varying(10)| |
 |nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
@@ -59,7 +59,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 |esti|Estimation en euros de l aménagement de l itinéraire|character varying(10)| |
 |url_site|Lien Http vers une page web|character varying(254)| |
 |observ|Commentaires|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
+|op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 
@@ -69,11 +69,12 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `niv_inscri` (lien vers l'identifiant `code` de la table `lt_mob_niv_inscri`).
 * Une clé étrangère existe sur la table de valeur `gest_iti` (lien vers l'identifiant `code` de la table `lt_mob_gest_iti`).
 * Une clé étrangère existe sur la table de valeur `usag` (lien vers l'identifiant `code` de la table `lt_mob_usage`).
-*  4 triggers :
+*  5 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
    * `t_t3_iti_delete` : avant suppression, supprime les relations tronçons-itinéraire dans la table lk_mob_ititroncon.
-   * `t_t4_refresh_view_after` : après suppression, rafraichit la table .
+   * `t_t4_refresh_view_after` : après suppression, rafraichit la table.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
 ---
 
 `[geo_mob_troncon]` : table géométrique .
@@ -108,10 +109,10 @@ Paticularité(s) à noter :
 |local_d|Localisation de l aménagement de droite|character varying(2)| |
 |revet_d|Type de revêtement du tronçon de droite|character varying(2)| |
 |long_m|Longueur en mètre du tronçon|integer| |
-|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)|22 (dans géo)|
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
 |observ|Commentaires|character varying(1000)| |
 |verif|attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon|boolean|false|
-|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
+|op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
@@ -136,25 +137,26 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `revet_g` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
 * Une clé étrangère existe sur la table de valeur `revet_d` (lien vers l'identifiant `code` de la table `lt_mob_revet`).
 * Une clé étrangère existe sur la table de valeur `src_geom` (lien vers l'identifiant `code` de la table `lt_src_geom`).
-*  4 triggers :
+*  5 triggers :
    * `t_t2_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t3_date_maj` : avant mise à jour, recherche la date actuelle au moment de la mise à jour de l'objet.
    * `t_t4_long_m` : avant insertion ou mise à jour, calcul la taille de l'objet.
    * `t_t5_commune` : avant insertion, recherche le nom de la commune en fonction du code insee renseigné par l'utilisateur au moment de la saisie de l'objet.
+   * `t_t6_refresh_view_iti` : après insertion, mise à jour ou suppression, rafraichissement des couches d'affichage des itinéraires.
 ---
 
 `[geo_mob_carrefour]` : table géométrique .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|'C' nextval('m_mobilite_3v.mob_objet_seq_id')|
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |libelle|Libellé du carrefour|character varying(255)| |
 |typ_car|Type de carrefour|character varying(2)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
 |insee|Code insee de la commune d implantation|character varying(5)| |
 |commune|Nom de la commune d implantation|character varying(80)| |
 |observ|Commentaires|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
+|op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
 |geom|Géométrie de l objet|USER-DEFINED| |
@@ -163,17 +165,18 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idcarrefour` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_car` (lien vers l'identifiant `code` de la table `lt_mob_carrefour`).
 * Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
-* 2 triggers :
+* 4 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
    * `t_t3_commune` : avant insertion ou mise à jour, recherche la commune via une relation spatiale.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
 ---
 
 `[geo_mob_lieustatio]` : table géométrique .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|'S' nextval('m_mobilite_3v.mob_objet_seq_id')|
+|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
 |capacite|Capacité de stationnement du lieu|integer| |
 |capacite_gt|Capacité de stationnement du lieu pour des vélos de grandes tailles|integer| |
@@ -195,8 +198,8 @@ Paticularité(s) à noter :
 |observ|Commentaire|character varying(1000)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
-|op_sai|Opérateur de saisie de la donnée|character varying(20)|%USER_LOGIN% (dans géo)|
-|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)|22 (dans géo)|
+|op_sai|Opérateur de saisie de la donnée|character varying(20)| |
+|src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
 |x_l93|Coordonnée X en Lambert 93|double precision| |
 |y_l93|Coordonnée Y en Lambert 93|double precision| |
 |x_wgs84|Longitude|numeric| |
@@ -212,12 +215,14 @@ Paticularité(s) à noter :
 * Une clé étrangère existe sur la table de valeur `avanc` (lien vers l'identifiant `code` de la table `lt_mob_avanc`).
 * Une clé étrangère existe sur la table de valeur `src_geom` (lien vers l'identifiant `code` de la table `lt_src_geom`).
 
-* 5 triggers :
+* 7 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
    * `t_t3_coord_l93` : avant mise à jour, recherche les coordonnées exactes du point en Lambert 93.
    * `t_t4_coord_longlat` : avant mise à jour, recherche les coordonnées exactes du point en Longitude et Latitude.
    * `t_t5_commune` : avant mise à jour, recherche la commune en fonction du code insee.
+   * `t_t6_equ_delete` : après suppression, suppression des données liées dans la couche an_mob_equstatio.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
 ---
 
 `[an_mob_equstatio]` : table alphanumérique .
@@ -238,10 +243,12 @@ Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idequstatio` lui-même contenant une séquence d'incrémentation automatique (an_mob_equstatio_seq_id).
 * Une clé étrangère existe sur la table de valeur `typ_accro` (lien vers l'identifiant `code` de la table `lt_mob_statio_accro`).
 
-* 3 triggers :
+* 4 triggers :
    * `t_t1_date_sai` : avant insertion, recherche la date actuelle au moment de la saisie.
    * `t_t2_date_maj` : avant mise à jour, recherche la date actuelle au moment de la saisie.
    * `t_t3_capacite_sum` : avant insertion, mise à jour et suppression, fait la somme des capacités des stationnement et met à jour la capacité de la table geo_mob_lieustatio.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
+
 ---
 
 `[lk_mob_ititroncon]` : table de relation .
@@ -255,23 +262,25 @@ Paticularité(s) à noter :
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `gid` lui-même contenant une séquence d'incrémentation automatique (mob_lk_gid).
 
-* 1 trigger :
+* 2 triggers :
    * `t_t1_refresh_view_iti` : après insertion, suppressionn ou mise à jour, rafraichit la table des itinéraires.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
+
 ---
 
 `[an_mob_media]` : table alpanumérique .
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---| 
-|gid|Identifiant unique (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_id')|
+|gid|Identifiant uniqueue (clé primaire) du média|bigint|nextval('m_mobilite_3v.mob_media_seq_gid'::regclass)|
 |id|Identifiant de l objet référence|text| |
 |media|Champ Média de GEO|text| |
 |miniature|Champ miniature de GEO|bytea| |
 |n_fichier|Nom du fichier|text| |
 |t_fichier|Type de média dans GEO|text| |
 |l_prec|Précision sur le document|character varying(1000)| |
-|op_sai|Opérateur de saisie|character varying(20)|%USER_LOGIN% (dans géo)|
-|date_sai|Date de saisie|timestamp without time zone|%CURRENT_DATE% (dans géo)|
+|op_sai|Opérateur de saisie|character varying(20)| |
+|date_sai|Date de saisie|timestamp without time zone| |
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
@@ -292,7 +301,7 @@ Paticularité(s) à noter :
 
 |Code | Valeur | Url | Modele | affichage |
 |:---|:---|:---|:---|:---| 
-|10|Non aménagé|||16|
+|10|Non aménagé (route)|||16|
 |11|Non aménagé (jalonnement)|||12|
 |20|Piste cyclable|||1|
 |30|Bande cyclable|||3|
@@ -485,7 +494,7 @@ Paticularité(s) à noter :
 |20|Aire piétonne|
 |30|Zone de rencontre|
 |40|En agglomération|
-|50|Hors agglomération
+|50|Hors agglomération|
 |60|Autre|
 |ZZ|Non concerné|
 
@@ -712,31 +721,67 @@ Paticularité(s) à noter :
 ---
 
 ### classes d'objets applicatives de gestion :
-
-`[geo_vmr_mob_iti]` : vue de gestion permettant la saisie des objets 
-
----
-
-`[geo_v_mob_troncon]` : vue de gestion permettant la saisie des objets 
-
-Particularité(s) à noter :
-* triggers : `t_t1_modif_troncon` : avant insertion, mise à jour ou suppression, sert a mettre à jour la base de données `geo_mob_troncon`.
 ---
 
 ### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
- 
+
+`[geo_v_mob_troncon]` : vue applicative permettant la saisie des objets dans la couche `geo_mob_troncon`.
+
+Particularité(s) à noter :
+* 2 triggers : 
+   * `t_t1_modif_troncon` : avant insertion, mise à jour ou suppression, sert à mettre à jour la base de données `geo_mob_troncon`.
+   * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
+
+---
+
+`[geo_v_mob_noeud]` : vue d'affichage permettant la visualisation des noeuds des tronçons cyclables.
+
+---
+
 `[xapps_geo_v_mob_troncon_affiche]` : vue d'affichage permettant la visualisation des objets 
 
 ---
 
-`[xapps_an_v_mob3v_tab1]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés (dans le schéma m_mobilite_3v)
+`[xapps_an_v_mob3v_tab1_apc]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données de l'APC (dans le schéma m_mobilite_3v).
 
 ---
 
-`[xapps_an_v_mob3v_tab2]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés (dans le schéma m_mobilite_3v)
+`[xapps_an_v_mob3v_tab1_epci]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données par EPCI (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab2_apc]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données de l'APC (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab2_epci]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données par EPCI (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab3]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur le paramètre global des itinéraires (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab11_apc]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur le paramètre global des itinéraires (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab31]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données de l'APC (dans le schéma m_mobilite_3v).
+
+---
+`[xapps_an_v_mob3v_tab32]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données de l'APC (dans le schéma m_mobilite_3v).
+
+---
+`[geo_vmr_mob_iti]` : vue d'affichage permettant la visualisation des itinéraires.
 
 ---
 
+`[geo_vmr_mob_triti_nonamenage]` : vue d'affichage permettant la visualisation des itinéraires non aménagés.
+
+---
+
+`[old_geo_vmr_mob_iti]` : ancienne vue d'affichage permettant la visualisation des itinéraires.
+
+---
+
+`[xapps_geo_vmr_mob_iti_deparr]` : vue d'affichage permettant la visualisation des points de départ et d'arrivée des itinéraires.
+
+---
 
 ### classes d'objets applicatives grands publics sont classés dans le schéma x_apps_public :
 
@@ -752,11 +797,11 @@ Sans objet
 
 ## Log
 
-(à traiter)
+`[an_mob_log]` : table enregistrant les modifications effectuées sur les données.
 
 ## Erreur
 
-Sans objet
+`[xapps_an_v_mob_erreur]` : table d'enregistrement des erreurs obtenues pendant la saisie de donnée par les utilisateurs.
 
 ---
 
