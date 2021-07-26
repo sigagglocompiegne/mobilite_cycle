@@ -839,9 +839,9 @@ DECLARE v_count integer;
 BEGIN
 -- INSERTION D'UN NOUVELLE ELEMENT DANS LA TABLE
 	IF (TG_OP = 'INSERT') THEN
-	    -- SI aménagement à droite
+	    -- si aménagement à droite
 		if new.loc_ame = '10' then
-			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			-- contrôle si ame_d = piste cyclable et si revêtement est différent de lisse
 			IF new.ame_d = '20' AND new.revet_d NOT LIKE '1%' THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES	(
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -850,7 +850,6 @@ BEGIN
 					now()
 				);
 			END IF;
-			--condition si st_interesects NE REMONTE QUE DES LINES (st_geometrytype)
 			INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
 				SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'),
 				new.id_osm,
@@ -884,9 +883,9 @@ BEGIN
 				new.verif,	
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
-		-- SI aménagement à gauche
+		-- si aménagement à gauche
 		elsif new.loc_ame = '20' then
-			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			-- contrôle si ame_g = piste cyclable et si revêtement est différent de lisse
 			IF new.ame_g = '20' AND new.revet_g NOT LIKE '1%' THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES	(
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -928,9 +927,9 @@ BEGIN
 				new.verif,	
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
-		-- SI AMENAGEMENT à gauche et à droite
+		-- si aménagement à gauche et à droite
 		elsif new.loc_ame = '30' then
-			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			-- contrôle si ame_d = piste cyclable et si revêtement est différent de lisse ou si ame_g = piste cyclable et si revêtement est différent de lisse
 			IF (new.ame_d = '20' AND new.revet_d NOT LIKE '1%') OR (new.ame_g = '20' AND new.revet_g NOT LIKE '1%') THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -973,11 +972,11 @@ BEGIN
 				new.op_sai,
 				(ST_Dump(st_intersection(new.geom,c.geom))).geom AS geom from r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE;
 		end if;
--- mise à jour du tronçon
+-- MISE A JOUR DU TRONCON
 	ELSIF (TG_OP) = 'UPDATE' THEN
-	    	-- SI aménagement à droite
+	    	-- si aménagement à droite
 		if new.loc_ame = '10' then
-			-- CONTROLE SI PISTE CYCLEBLE ET REVETEMENT <> LISSE
+			-- contrôle si ame_d = piste cyclable et si revêtement est différent de lisse
 			IF new.ame_d = '20' AND new.revet_d NOT LIKE '1%' THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -986,9 +985,9 @@ BEGIN
 					now()
 				);
 			END IF;
-			-- je vérifie si le tronçon a été modifié
+			-- je vérifie si la géométrie du tronçon a été modifié
 			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
-			-- je mets à jour les attribtus mais pas la géométrie
+			-- je mets à jour les attributs mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
 				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
@@ -1025,7 +1024,7 @@ BEGIN
 				WHERE idtroncon = new.idtroncon;			
 		ELSE
 			-- je compte les intersections avec les communes
-			-- si le résultat est inférieur ou égale à 1, le tronçon est toujours dans la même commune mais modifié
+			-- si le résultat est inférieur ou égale à 1, le tronçon est toujours dans la même commune mais avec une géométrie modifiée
 			IF (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE) <= 1 THEN
 			    -- je mets à jour les données pour 1 tronçon
 				UPDATE  m_mobilite_3v.geo_mob_troncon 
@@ -1061,13 +1060,13 @@ BEGIN
 					    verif 	 =  new.verif, 		
 					    op_sai       =  new.op_sai,
 					    geom 	 =  new.geom 
-					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
+					WHERE idtroncon = new.idtroncon;
 				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
 			ELSE
 				-- suppression de l'ancien tronçon qui sera découpé
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
-			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+			    	INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
 					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
@@ -1114,18 +1113,15 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select 
-					req_tr.idtroncon,
-					req_iti.iditi,
-					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				select req_tr.idtroncon, req_iti.iditi, nextval('m_mobilite_3v.mob_lk_gid'::regclass)
 				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
-				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
+				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = old.idtroncon;
 			END IF;
 		END IF;
-		-- SI aménagement est à gauche
+		-- si aménagement à gauche
 		elsif new.loc_ame = '20' then
-			-- CONTROLE SI PISTE CYCLEBLE ET REVETEMENT <> LISSE
+				-- contrôle si ame_g = piste cyclable et si revêtement est différent de lisse
 				IF new.ame_g = '20' AND new.revet_g NOT LIKE '1%' THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -1137,7 +1133,7 @@ BEGIN
 		
 			-- je vérifie si le tronçon a été modifié
 			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
-			-- je mets à jour les attribtus mais pas la géométrie
+			-- je mets à jour les attributs mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
 				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
@@ -1210,13 +1206,13 @@ BEGIN
 					    verif 	 =  new.verif, 		
 					    op_sai       =  new.op_sai,
 					    geom 	 =  new.geom 
-					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
+					WHERE idtroncon = new.idtroncon;
 				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
 			ELSE
 				-- suppression de l'ancien tronçon qui sera découpé
 				DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 				-- insertion des tronçons découpés
-			    INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
+			    	INSERT INTO m_mobilite_3v.geo_mob_troncon(idtroncon,id_osm,id_on3v,typ_res,gest,propriete,d_service,trafic_vit,lumiere,code_com_g,commune_g,ame_g,avanc_g,regime_g,sens_g,largeur_g,local_g,revet_g,code_com_d,commune_d,ame_d,avanc_d,regime_d,sens_d,largeur_d,local_d,revet_d,src_geom,observ,verif,op_sai,geom)
 					SELECT 'T' || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass),
 					new.id_osm,
 					new.id_on3v,
@@ -1255,7 +1251,7 @@ BEGIN
 				v_count := (SELECT count(*) FROM r_osm.geo_vm_osm_commune_oise c WHERE st_intersects(new.geom,c.geom) IS TRUE);			
 				-- requête mettant à jour la table des relations tronçon-itinéraire
 				WITH
-				--  je sélectionne les tronçons qui viennent d'être intégrés à la table des tronçons (ex : si 2 tronçons nouveaux, je récupère les 2 derniers dans la table des tronçons)
+				-- je sélectionne les tronçons qui viennent d'être intégrés à la table des tronçons (ex : si 2 tronçons nouveaux, je récupère les 2 derniers dans la table des tronçons)
 				req_tr AS
 				(SELECT idtroncon FROM m_mobilite_3v.geo_mob_troncon ORDER BY date_sai DESC LIMIT v_count),
 				-- je sélectionne les itinéraires affectés à l'ancien tronçon supprimé car découpé
@@ -1263,18 +1259,15 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select 
-					req_tr.idtroncon,
-					req_iti.iditi,
-					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				select req_tr.idtroncon, req_iti.iditi, nextval('m_mobilite_3v.mob_lk_gid'::regclass)
 				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
 				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
 		END IF;
-		-- SI AMENAGEMENT A DROITE ET A GAUCHE
+		-- si aménagement à droite et à gauche
 		elsif new.loc_ame = '30' then
-			-- CONTROLE SI PISTE CYCLABLE ET REVETEMENT <> LISSE
+			-- contrôle si ame_d = piste cyclable et si revêtement est différent de lisse ou si ame_g = piste cyclable et si revêtement est différent de lisse
 			IF (new.ame_d = '20' AND new.revet_d NOT LIKE '1%') OR (new.ame_g = '20' AND new.revet_g NOT LIKE '1%') THEN
 				INSERT INTO x_apps.xapps_an_v_mob_erreur VALUES (
 					nextval('x_apps.xapps_an_v_mob_erreur_gid_seq'::regclass),
@@ -1286,7 +1279,7 @@ BEGIN
 		
 			-- je vérifie si le tronçon a été modifié
 			IF st_equals(new.geom,OLD.geom) IS TRUE THEN
-			-- je mets à jour les attribtus mais pas la géométrie
+			-- je mets à jour les attributs mais pas la géométrie
 			UPDATE m_mobilite_3v.geo_mob_troncon 
 				SET id_osm 		 =  new.id_osm,	
 					id_on3v 	 =  new.id_on3v, 
@@ -1359,7 +1352,7 @@ BEGIN
 					    verif 	 =  new.verif, 		
 					    op_sai       =  new.op_sai,
 					    geom 	 =  new.geom 
-					WHERE idtroncon = new.idtroncon /*AND st_geometrytype((st_intersection(new.geom,c.geom))) = 'ST_LineString'*/;
+					WHERE idtroncon = new.idtroncon;
 				-- si le résultat est supérieur à 1, le tronçon sera découpé en plusieurs parties
 			ELSE
 				-- suppression de l'ancien tronçon qui sera découpé
@@ -1412,17 +1405,14 @@ BEGIN
 				(SELECT iditi FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon)
 				-- insertion dans la table des relations troncon-itinéraire
 				INSERT INTO m_mobilite_3v.lk_mob_ititroncon (idtroncon,iditi, gid)
-				select 
-					req_tr.idtroncon,
-					req_iti.iditi,
-					nextval('m_mobilite_3v.mob_lk_gid'::regclass)
+				select req_tr.idtroncon, req_iti.iditi, nextval('m_mobilite_3v.mob_lk_gid'::regclass)
 				FROM req_tr,req_iti, m_mobilite_3v.mob_lk_gid;
 				-- suppression dans la table des relations troncon-itinéraire, des relations du tronçon supprimé
 				DELETE FROM m_mobilite_3v.lk_mob_ititroncon WHERE idtroncon = OLD.idtroncon;
 			END IF;
 		END IF;
 	end if;
--- DELETE D'UN ELEMENT DE LA TABLE
+-- SUPPRESSION D'UN TRONCON
 	ELSIF (TG_OP) = 'DELETE' THEN
 		DELETE FROM m_mobilite_3v.geo_mob_troncon t WHERE t.idtroncon = old.idtroncon;
 		DELETE FROM m_mobilite_3v.lk_mob_ititroncon i WHERE i.idtroncon = old.idtroncon;
@@ -1513,6 +1503,7 @@ ALTER FUNCTION m_mobilite_3v.ft_m_equstatio_delete() OWNER TO sig_stage;
 
 --################################################################# FONCTION #######################################################
 
+-- Fonction permettant de recenser toutes les modifications effectuées
 CREATE FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -1596,18 +1587,21 @@ CREATE TRIGGER t_t2_date_maj
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t3_iti_delete pour la fonction de suppression des lien tronçon-itinéraire
 CREATE TRIGGER t_t3_iti_delete
     BEFORE DELETE
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_itineraire_delete_lk();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t4_refresh_view_after pour la fonction de rafraichissement des itinéraires à chaque modification
 CREATE TRIGGER t_t4_refresh_view_after
     AFTER DELETE
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.an_mob_itineraire
@@ -1646,6 +1640,7 @@ CREATE TRIGGER t_t5_commune
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee_troncon_cy();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t6_refresh_view_iti pour la fonction de rafraichissement des itinéraires à chaque modification
 CREATE TRIGGER t_t6_refresh_view_iti
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.geo_mob_troncon
@@ -1677,6 +1672,7 @@ CREATE TRIGGER t_t3_commune
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.geo_mob_carrefour
@@ -1694,6 +1690,7 @@ CREATE TRIGGER t_t1_refresh_view_iti
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.lk_mob_ititroncon
@@ -1740,12 +1737,14 @@ CREATE TRIGGER t_t5_commune
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl(); 
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t6_equ_delete pour la fonction de suppression de lien avec les équipements de stationnement
 CREATE TRIGGER t_t6_equ_delete
     AFTER DELETE
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_equstatio_delete();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
@@ -1777,6 +1776,7 @@ CREATE TRIGGER t_t3_capacite_sum
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
 --################################################################# TRIGGER #######################################################
+-- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
     ON m_mobilite_3v.an_mob_equstatio
