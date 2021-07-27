@@ -274,16 +274,16 @@ ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab31 OWNER TO postgres;
 
 
 --##############################################################OUVELEC#############################################################
--- Vue permettant d afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO. Attention résultat non vérifié (à faire)
+-- Vue permettant d afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO.
 CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32
  AS
  WITH req_droite AS (
            SELECT DISTINCT i.iditi, lt_1.code, lt_1.valeur, round(sum(tr.long_m::numeric) / 1000::numeric, 2) AS long_km
            FROM m_mobilite_3v.lt_mob_ame lt_1
-              LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_d::text = lt_1.code::text
-              LEFT JOIN m_mobilite_3v.lk_mob_ititroncon lk ON lk.idtroncon = tr.idtroncon
-              LEFT JOIN m_mobilite_3v.an_mob_itineraire i ON i.iditi = lk.iditi
-           WHERE tr.ame_d::text <> 'ZZ'::text AND tr.ame_d::text <> '10'::text AND tr.ame_d::text <> '11'::text AND tr.avanc_d::text = '50'::text
+               LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_d::text = lt_1.code::text
+               LEFT JOIN m_mobilite_3v.lk_mob_ititroncon lk ON lk.idtroncon = tr.idtroncon
+               LEFT JOIN m_mobilite_3v.an_mob_itineraire i ON i.iditi = lk.iditi
+           WHERE tr.ame_d::text <> 'ZZ'::text AND tr.avanc_d::text = '50'::text
            GROUP BY lt_1.code, lt_1.valeur, i.iditi
            ORDER BY lt_1.code),
       req_gauche AS (
@@ -292,8 +292,8 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32
                LEFT JOIN m_mobilite_3v.geo_mob_troncon tr ON tr.ame_g::text = lt_1.code::text
                LEFT JOIN m_mobilite_3v.lk_mob_ititroncon lk ON lk.idtroncon = tr.idtroncon
                LEFT JOIN m_mobilite_3v.an_mob_itineraire i ON i.iditi = lk.iditi
-           WHERE tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text AND tr.avanc_g::text = '50'::text AND tr.ame_g::text = lt_1.code::text
-           GROUP BY lt_1.code, lt_1.valeur, i.iditi)
+          WHERE tr.ame_g::text <> 'ZZ'::text AND tr.avanc_g::text = '50'::text AND tr.ame_g::text = lt_1.code::text
+          GROUP BY lt_1.code, lt_1.valeur, i.iditi)
  SELECT d.iditi, lt.code, lt.valeur AS nom_ame,
         CASE WHEN d.long_km IS NULL THEN 0::numeric
              ELSE d.long_km
@@ -301,22 +301,22 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32
         CASE WHEN g.long_km IS NULL THEN 0::numeric
              ELSE g.long_km
         END AS long_km,
-        round((CASE WHEN d.long_km IS NULL THEN 0::numeric
-                    ELSE d.long_km
-               END +
-               CASE WHEN g.long_km IS NULL THEN 0::numeric
-                    ELSE g.long_km
-               END) / ((WITH req_droite AS (
-               			     SELECT 1 AS id, round(sum(geo_mob_troncon.long_m::numeric) / 1000::numeric, 2) AS long_km
-               			     FROM m_mobilite_3v.geo_mob_troncon
-               			     WHERE geo_mob_troncon.ame_d::text <> '10'::text AND geo_mob_troncon.ame_d::text <> '11'::text AND geo_mob_troncon.ame_d::text <> 'ZZ'::text AND geo_mob_troncon.avanc_d::text = '50'::text), 
-			      req_gauche AS (
-               			     SELECT 1 AS id, round(sum(geo_mob_troncon.long_m::numeric) / 1000::numeric, 2) AS long_km
-               			     FROM m_mobilite_3v.geo_mob_troncon
-               			     WHERE geo_mob_troncon.ame_g::text <> '10'::text AND geo_mob_troncon.ame_g::text <> '11'::text AND geo_mob_troncon.ame_g::text <> 'ZZ'::text AND geo_mob_troncon.avanc_g::text = '50'::text)
-         		SELECT d_1.long_km + g_1.long_km AS long_km
-          		FROM req_droite d_1, req_gauche g_1
-          		WHERE d_1.id = g_1.id)) * 100::numeric, 2) AS long_km_p
+    round((CASE WHEN d.long_km IS NULL THEN 0::numeric
+                ELSE d.long_km
+           END +
+           CASE WHEN g.long_km IS NULL THEN 0::numeric
+                ELSE g.long_km
+           END) / (( WITH req_droite AS (
+                                 SELECT 1 AS id, round(sum(geo_mob_troncon.long_m::numeric) / 1000::numeric, 2) AS long_km
+                                 FROM m_mobilite_3v.geo_mob_troncon
+                                 WHERE geo_mob_troncon.ame_d::text <> '10'::text AND geo_mob_troncon.ame_d::text <> '11'::text AND geo_mob_troncon.ame_d::text <> 'ZZ'::text AND geo_mob_troncon.avanc_d::text = '50'::text), 
+		          req_gauche AS (
+                 	         SELECT 1 AS id, round(sum(geo_mob_troncon.long_m::numeric) / 1000::numeric, 2) AS long_km
+                   		 FROM m_mobilite_3v.geo_mob_troncon
+                  		 WHERE geo_mob_troncon.ame_g::text <> '10'::text AND geo_mob_troncon.ame_g::text <> '11'::text AND geo_mob_troncon.ame_g::text <> 'ZZ'::text AND geo_mob_troncon.avanc_g::text = '50'::text)
+         	     SELECT d_1.long_km + g_1.long_km AS long_km
+           	     FROM req_droite d_1, req_gauche g_1
+          	     WHERE d_1.id = g_1.id)) * 100::numeric, 2) AS long_km_p
  FROM m_mobilite_3v.lt_mob_ame lt
      LEFT JOIN req_droite d ON d.code::text = lt.code::text
      LEFT JOIN req_gauche g ON g.code::text = lt.code::text
@@ -544,7 +544,7 @@ COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_apc IS 'Vue permettant d''af
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci IS 'Vue permettant d''afficher le pourcentage d''aménagements cyclables par EPCI dans GEO (graphique)';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab3 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables) afficher avec le filtre du paramètre global';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab31 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables)';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d''afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO. Attention résultat non vérifié (à faire)';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d''afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc IS 'Vue permettant d''afficher le tableau des informations des stationnements cyclables en service dans GEO';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_epci IS 'Vue permettant d''afficher le tableau des informations des stationnements cyclables en service par EPCI dans GEO';
 
