@@ -16,7 +16,6 @@
 
 
 --VUES
-DROP VIEW if exists x_apps.xapps_geo_v_mob_troncon_affiche;
 
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1_apc;
@@ -27,12 +26,14 @@ DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab3;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab31;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab32;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab11_apc;
-DROP VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_epci;
+DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab11_epci;
 
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.old_geo_vmr_mob_iti;
-DROP MATERIALIZED VIEW m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr;
-DROP MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_triti_nonamenage;
+DROP MATERIALIZED VIEW if exists m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr;
+DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_triti_nonamenage;
+
+DROP MATERIALIZED VIEW if exists x_apps.xapps_geo_vmr_mob_troncon_affiche;
 
 -- TABLES D'ERREUR
 
@@ -50,38 +51,36 @@ DROP TABLE if exists x_apps.xapps_an_v_mob_erreur;
 
 
 --##############################################################OUVELEC#############################################################
--- Vue d'affichage pour un affichage distinct entre les différents mode d aménagements des tronçons
-CREATE OR REPLACE VIEW x_apps.xapps_geo_v_mob_troncon_affiche
+-- Vue d'affichage pour un affichage distinct entre les différents mode d'aménagements des tronçons
+CREATE MATERIALIZED VIEW x_apps.xapps_geo_vmr_mob_troncon_affiche
  AS
  WITH req_t AS (
-	   -- selection des tronçons de droite où les tronçons de gauche sont non aménagés et non concernés
-	   SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, tr.geom 
-	   FROM m_mobilite_3v.geo_mob_troncon tr 
-	   WHERE tr.ame_g::text = 'ZZ'::text OR tr.ame_g::text = '10'::text OR tr.ame_g::text = '11'::text
+           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE (tr.ame_g::text = 'ZZ'::text OR tr.ame_g::text = '10'::text OR tr.ame_g::text = '11'::text) AND tr.ame_d::text <> '20'::text AND tr.ame_d::text <> '50'::text
         UNION ALL
-	   -- selection des tronçons de droite où les tronçons de gauche sont égaux à ceux de droite et ceux de gauche sont aménagés. Pour pouvoir les décaler
-           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom 
-	   FROM m_mobilite_3v.geo_mob_troncon tr 
-	   WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
+           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
         UNION ALL
-	   -- selection des tronçons de gauche où les troncçons de droite sont égaux à ceux de gauche et ceux de gauche sont aménagés. Pour pouvoir les décaler
-           SELECT tr.idtroncon, tr.ame_g AS ame, tr.avanc_g AS avanc, st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom 
-	   FROM m_mobilite_3v.geo_mob_troncon tr 
-	   WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
+           SELECT tr.idtroncon, tr.ame_g AS ame, tr.avanc_g AS avanc, st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE tr.ame_g::text = tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
         UNION ALL
-	   -- selection des tronçons de droite qui sont différents de ceux de gauche et ceux de gauche sont aménagés. Pour pouvoir les décaler
-           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom 
-	   FROM m_mobilite_3v.geo_mob_troncon tr 
-	   WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
+           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, st_offsetcurve(tr.geom, - 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
         UNION ALL
-	   -- selection des tronçons de gauche qui sont différents de ceux de droite et ceux de gauche sont aménagés. Pour pouvoir les décaler
-           SELECT tr.idtroncon, tr.ame_g AS ame, tr.avanc_g AS avanc, st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom 
-	   FROM m_mobilite_3v.geo_mob_troncon tr 
-	   WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
- )
- SELECT row_number() OVER () AS gid, t.idtroncon, t.ame, t.avanc, t.geom 
+           SELECT tr.idtroncon, tr.ame_g AS ame, tr.avanc_g AS avanc, st_offsetcurve(tr.geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE tr.ame_g::text <> tr.ame_d::text AND tr.ame_g::text <> 'ZZ'::text AND tr.ame_g::text <> '10'::text AND tr.ame_g::text <> '11'::text
+        UNION ALL
+           SELECT tr.idtroncon, tr.ame_d AS ame, tr.avanc_d AS avanc, tr.geom
+           FROM m_mobilite_3v.geo_mob_troncon tr
+           WHERE tr.ame_g::text = 'ZZ'::text AND (tr.ame_d::text = '20'::text OR tr.ame_d::text = '50'::text))
+ SELECT row_number() OVER () AS gid, t.idtroncon, t.ame, t.avanc, t.geom
  FROM req_t t;
-ALTER TABLE x_apps.xapps_geo_v_mob_troncon_affiche OWNER TO sig_stage;
+ALTER TABLE x_apps.xapps_geo_vmr_mob_troncon_affiche OWNER TO sig_stage;
 
 
 --##############################################################OUVELEC#############################################################
@@ -535,7 +534,7 @@ CREATE INDEX idx_xapps_an_v_mob_erreur_id
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
-COMMENT ON VIEW x_apps.xapps_geo_v_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d''aménagements des tronçons';
+COMMENT ON MATERIALIZED VIEW x_apps.xapps_geo_vmr_mob_troncon_affiche IS 'Vue de gestion pour un affichage distinct entre les différents mode d''aménagements des tronçons';
 
 COMMENT ON VIEW m_mobilite_3v.geo_v_mob_noeud IS 'Vue de modélisation des noeuds des tronçons purement cartographique pour géo';
 
@@ -558,4 +557,4 @@ COMMENT ON TABLE x_apps.xapps_an_v_mob_erreur IS 'Table gérant les messages d''
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.gid IS 'Identifiant unique';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.id IS 'Identifiant de l''objet';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.erreur IS 'Message';
-COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.horodatage IS 'Date (avec heure) de génération du message (ce champ permet de filtrer l''affichage < x secondsdans GEo)';
+COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.horodatage IS 'Date (avec heure) de génération du message (ce champ permet de filtrer l''affichage < x seconds dans GEo)';
