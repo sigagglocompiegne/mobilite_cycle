@@ -23,6 +23,7 @@ DROP VIEW if exists m_mobilite_3v.geo_v_mob_troncon;
 -- TRIGGERS
 
 DROP TRIGGER if exists t_t1_modif_troncon ON m_mobilite_3v.geo_v_mob_troncon;
+DROP TRIGGER if exists t_t2_refresh_vmr_affiche ON m_mobilite_3v.geo_v_mob_troncon;
 DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_v_mob_troncon;
 
 
@@ -98,6 +99,14 @@ CREATE TRIGGER t_t1_modif_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_modif_troncon();
     
+    
+-- Trigger t_t2_refresh_vmr_affiche pour la fonction de rafraichissement de l'affichage des tronçons dans GEO
+CREATE TRIGGER t_t2_refresh_vmr_affiche
+    instead of INSERT or update or delete
+    ON m_mobilite_3v.geo_v_mob_troncon
+    FOR EACH ROW
+    EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_troncon_affiche();
+
 
 -- Trigger t_t9_geo_mobilite_3v_log
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
