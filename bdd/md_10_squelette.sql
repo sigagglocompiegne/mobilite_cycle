@@ -80,6 +80,7 @@ DROP FUNCTION if exists m_mobilite_3v.ft_m_itineraire_delete_lk();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_mobi_capacite();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_equstatio_delete();
 DROP FUNCTION if exists m_mobilite_3v.ft_m_geo_mobilite_3v_log();
+DROP FUNCTION if exists m_mobilite_3v.ft_m_refresh_view_troncon_affiche();
 
 -- TRIGGERS
 
@@ -1563,6 +1564,26 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log() OWNER TO sig_stage;
 
 
+--################################################################# FONCTION #######################################################
+
+-- Fonction permettant de rafraichir la vue matérialisée de l'affichage des tronçons dans GEO
+CREATE FUNCTION m_mobilite_3v.ft_m_refresh_view_troncon_affiche()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	REFRESH MATERIALIZED VIEW x_apps.xapps_geo_vmr_mob_troncon_affiche;
+	return new;
+END;
+$BODY$;
+ALTER FUNCTION m_mobilite_3v.ft_m_refresh_view_troncon_affiche() OWNER TO sig_stage;
+
+
+
+
+
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
 -- ###                                                         TRIGGERS                                                        ###
@@ -2033,6 +2054,9 @@ COMMENT ON FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() IS 'Fonction pour 
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_mobi_capacite() IS 'Fonction permettant la somme des différentes capacités en fonction du type d accroche';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_equstatio_delete() IS 'Fonction pour la suppression des relations équipements et lieux de stationnements dans la table an_mob_equstatio';
 COMMENT ON FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log() IS 'Fonction permettant de recenser toutes les modifications effectuées';
+COMMENT ON FUNCTION m_mobilite_3v.ft_m_refresh_view_troncon_affiche() IS 'Fonction trigger pour le rafraichissement de la vue des tronçons';
+
+
 
 -- ###############################################################################################################################
 -- ###                                                                                                                         ###
