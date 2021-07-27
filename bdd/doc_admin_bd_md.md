@@ -317,7 +317,7 @@ Paticularité(s) à noter :
 |61|Couloir Bus+Vélo|||9|
 |62|Rampe|||14|
 |63|Goulotte|||15|
-|64|Aménagement mixte piéton-vélo (hors voie verte)|||7|
+|64|Aménagement mixte piéton-vélo (hors voie verte)(ASP)|||7|
 |70|Chaussée à voie centrale banalisée|||11|
 |71|Accotement revêtu hors CVCB|||10|
 |99|Autre|||13|
@@ -732,8 +732,9 @@ Paticularité(s) à noter :
 `[geo_v_mob_troncon]` : vue applicative permettant la saisie des objets dans la couche `geo_mob_troncon`.
 
 Particularité(s) à noter :
-* 2 triggers : 
+* 3 triggers : 
    * `t_t1_modif_troncon` : avant insertion, mise à jour ou suppression, sert à mettre à jour la base de données `geo_mob_troncon`.
+   * `t_t2_refresh_vmr_affiche` : avant insertion, mise à jour ou suppression, sert à rafraichir la vue matérialisée de l'affichage des tronçons.
    * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
 
 ---
