@@ -274,7 +274,7 @@ ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab31 OWNER TO postgres;
 
 
 --##############################################################OUVELEC#############################################################
--- Vue permettant d afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO.
+-- Vue permettant d afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO. (à vérifier)
 CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32
  AS
  WITH req_droite AS (
@@ -544,7 +544,7 @@ COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_apc IS 'Vue permettant d''af
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab2_epci IS 'Vue permettant d''afficher le pourcentage d''aménagements cyclables par EPCI dans GEO (graphique)';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab3 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables) afficher avec le filtre du paramètre global';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab31 IS 'Vue tableau de bord pour synthèse nombre total d''itinéraire et leur km (Chiffres clés des itinéraires cyclables)';
-COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d''afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO';
+COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab32 IS 'Vue permettant d''afficher un graphique avec le pourcentage des différents aménagements cyclables pour l''itinéraire sélectionné (paramètre global) dans GEO'. (à vérifier);
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc IS 'Vue permettant d''afficher le tableau des informations des stationnements cyclables en service dans GEO';
 COMMENT ON VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_epci IS 'Vue permettant d''afficher le tableau des informations des stationnements cyclables en service par EPCI dans GEO';
 
