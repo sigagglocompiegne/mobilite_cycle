@@ -20,6 +20,7 @@
 
 |Public|Métier|Accès restreint|
 |:-:|:-:|:---|
+||X|Accès réservé aux personnels gestionnaires des données.||
 
 
 # Droit par profil de connexion
