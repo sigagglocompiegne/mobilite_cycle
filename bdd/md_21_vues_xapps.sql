@@ -332,10 +332,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_apc
     	sta.commune,
    	 sta.gratuit,
     	sta.capacite,
-    	sta.capacite_gt,
-    	(SELECT DISTINCT lt.valeur
-         FROM m_mobilite_3v.lt_mob_avanc lt, m_mobilite_3v.geo_mob_lieustatio p
-         WHERE p.avanc::text = lt.code::text AND p.avanc::text = '50'::text) AS avanc
+    	sta.capacite_gt
  FROM m_mobilite_3v.geo_mob_lieustatio sta
  WHERE geo_mob_lieustatio.avanc::text = '50'::text;
 ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab11_apc OWNER TO sig_stage;
@@ -350,10 +347,7 @@ CREATE OR REPLACE VIEW m_mobilite_3v.xapps_an_v_mob3v_tab11_epci
     pa.gratuit,
     pa.capacite,
     pa.capacite_gt,
-    e_1.lib_epci_m AS epci,
-    (SELECT DISTINCT lt.valeur
-     FROM m_mobilite_3v.lt_mob_avanc lt, m_mobilite_3v.geo_mob_lieustatio pa_1
-     WHERE pa_1.avanc::text = lt.code::text AND pa_1.avanc::text = '50'::text) AS avanc
+    e_1.lib_epci_m AS epci
  FROM m_mobilite_3v.geo_mob_lieustatio pa, r_osm.geo_osm_epci e_1, r_administratif.an_geo g_1
  WHERE pa.avanc::text = '50'::text AND pa.insee::text = g_1.insee::text AND g_1.epci::text = e_1.cepci::text;
 ALTER TABLE m_mobilite_3v.xapps_an_v_mob3v_tab11_epci OWNER TO sig_stage;
