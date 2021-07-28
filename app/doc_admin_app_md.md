@@ -42,11 +42,24 @@ Sans objet
 
 Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les besoins de l'application. Les autres données servant d'habillage (pour la cartographie ou les recherches) sont listées dans les autres parties ci-après. Le tableau ci-dessous présente uniquement les changements (type de champ, formatage du résultat, ...) ou les ajouts (champs calculés, filtre, ...) non présents dans la donnée source. 
 
-## GeoTable : `[libellé]`
+## GeoTable : `[geo_v_mob_troncon]`
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-
+|affiche_blanc|x|||N'affiche rien pour pouvoir contourner la première ligne en gras dans les résultats des recherches de Géo.|Résultat de recherche|| 
+|affiche_message|x|x||Affiche un message en HTML pour préciser que la droite et la gauche se remplissent en fonction du sens de saisie.|Fiche d'information|<center><font size=2 color="#FF0000"><b><i>La gauche ou la droite se détermine par rapport au sens de saisie du tronçon.</i></b></font></center>|
+|ame_d|||Aménagement (droite)||Fiche d'information des tronçons||
+|ame_g|||Aménagement (gauche)||Fiche d'information des tronçons||
+|amenagement_recherche|x|||Utile à un autre champ calculé pour une recherche|Recherche sur les aménagements||{ame_g};{ame_d}|
+|avanc_d|||Avancement (droite)||Fiche d'information des tronçons||
+|avanc_g|||Avancement (gauche)||Fiche d'information des tronçons||
+|avancement_recherche|x|||Utile à un autre champs calculé pour une recherche sur les avancements||{avanc_g};{avanc_d}|
+|code_com_d|||Code Insee (droite)||Fiche d'information des tronçons||
+|code_com_g|||Code Insee (gauche)||Fiche d'information des tronçons||
+|commune_d|||Commune (droite)||||
+|commune_g|||Commune (gauche)||||
+|commune_recherche|x|||Utile à un autre champs calculé pour une recherche sur les communes||{code_com_g};{code_com_d}|
+|SUITE A ECRIRE||||||
 
    * filtres :
 
@@ -59,6 +72,8 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 |:---|:---|:---|
 
    * particularité(s) : aucune
+
+
 
 
 
