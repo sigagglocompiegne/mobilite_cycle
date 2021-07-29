@@ -256,8 +256,17 @@ Source : `[libellé]`
  
  # La cartothèque
 
-|Groupe|Sous-groupe|Visible dans la légende|Visible au démarrage|Détails visibles|Déplié par défaut|Geotable|Renommée|Issue d'une autre carte|Visible dans la légende|Visible au démarrage|Déplié par défaut|Couche sélectionnable|Couche accrochable|Catégorisation|Seuil de visibilité|Symbologie|Autres|
-|:---|:---|:-:|:-:|:-:|:-:|:---|:---|:-:|:-:|:-:|:-:|:-:|:---|:---|:---|:---|:---|
+|Groupe|Sous-groupe|Visible dans la légende|Visible au démarrage|Détails visibles|Déplié par défaut|Geotable|Renommée|Issue d'une autre carte|Couche sélectionnable|Couche accrochable|Catégorisation|Seuil de visibilité|Symbologie|Autres|
+|:---|:---|:-:|:-:|:-:|:-:|:-:|:---|:-:|:-:|:-:|:-:|:-:|:---|:---|
+|Stationnement cyclable||x|x|(ne sais pas)|x|x|Lieux de stationnement|||x|x (par état d'avancement)|1:35 000|(à ajouter)||
+|Itinéraire cyclable||x||(ne sais pas)|||Nom des départs et des arrivées|||x|||(à ajouter)|points de départs et d'arrivées des itinéraires.|
+|Itinéraire cyclable||x||(ne sais pas)|||Tronçon non aménagé|||x||||||(à ajouter)|affichage par dessus la couche `Itinéraire` pour visualiser les tronçons non aménagés.|
+|Itinéraire cyclable||x||(ne sais pas)|||Itinéraire|||x|||(à ajouter)||
+|Tronçon cyclable||x|x|(ne sais pas)|||Carrefour cyclable|||x|x (par type de carrefour)|1:30 000|(à ajouter)||
+|Tronçon cyclable||x|x|(ne sais pas)|||Extrémité des tronçons|||||1:5 000|(à ajouter)||
+|Tronçon cyclable||x|x|(ne sais pas)|||Sens du tracé|||x||1:5 000|(à ajouter)||
+|Tronçon cyclable||x|x|(ne sais pas)||x|tronçon|||x|x (avec une analyse)|1:500 000|(à ajouter)|contient une analyse sur les aménagements et les états d'avancements|
+|Données externes||x|x|(ne sais pas)|||Limite communale|||x|||(à ajouter)||
 
 # L'application
 
