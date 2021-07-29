@@ -174,7 +174,8 @@ Source : `[libellé]`
  
 ## Analyse :
 
-Aucune
+`[Aménagement]` : Couche utilisée `xapps_geo_vmr_mob_troncon_affiche` filtrée sur les aménagements `ame` et sur l'état d'avancement `avanc`.
+
 
 ## Statistique :
 
