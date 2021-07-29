@@ -180,14 +180,31 @@ Source : `[libellé]`
 ## Statistique :
 
 `[APC - Répartition par aménagement cyclable]` : vue utilisée `xapps_an_v_mob3v_tab2_apc` pour afficher un graphique du pourcentage par aménagement sur l'ensemble du pays compiègnois.
+
+---
 `[APC - tableau de stationnement cyclable en service]` : vue utilisée `xapps_an_v_mob3v_tab11_apc` pour afficher un tableau des statistiques des stationnements cyclables sur l'ensemble du pays compiègnois.
+
+---
 `[APC - Itinéraires cyclables - chiffres clés]` : vue utilisée `xapps_an_v_mob3v_tab1_apc` pour afficher les chiffres clés des kilomètres de tronçons aménagés et le nombre de stationnements cyclables en service sur l'ensemble du pays compiègnois.
+
+---
 `[EPCI - Répartition par aménagement cyclable]` : vue utilisée `xapps_an_v_mob3v_tab2_epci` pour afficher un graphique du pourcentage par aménagement par EPCI.
+
+---
 `[EPCI - tableau de stationnement cyclable en service]` : vue utilisée `xapps_an_v_mob3v_tab11_epci` pour afficher un tableau des statistiques des stationnements cyclables par EPCI.
+
+---
 `[EPCI - Itinéraires cyclables - chiffres clés]` : vue utilisée `xapps_an_v_mob3v_tab1_epci` pour afficher les chiffres clés des kilomètres de tronçons aménagés et le nombre de stationnements cyclables en service par EPCI.
+
+---
 `Itinéraire cyclable : aménagements pour l'itinéraire selectionné` : vue utilisée `xapps_an_v_mob3v_tab32` pour un affichage des différents kilomètres par aménagement par itinéraire.
+
+---
 `Chiffres clés pour l'Itinéraire cyclable sélectionnné` : vue utilisée `xapps_an_v_mob3v_tab3` pour un affichage du nom de l'itinéraire choisi et sa longueur en kilomètre.
+
+---
 `Chiffres clés des itinéraires cyclables` : vue utilisée `xapps_an_v_mob3v_tab31` pour afficher le nombre total d'itinéraire et le nombre total de kilomètre de tronçons.
+
 
 ## Modification géométrique : `[libellé]`
 
