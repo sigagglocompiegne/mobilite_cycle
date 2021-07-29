@@ -149,6 +149,34 @@ Source : `[libellé]`
  * Fiches d'information active : ....
  
 
+## Fiche d'information : `[Fiche de l'itinéraire]`
+
+Source : `[an_mob_itineraire]`
+
+* Statistique : aucune
+ 
+ * Représentation :
+ 
+|Mode d'ouverture|Taille|Agencement des sections|
+|:---|:---|:---|
+|dans le gabarit|700x650|Onglet|
+
+|Nom de la section|Attributs|Position label|Agencement attribut|Visibilité conditionnelle|Fichie liée|Ajout de données autorisé|
+|:---|:---|:---|:---|:---|:---|:---|
+
+
+ * Saisie : aucune
+
+ * Modèle d'impression : Fiche standard + carte
+
+
+
+
+
+
+
+
+
 ## Fiche d'information : `[libellé]`
 
 Source : `[libellé]`
@@ -168,6 +196,13 @@ Source : `[libellé]`
  * Saisie : aucune
 
  * Modèle d'impression : Fiche standard + carte
+
+
+
+
+
+
+
 
 
 
