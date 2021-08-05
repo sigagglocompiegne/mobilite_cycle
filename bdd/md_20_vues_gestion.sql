@@ -35,7 +35,7 @@ DROP TRIGGER if exists t_t9_geo_mobilite_3v_log ON m_mobilite_3v.geo_v_mob_tronc
 -- #################################################################################################################################
 
 
---##############################################################OUVELEC#############################################################
+--############################################################## geo_v_mob_troncon #############################################################
 
 -- Vue de gestion des tronçons intégrant la segmentation dynamique et permettant la modification des données
 CREATE OR REPLACE VIEW m_mobilite_3v.geo_v_mob_troncon
