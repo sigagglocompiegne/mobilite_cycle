@@ -16,6 +16,7 @@
 
 
 --VUES
+DROP MATERIALIZED VIEW if exists x_apps.xapps_geo_vmr_mob_troncon_affiche;
 
 DROP VIEW if exists m_mobilite_3v.geo_v_mob_noeud;
 DROP VIEW if exists m_mobilite_3v.xapps_an_v_mob3v_tab1_apc;
@@ -32,8 +33,9 @@ DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.old_geo_vmr_mob_iti;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.xapps_geo_vmr_mob_iti_deparr;
 DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_triti_nonamenage;
+DROP MATERIALIZED VIEW if exists m_mobilite_3v.geo_vmr_mob_iti_affiche;
 
-DROP MATERIALIZED VIEW if exists x_apps.xapps_geo_vmr_mob_troncon_affiche;
+
 
 -- TABLES D'ERREUR
 
@@ -486,6 +488,27 @@ WITH DATA;
 ALTER TABLE m_mobilite_3v.geo_vmr_mob_triti_nonamenage OWNER TO sig_stage;
 
 
+--##############################################################OUVELEC#############################################################
+CREATE MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti_affiche
+TABLESPACE pg_default
+AS
+ WITH req_t AS (SELECT i.iditi, 
+		CASE WHEN tr.ame::text = '10'::text OR tr.ame::text = '11'::text THEN 'non aménagé'::text
+                     ELSE 'aménagé'::text
+                END AS ame,
+                CASE WHEN tr.avanc::text = '50'::text THEN 'en service'::text
+                     ELSE 'pas en service'::text
+                END AS avanc,
+            	tr.geom
+                FROM m_mobilite_3v.an_mob_itineraire i
+             	    LEFT JOIN m_mobilite_3v.lk_mob_ititroncon lk ON i.iditi = lk.iditi
+             	    LEFT JOIN x_apps.xapps_geo_v_mob_troncon_affiche tr ON tr.idtroncon = lk.idtroncon)
+ SELECT row_number() OVER () AS gid, r.iditi, r.ame, r.avanc, r.geom
+ FROM req_t r
+WITH DATA;
+ALTER TABLE m_mobilite_3v.geo_vmr_mob_iti_affiche OWNER TO sig_stage;
+
+
 -- #################################################################################################################################
 -- ###                                                                                                                           ###
 -- ###                                                      TABLES D'ERREUR                                                      ###
@@ -552,3 +575,5 @@ COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.gid IS 'Identifiant unique';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.id IS 'Identifiant de l''objet';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.erreur IS 'Message';
 COMMENT ON COLUMN x_apps.xapps_an_v_mob_erreur.horodatage IS 'Date (avec heure) de génération du message (ce champ permet de filtrer l''affichage < x seconds dans GEo)';
+
+COMMENT ON MATERIALIZED VIEW m_mobilite_3v.geo_vmr_mob_iti_affiche IS 'Vue permettant la visualisation des itinéraires à partir des tronçons';
