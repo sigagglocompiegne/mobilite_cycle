@@ -723,6 +723,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
 	insee varchar(5), -- code insee de la commune du stationnement
 	commune varchar(80),  -- nom de la commune du stationnement 
 	observ varchar(1000), -- commentaire
+	verif boolean DEFAULT false,
 	date_sai timestamp without time zone,  -- Date de saisie de la donnée
 	date_maj timestamp without time zone,  -- Date de mise à jour de la donnée
 	op_sai varchar(20),  -- opérateur de saisie de la donnée 
