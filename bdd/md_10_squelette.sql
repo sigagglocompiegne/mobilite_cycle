@@ -136,35 +136,35 @@ CREATE SCHEMA m_mobilite_3v
 -- ###############################################################################################################################
 
 
---############################################################ OBJETS ##################################################
+--############################################################ mob_objet_seq_id ##################################################
 
 -- Sequence pour nos nouveaux troncons, itinéraires, carrefours et stationnements (geo_mob_troncon, an_mob_itineraire, geo_mob_carrefour, geo_mob_lieustatio)
 CREATE SEQUENCE m_mobilite_3v.mob_objet_seq_id
     START WITH 3000
     INCREMENT BY 1;
 	
---############################################################ OBJETS ##################################################
+--############################################################ mob_lk_gid ##################################################
 
 -- Sequence sur la liste de liens itinéraires-tronçons (lk_mib_ititroncon)
 CREATE SEQUENCE m_mobilite_3v.mob_lk_gid
     START WITH 1000
     INCREMENT BY 1;
 
---############################################################ OBJETS ##################################################
+--############################################################ mob_media_seq_gid ##################################################
 
 -- Sequence sur la table des médias (an_mob_media)
 CREATE SEQUENCE m_mobilite_3v.mob_media_seq_gid
     START WITH 66
     INCREMENT BY 1;
 
---############################################################ OBJETS ##################################################
+--############################################################ an_mob_equstatio_seq_id ##################################################
 
 -- Sequence sur la table des équipements de stationnement (an_mob_equstatio)
 CREATE SEQUENCE m_mobilite_3v.an_mob_equstatio_seq_id
     START WITH 200
     INCREMENT BY 1;
 
---############################################################ OBJETS ##################################################
+--############################################################ an_mob_log_seq_id ##################################################
 
 CREATE SEQUENCE m_mobilite_3v.an_mob_log_seq_id
     START WITH 1
@@ -179,7 +179,7 @@ CREATE SEQUENCE m_mobilite_3v.an_mob_log_seq_id
 -- ###############################################################################################################################
 
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_etat_inscri ##################################################
 
 -- Liste de valeurs d'inscription à un schéma de développement des véloroutes
 CREATE TABLE m_mobilite_3v.lt_mob_etat_inscri(
@@ -193,7 +193,7 @@ INSERT INTO m_mobilite_3v.lt_mob_etat_inscri (code, valeur)
 	VALUES ('00', 'Non renseigné'), ('10', 'Ne sais pas (inconnu)'), ('20', 'Non'), ('30', 'Oui');
 ALTER TABLE m_mobilite_3v.lt_mob_etat_inscri OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_niv_inscri ##################################################
 
 -- Liste de valeurs du niveau adminsitratif du schéma de développement des véloroutes
 CREATE TABLE m_mobilite_3v.lt_mob_niv_inscri(
@@ -207,7 +207,7 @@ INSERT INTO m_mobilite_3v.lt_mob_niv_inscri (code, valeur)
 	VALUES ('00', 'Non renseigné'), ('10', 'Européen'), ('20', 'National'), ('30', 'Régional'), ('40', 'Départemental'), ('50', 'Intercommunal'), ('60', 'Communal'), ('70', 'Infracommunal');
 ALTER TABLE m_mobilite_3v.lt_mob_niv_inscri OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_gest_iti ##################################################
 
 -- Liste de valeurs des gestionnaires d'itinéraire
 CREATE TABLE m_mobilite_3v.lt_mob_gest_iti(
@@ -221,7 +221,7 @@ INSERT INTO m_mobilite_3v.lt_mob_gest_iti (code, valeur)
 	VALUES ('10', 'ARC'), ('20', 'CCPE'), ('30', 'CCLO');
 ALTER TABLE m_mobilite_3v.lt_mob_gest_iti OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_usage ##################################################
 
 -- Liste de valeurs des usages
 CREATE TABLE m_mobilite_3v.lt_mob_usage(
@@ -235,7 +235,7 @@ INSERT INTO m_mobilite_3v.lt_mob_usage (code, valeur)
 	VALUES  ('10', 'Cyclable'), ('20', 'Piéton');
 ALTER TABLE m_mobilite_3v.lt_mob_usage OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_typres ##################################################
 
 -- Liste de valeurs des types de réseau
 CREATE TABLE m_mobilite_3v.lt_mob_typres(
@@ -249,7 +249,7 @@ INSERT INTO m_mobilite_3v.lt_mob_typres (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'REV (Réseau Express Vélo)'), ('20', 'STRUCTURANT'), ('30', 'AUTRE');
 ALTER TABLE m_mobilite_3v.lt_mob_typres OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_gest ##################################################
 
 -- Liste de valeurs des gestionnaires
 CREATE TABLE m_mobilite_3v.lt_mob_gest(
@@ -263,7 +263,7 @@ INSERT INTO m_mobilite_3v.lt_mob_gest (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'État'), ('20', 'Région'), ('30', 'Département'), ('40', 'Intercommunalité'), ('50', 'Commune'), ('60', 'Privé');
 ALTER TABLE m_mobilite_3v.lt_mob_gest OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_booleen ##################################################
 
 -- Liste de valeurs des faux booléens
 CREATE TABLE m_mobilite_3v.lt_mob_booleen(
@@ -277,7 +277,7 @@ INSERT INTO m_mobilite_3v.lt_mob_booleen (code, valeur)
 	VALUES  ('0', 'Non renseigné'), ('f', 'Non'), ('t', 'Oui'), ('z', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_booleen OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_ame ##################################################
 
 -- Liste de valeurs des aménagements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_ame(
@@ -294,7 +294,7 @@ INSERT INTO m_mobilite_3v.lt_mob_ame (code, valeur, affichage)
 	VALUES  ('10', 'Non aménagé (route)', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte) (ASP)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
 ALTER TABLE m_mobilite_3v.lt_mob_ame OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_avanc ##################################################
 
 -- Liste de valeurs des avancées de projets
 CREATE TABLE m_mobilite_3v.lt_mob_avanc(
@@ -308,7 +308,7 @@ INSERT INTO m_mobilite_3v.lt_mob_avanc (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Esquisse'), ('20', 'Avant-projet'), ('30', 'Provisoire'), ('40', 'En travaux'), ('50', 'En service'), ('60', 'Supprimé'), ('70', 'Abandonné'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_avanc OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_regime ##################################################
 
 -- Liste de valeurs des régimes présent sur la voie adjacente
 CREATE TABLE m_mobilite_3v.lt_mob_regime(
@@ -322,7 +322,7 @@ INSERT INTO m_mobilite_3v.lt_mob_regime (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Zone 30'), ('20', 'Aire piétonne'), ('30', 'Zone de rencontre'), ('40', 'En agglomération'), ('50', 'Hors agglomération'), ('60', 'Autre'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_regime OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_sens ##################################################
 
 -- Liste de valeurs du sens de circulation des tronçons cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_sens(
@@ -336,7 +336,7 @@ INSERT INTO m_mobilite_3v.lt_mob_sens (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Unidirectionnel'), ('20', 'Bidirectionnel'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_sens OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_voca_iti ##################################################
 
 -- Liste de valeurs de vocation de l'itinéraire
 CREATE TABLE m_mobilite_3v.lt_mob_voca_iti(
@@ -350,7 +350,7 @@ INSERT INTO m_mobilite_3v.lt_mob_voca_iti (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Loisirs'), ('20', 'Utilitaire');
 ALTER TABLE m_mobilite_3v.lt_mob_voca_iti OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_local ##################################################
 
 -- Liste de valeurs des localisations des aménagements
 CREATE TABLE m_mobilite_3v.lt_mob_local(
@@ -364,7 +364,7 @@ INSERT INTO m_mobilite_3v.lt_mob_local (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Trottoir'), ('20', 'Intermédiaire'), ('30', 'Chaussée'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_local OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_revet ##################################################
 
 -- Liste de valeurs des types de revêtements et leur coût (hors foncier)
 CREATE TABLE m_mobilite_3v.lt_mob_revet(
@@ -379,7 +379,7 @@ INSERT INTO m_mobilite_3v.lt_mob_revet (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Lisse'), ('11', '....'), ('20', 'Meuble'), ('21', '....'), ('30', 'Rugueux'), ('31', '....'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_revet OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_vitesse ##################################################
 
 -- Liste de valeurs des vitesses présentes sur une voie adjacentes
 CREATE TABLE m_mobilite_3v.lt_mob_vitesse(
@@ -393,7 +393,7 @@ INSERT INTO m_mobilite_3v.lt_mob_vitesse (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', '10'), ('11', '15'), ('20', '20'), ('21', '25'), ('30', '30'), ('40', '40'), ('50', '50'), ('60', '60'), ('70', '70'), ('80', '80'), ('90', '90'), ('ZZ', 'Non concerné');
 ALTER TABLE m_mobilite_3v.lt_mob_vitesse OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_carrefour ##################################################
 
 -- Liste de valeurs des types de carrefour et leur modèle
 CREATE TABLE m_mobilite_3v.lt_mob_carrefour(
@@ -408,7 +408,7 @@ INSERT INTO m_mobilite_3v.lt_mob_carrefour (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'SAS vélo'), ('20', 'Traversée'), ('30', 'Feux aménagés');
 ALTER TABLE m_mobilite_3v.lt_mob_carrefour OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_statio_mobi ##################################################
 
 -- Liste de valeurs des types de mobilier des stationnements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_statio_mobi(
@@ -422,7 +422,7 @@ INSERT INTO m_mobilite_3v.lt_mob_statio_mobi (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Arceau'), ('20', 'Ratelier'), ('30', 'Rack double étage'), ('40', 'Crochet'), ('50', 'Support guidon'), ('60', 'Potelet'), ('70', 'Arceau vélo grande taille'), ('80', 'Aucun équipement'), ('99', 'Autre');
 ALTER TABLE m_mobilite_3v.lt_mob_statio_mobi OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_statio_accro ##################################################
 
 -- Liste de valeurs des types d'accroche des stationnements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_statio_accro(
@@ -436,7 +436,7 @@ INSERT INTO m_mobilite_3v.lt_mob_statio_accro (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Cadre'), ('20', 'Roue'), ('30', 'Cadre et roue'), ('40', 'Sans accroche'), ('99', 'Autre');
 ALTER TABLE m_mobilite_3v.lt_mob_statio_accro OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_statio_acces ##################################################
 
 -- Liste de valeurs des types d'accès aux stationnements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_statio_acces(
@@ -450,7 +450,7 @@ INSERT INTO m_mobilite_3v.lt_mob_statio_acces (code, valeur)
 	VALUES  ('00', 'Non renseigné'), ('10', 'Libre accès'), ('20', 'Abonnement ou inscription préalable'), ('30', 'Privé');
 ALTER TABLE m_mobilite_3v.lt_mob_statio_acces OWNER to sig_stage;
 
---############################################################ SITUATION ##################################################
+--############################################################ lt_mob_statio_protec ##################################################
 
 -- Liste de valeurs des types de protection des stationnements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_statio_protec(
@@ -472,7 +472,7 @@ ALTER TABLE m_mobilite_3v.lt_mob_statio_protec OWNER to sig_stage;
 -- ###############################################################################################################################
 
 
---################################################################# NOEUD #######################################################
+--################################################################# an_mob_itineraire #######################################################
 
 -- Table alphanumérique recensant l'ensemble des itinéraires déclarés sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.an_mob_itineraire(
@@ -525,7 +525,7 @@ CREATE TABLE m_mobilite_3v.an_mob_itineraire(
 );
 ALTER TABLE m_mobilite_3v.an_mob_itineraire OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# geo_mob_troncon #######################################################
 
 -- Table géographique représentant les tronçons d'aménagements cyclables sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.geo_mob_troncon(
@@ -641,7 +641,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_troncon(
 );
 ALTER TABLE m_mobilite_3v.geo_mob_troncon OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# lk_mob_ititroncon #######################################################
 
 -- Table de relations permettant le rattachement des tronçons à un ou plusieurs itinéraires
 CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
@@ -653,7 +653,7 @@ CREATE TABLE m_mobilite_3v.lk_mob_ititroncon(
 );
 ALTER TABLE m_mobilite_3v.lk_mob_ititroncon OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# geo_mob_carrefour #######################################################
 
 -- Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois
 CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
@@ -681,7 +681,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 );
 ALTER TABLE m_mobilite_3v.geo_mob_carrefour OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# an_mob_media #######################################################
 
 -- Table alphanumérique gérant la liste des documents associés aux objets cyclables
 CREATE TABLE m_mobilite_3v.an_mob_media(
@@ -699,7 +699,7 @@ CREATE TABLE m_mobilite_3v.an_mob_media(
 );
 ALTER TABLE m_mobilite_3v.an_mob_media OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# geo_mob_lieustatio #######################################################
 
 -- Table géographique représentant la localisation des lieux de stationnements cyclables
 CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
@@ -762,7 +762,7 @@ CREATE TABLE m_mobilite_3v.geo_mob_lieustatio(
 );
 ALTER TABLE m_mobilite_3v.geo_mob_lieustatio OWNER to sig_stage;
 
---################################################################# NOEUD #######################################################
+--################################################################# an_mob_equstatio #######################################################
 
 -- Table alphanumérique stockant les différents équipements cyclables
 CREATE TABLE m_mobilite_3v.an_mob_equstatio(
@@ -785,7 +785,7 @@ CREATE TABLE m_mobilite_3v.an_mob_equstatio(
 ALTER TABLE m_mobilite_3v.an_mob_equstatio OWNER to sig_stage;
 
 
---################################################################# NOEUD #######################################################
+--################################################################# an_mob_log #######################################################
 
 -- Table alphanumérique stockant les différents équipements cyclables
 CREATE TABLE m_mobilite_3v.an_mob_log(
@@ -809,7 +809,7 @@ ALTER TABLE m_mobilite_3v.an_mob_log OWNER to sig_stage;
 -- ###                                                                                                                         ###
 -- ###############################################################################################################################
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_commune_via_insee_troncon_cy #######################################################
 
 -- Fonction m_mobilite_3v.ft_commune_via_insee_troncon_cy() recupérant les noms des communes via leur code insee
 CREATE FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy()
@@ -827,7 +827,7 @@ end;
 $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_commune_via_insee_troncon_cy() OWNER TO sig_stage;
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_modif_troncon #######################################################
 
 -- Fonction m_mobilite_3v.ft_modif_troncon() modifiant la table des tronçons quand il y a une insertion, un update ou une suppression 
 CREATE FUNCTION m_mobilite_3v.ft_modif_troncon()
@@ -1425,7 +1425,7 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_modif_troncon() OWNER TO sig_stage;
 
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_refresh_view_iti #######################################################
 
 -- Fonction de rafraichissement de la vue materialisée
 CREATE FUNCTION m_mobilite_3v.ft_m_refresh_view_iti()
@@ -1442,7 +1442,7 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_refresh_view_iti() OWNER TO sig_stage;
 
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_itineraire_delete_lk #######################################################
 
 -- Fonction pour la suppression des relations tronçons-itinéraire dans la table lk_mob_ititroncon
 CREATE FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk()
@@ -1459,7 +1459,7 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_itineraire_delete_lk() OWNER TO sig_stage;
 
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_mobi_capacite #######################################################
 
 -- Fonction pour sommer les différentes capacités entre-elles
 CREATE FUNCTION m_mobilite_3v.ft_m_mobi_capacite()
@@ -1487,7 +1487,7 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_mobi_capacite() OWNER TO sig_stage;
 
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_equstatio_delete #######################################################
 
 -- Fonction pour supprimer les équipements de stationnements liés au lieu de stationnement supprimé
 CREATE FUNCTION m_mobilite_3v.ft_m_equstatio_delete()
@@ -1503,7 +1503,7 @@ END;
 $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_equstatio_delete() OWNER TO sig_stage;
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_geo_mobilite_3v_log #######################################################
 
 -- Fonction permettant de recenser toutes les modifications effectuées
 CREATE FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log()
@@ -1565,7 +1565,7 @@ $BODY$;
 ALTER FUNCTION m_mobilite_3v.ft_m_geo_mobilite_3v_log() OWNER TO sig_stage;
 
 
---################################################################# FONCTION #######################################################
+--################################################################# ft_m_refresh_view_troncon_affiche #######################################################
 
 -- Fonction permettant de rafraichir la vue matérialisée de l'affichage des tronçons dans GEO
 CREATE FUNCTION m_mobilite_3v.ft_m_refresh_view_troncon_affiche()
@@ -1594,35 +1594,35 @@ ALTER FUNCTION m_mobilite_3v.ft_m_refresh_view_troncon_affiche() OWNER TO sig_st
 
 
 -- Trigger sur la table an_mob_itineraire
---################################################################# TRIGGER #######################################################
+--################################################################# t_t1_date_sai #######################################################
 -- Trigger t_t1_date_sai pour la fonction ecrivant la date de saisie
 CREATE TRIGGER t_t1_date_sai
     BEFORE INSERT 
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t2_date_maj #######################################################
 -- Trigger t_t2_date_maj pour la fonction ecrivant la date de mise a jour 
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t3_iti_delete #######################################################
 -- Trigger t_t3_iti_delete pour la fonction de suppression des lien tronçon-itinéraire
 CREATE TRIGGER t_t3_iti_delete
     BEFORE DELETE
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_itineraire_delete_lk();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t4_refresh_view_after #######################################################
 -- Trigger t_t4_refresh_view_after pour la fonction de rafraichissement des itinéraires à chaque modification
 CREATE TRIGGER t_t4_refresh_view_after
     AFTER DELETE
     ON m_mobilite_3v.an_mob_itineraire
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t9_geo_mobilite_3v_log #######################################################
 -- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
@@ -1633,35 +1633,35 @@ CREATE TRIGGER t_t9_geo_mobilite_3v_log
 
 
 -- Trigger sur la table geo_mob_troncon
---################################################################# TRIGGER #######################################################
+--################################################################# t_t2_date_sai #######################################################
 -- Trigger t_t2_date_sai pour la fonction ecrivant la date de saisie
 CREATE TRIGGER t_t2_date_sai
     BEFORE INSERT
     ON m_mobilite_3v.geo_mob_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t3_date_maj #######################################################
 -- Trigger t_t3_date_maj pour la fonction ecrivant la date de mise a jour
 CREATE TRIGGER t_t3_date_maj
     BEFORE UPDATE
     ON m_mobilite_3v.geo_mob_troncon
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t4_long_m #######################################################
 -- Trigger t_t4_long_m pour la fonction calculant la longueur du tracé
 CREATE TRIGGER t_t4_long_m
     BEFORE INSERT OR UPDATE
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_longm_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t5_commune #######################################################
 -- Trigger t_t5_commune pour la fonction recuperant le nom de la commune (CHANGER LE NOM DE LA TABLE (Oise))
 CREATE TRIGGER t_t5_commune
     BEFORE INSERT OR UPDATE
     ON m_mobilite_3v.geo_mob_troncon 
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_commune_via_insee_troncon_cy();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t6_refresh_view_iti #######################################################
 -- Trigger t_t6_refresh_view_iti pour la fonction de rafraichissement des itinéraires à chaque modification
 CREATE TRIGGER t_t6_refresh_view_iti
     AFTER INSERT OR DELETE OR UPDATE 
@@ -1672,28 +1672,28 @@ CREATE TRIGGER t_t6_refresh_view_iti
 
 
 -- Trigger sur la table geo_mob_carrefour
---################################################################# TRIGGER #######################################################
+--################################################################# t_t1_date_sai #######################################################
 -- Trigger t_t1_date_sai pour la fonction ecrivant la date de saisie
 CREATE TRIGGER t_t1_date_sai
     BEFORE INSERT 
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t2_date_maj #######################################################
 -- Trigger t_t2_date_maj pour la fonction ecrivant la date de mise a jour
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t3_commune #######################################################
 -- Trigger t_t3_commune pour la fonction ecrivant la commune avec une requête spatiale
 CREATE TRIGGER t_t3_commune
     BEFORE INSERT OR UPDATE 
     ON m_mobilite_3v.geo_mob_carrefour
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t9_geo_mobilite_3v_log #######################################################
 -- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
@@ -1704,14 +1704,14 @@ CREATE TRIGGER t_t9_geo_mobilite_3v_log
 
 
 -- Trigger sur la table lk_mob_ititroncon
---################################################################# TRIGGER #######################################################
+--################################################################# t_t1_refresh_view_iti #######################################################
 -- Trigger t_t1_refresh_view_iti pour le rafraichissement de la vue métérialisée
 CREATE TRIGGER t_t1_refresh_view_iti
     AFTER INSERT OR UPDATE OR DELETE 
     ON m_mobilite_3v.lk_mob_ititroncon
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_refresh_view_iti();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t9_geo_mobilite_3v_log #######################################################
 -- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
@@ -1722,7 +1722,7 @@ CREATE TRIGGER t_t9_geo_mobilite_3v_log
    
    
 -- Trigger sur la table geo_mob_lieustatio
---################################################################# TRIGGER #######################################################
+--################################################################# t_t1_date_sai #######################################################
 -- Trigger pour l'insertion de la date
 -- Trigger: t_t1_date_sai
 CREATE TRIGGER t_t1_date_sai
@@ -1730,42 +1730,42 @@ CREATE TRIGGER t_t1_date_sai
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t2_date_maj #######################################################
 -- Trigger t_t2_date_maj pour la mise a jour de la date
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t3_coord_l93 #######################################################
 -- Trigger t_t3_coord_l93 pour l'insertion ou la mise a jour des coordonnées L93 
 CREATE TRIGGER t_t3_coord_l93
     BEFORE INSERT OR UPDATE
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_xy_l93();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t4_coord_longlat #######################################################
 -- Trigger t_t4_coord_longlat pour l'insertion ou la mise a jour des coordonnées long lat
 CREATE TRIGGER t_t4_coord_longlat
     BEFORE INSERT OR UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_xy_wgs84();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t5_commune #######################################################
 -- Trigger t_t5_commune pour la fonction ecrivant la commune avec une requête spatiale
 CREATE TRIGGER t_t5_commune
     BEFORE INSERT OR UPDATE 
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_commune_pl(); 
---################################################################# TRIGGER #######################################################
+--################################################################# t_t6_equ_delete #######################################################
 -- Trigger t_t6_equ_delete pour la fonction de suppression de lien avec les équipements de stationnement
 CREATE TRIGGER t_t6_equ_delete
     AFTER DELETE
     ON m_mobilite_3v.geo_mob_lieustatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_equstatio_delete();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t9_geo_mobilite_3v_log #######################################################
 -- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
@@ -1776,28 +1776,28 @@ CREATE TRIGGER t_t9_geo_mobilite_3v_log
     
     
  -- Trigger sur la table an_mob_equstatio
---################################################################# TRIGGER #######################################################
+--################################################################# t_t1_date_sai #######################################################
 -- Trigger t_t1_date_sai pour l'insertion de la date
 CREATE TRIGGER t_t1_date_sai
     BEFORE INSERT 
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_sai();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t2_date_maj #######################################################
 -- Trigger t_t2_date_maj pour la mise a jour de la date
 CREATE TRIGGER t_t2_date_maj
     BEFORE UPDATE 
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE public.ft_r_timestamp_maj();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t3_capacite_sum #######################################################
 -- Trigger: t_t3_capacite_sum pour l'insertion,la mise a jour ou la suppression des capacités de stationnement cyclable
 CREATE TRIGGER t_t3_capacite_sum
     AFTER INSERT OR UPDATE OR DELETE
     ON m_mobilite_3v.an_mob_equstatio
     FOR EACH ROW
     EXECUTE PROCEDURE m_mobilite_3v.ft_m_mobi_capacite();
---################################################################# TRIGGER #######################################################
+--################################################################# t_t9_geo_mobilite_3v_log #######################################################
 -- Trigger t_t9_geo_mobilite_3v_log pour la fonction permettant d'enregistrer toutes les modifications effectuées dans la base
 CREATE TRIGGER t_t9_geo_mobilite_3v_log
     AFTER INSERT OR DELETE OR UPDATE 
