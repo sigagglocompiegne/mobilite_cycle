@@ -5,10 +5,6 @@
 ## Généralité
  
 
-## Principe de la modélisation des classes d'objets
-
-![picto](.png)
-
 ## Modèle relationnel simplifié
 
 ![picto](.png)
