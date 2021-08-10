@@ -7,7 +7,7 @@
 
 ## Modèle relationnel simplifié
 
-![mcd](img/MCD_v1.png)
+![mcd](MCD_v1.png)
 
 ## Schéma fonctionnel
 
