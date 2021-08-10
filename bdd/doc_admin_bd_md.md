@@ -739,10 +739,6 @@ Particularité(s) à noter :
 ### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
 
 
-`[geo_v_mob_iti_affiche]` : Vue permettant la visualisation des itinéraires à partir des tronçons.
-
----
-
 `[geo_v_mob_noeud]` : vue d'affichage permettant la visualisation des noeuds des tronçons cyclables.
 
 ---
