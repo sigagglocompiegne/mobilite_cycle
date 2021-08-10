@@ -816,7 +816,7 @@ Sans objet
 
 ## Erreur
 
-`[xapps_an_v_mob_erreur]` : table d'enregistrement des erreurs obtenues pendant la saisie de donnée par les utilisateurs.
+`[xapps_an_v_mob_erreur]` : table d'enregistrement des erreurs obtenues pendant la saisie de données par les utilisateurs.
 
 ---
 
