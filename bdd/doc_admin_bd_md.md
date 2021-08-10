@@ -154,7 +154,7 @@ Paticularité(s) à noter :
 |:---|:---|:---|:---|  
 |idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |libelle|Libellé du carrefour|character varying(255)| |
-|typ_car|Type de carrefour|character varying(2)| |
+|typ_car|Type de carrefour|character varying(15)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
 |insee|Code insee de la commune d implantation|character varying(5)| |
 |commune|Nom de la commune d implantation|character varying(80)| |
@@ -297,7 +297,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des aménagements cyclables|character varying(50)| |
+|valeur|Libellé de la valeur des aménagements cyclables|character varying(100)| |
 |url|Lien URL vers la documentation nationale|character varying(255)| |
 |modele|Code du modèle d'aménagement|character varying(3)| |
 |affichage|Permet le tri de la liste dans géo| integer | |
@@ -316,7 +316,7 @@ Paticularité(s) à noter :
 |61|Couloir Bus+Vélo|||9|
 |62|Rampe|||14|
 |63|Goulotte|||15|
-|64|Aménagement mixte piéton-vélo (hors voie verte)(ASP)|||7|
+|64|Aménagement mixte piéton-vélo (hors voie verte)(Autre Site Propre)|||7|
 |70|Chaussée à voie centrale banalisée|||11|
 |71|Accotement revêtu hors CVCB|||10|
 |99|Autre|||13|
