@@ -289,22 +289,6 @@ Paticularité(s) à noter :
 
 ---
 
-`[an_mob_log]` : table alpanumérique .
-
-|Nom attribut | Définition | Type  | Valeurs par défaut |
-|:---|:---|:---|:---| 
-|idlog|Identifiant unique de l'opération|integer| |
-|tablename|Nom de la table concernée par l'opération sur l'entité|character varying(80)| |
-|type_ope|Type l'opération sur l'entité|text| |
-|dataold|Valeur ancienne avant l'opération sur l'entité|character varying(10000)| |
-|datanew|Valeur nouvelle après l'opération sur l'entité|character varying(10000)| |
-|date_maj|Horodatage de l'opération sur la donnée aménagements cyclables|timestamp without time zone| |
-
-Paticularité(s) à noter :
-* Une clé primaire existe sur le champ `idlog`.
-
----
-
 ## Liste de valeurs
 
 `[lt_mob_ame]` : Liste permettant de décrire les types d'aménagements que prennent Vélo & Territoire .   
@@ -741,17 +725,21 @@ Paticularité(s) à noter :
 ---
 
 ### classes d'objets applicatives de gestion :
----
 
-### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
-
-`[geo_v_mob_troncon]` : vue applicative permettant la saisie des objets dans la couche `geo_mob_troncon`.
+`[geo_v_mob_troncon]` : vue applicative de gestion permettant la saisie des objets dans la couche `geo_mob_troncon`.
 
 Particularité(s) à noter :
 * 3 triggers : 
    * `t_t1_modif_troncon` : avant insertion, mise à jour ou suppression, sert à mettre à jour la base de données `geo_mob_troncon`.
    * `t_t2_refresh_vmr_affiche` : avant insertion, mise à jour ou suppression, sert à rafraichir la vue matérialisée de l'affichage des tronçons.
    * `t_t9_geo_mobilite_3v_log` : après insertion, mise à jour ou suppression, enregistre les modifications effectuées sur la donnée.
+
+---
+
+### classes d'objets applicatives métiers sont classés dans le schéma x_apps :
+
+
+`[geo_v_mob_iti_affiche]` : Vue permettant la visualisation des itinéraires à partir des tronçons.
 
 ---
 
@@ -782,6 +770,9 @@ Particularité(s) à noter :
 `[xapps_an_v_mob3v_tab11_apc]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur le paramètre global des itinéraires (dans le schéma m_mobilite_3v).
 
 ---
+`[xapps_an_v_mob3v_tab11_epci]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur le paramètre global par EPCI (dans le schéma m_mobilite_3v).
+
+---
 `[xapps_an_v_mob3v_tab31]` : vue d'affichage permettant la visualisation de graphiques, tableaux et chiffres clés sur l'ensemble des données de l'APC (dans le schéma m_mobilite_3v).
 
 ---
@@ -789,6 +780,9 @@ Particularité(s) à noter :
 
 ---
 `[geo_vmr_mob_iti]` : vue d'affichage permettant la visualisation des itinéraires.
+
+---
+`[geo_vmr_mob_iti_affiche]` : Vue d'affichage permettant la visualisation des itinéraires à partir des tronçons.
 
 ---
 
@@ -812,7 +806,7 @@ Sans objet
 
 ### classes d'objets opendata sont classés dans le schéma x_opendata :
 
-`[xopendata_geo_v_mob_opendata]` : vue de d'export des données
+`[xopendata_geo_v_mob_opendata]` : vue de d'export des données.
 
 ---
 
