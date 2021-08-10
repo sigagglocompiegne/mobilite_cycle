@@ -404,7 +404,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_carrefour(
 );
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_carrefour (code, valeur)
-	VALUES  ('00', 'Non renseigné'), ('10', 'SAS vélo'), ('20', 'Traversée'), ('30', 'Feux aménagés');
+	VALUES ('10', 'SAS vélo'), ('20', 'Traversée'), ('30', 'Feux aménagés'), ('40', 'Bande d'insertion'), ('50', 'Signalisation + présignalisation');
 ALTER TABLE m_mobilite_3v.lt_mob_carrefour OWNER to sig_stage;
 
 --############################################################ lt_mob_statio_mobi ##################################################
@@ -658,7 +658,7 @@ ALTER TABLE m_mobilite_3v.lk_mob_ititroncon OWNER to sig_stage;
 CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 	idcarrefour text  NOT NULL DEFAULT ('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass)), -- Identifiant unique (clé primaire) du tronçon
 	libelle varchar(255), -- Libellé
-	typ_car varchar(2), -- Type de carrefour
+	typ_car varchar(15), -- Type d'aménagement
 	avanc varchar(2), -- Niveau d'avancement en terme de projet
 	insee varchar(5), -- Code insee de la commune d'implantation
 	commune varchar(80), -- Nom de la commune d'implantation
@@ -669,10 +669,6 @@ CREATE TABLE m_mobilite_3v.geo_mob_carrefour(
 	geom geometry(Point, 2154), -- Géométrie de l'objet
 -- Contraintes
     CONSTRAINT geo_mob_carrefour_pkey PRIMARY KEY (idcarrefour), -- Clé primaire de la table
-    CONSTRAINT lt_mob_carrefour_fkey FOREIGN KEY (typ_car)
-        REFERENCES m_mobilite_3v.lt_mob_carrefour (code) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION, -- Liste de valeurs lt_mob_carrefour
     CONSTRAINT lt_mob_avanc_fkey FOREIGN KEY (avanc)
         REFERENCES m_mobilite_3v.lt_mob_avanc (code) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -1976,7 +1972,7 @@ COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.iditi IS 'Identifiant unique d
 COMMENT ON TABLE m_mobilite_3v.geo_mob_carrefour IS 'Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.idcarrefour IS 'Identifiant unique (clé primaire) du tronçon';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.libelle IS 'Libellé du carrefour';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car IS 'Type de carrefour';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car IS 'Type d'aménagement';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.avanc IS 'Niveau d''avancement en terme de projet';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.insee IS 'Code insee de la commune d''implantation';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.commune IS 'Nom de la commune d''implantation';
