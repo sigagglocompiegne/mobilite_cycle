@@ -21,6 +21,9 @@ La base de données des aménagements cyclables s'appuie sur des référentiels 
 |Schéma | Table | Description | Usage |
 |:---|:---|:---|:---|  
 |r_objet|lt_src_geom| domaine de valeur générique d'une table géographique| référentiel utilisé pour la saisie des données|
+|r_administratif|an_geo| Table attributaire contenant les codes adminsitratifs de découpage des différents périmètres officiels de l'Insee (commune, EPCI, zone d'emploi, ...)|  référentiel utilisé pour un affichage des donnéess|
+|r_osm|geo_osm_epci| Table des EPCI de l'Oise au 1er janvier 2018 issu de la vue matérialisée geo_vm_osm_epci| référentiel utilisé pour un affichage des données|
+|r_osm|geo_vm_osm_commune_oise| Vue matérialisée des limites communales des communes du département de l'Oise| référentiel utilisé pour la saisie des données|
 
 ---
 
