@@ -1972,7 +1972,7 @@ COMMENT ON COLUMN m_mobilite_3v.lk_mob_ititroncon.iditi IS 'Identifiant unique d
 COMMENT ON TABLE m_mobilite_3v.geo_mob_carrefour IS 'Table géographique représentant la localisation des carrefours aménagés sur des intersections de tronçons cyclables sur le Pays Compiégnois';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.idcarrefour IS 'Identifiant unique (clé primaire) du tronçon';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.libelle IS 'Libellé du carrefour';
-COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car IS 'Type d'aménagement';
+COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.typ_car IS 'Type d''aménagement';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.avanc IS 'Niveau d''avancement en terme de projet';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.insee IS 'Code insee de la commune d''implantation';
 COMMENT ON COLUMN m_mobilite_3v.geo_mob_carrefour.commune IS 'Nom de la commune d''implantation';
