@@ -281,7 +281,7 @@ ALTER TABLE m_mobilite_3v.lt_mob_booleen OWNER to sig_stage;
 -- Liste de valeurs des aménagements cyclables
 CREATE TABLE m_mobilite_3v.lt_mob_ame(
 	code varchar(2),
-	valeur varchar(50),
+	valeur varchar(100),
 	url varchar(255),
 	modele varchar(3),
 	affichage integer,
@@ -290,7 +290,7 @@ CREATE TABLE m_mobilite_3v.lt_mob_ame(
 );
 -- Valeurs
 INSERT INTO m_mobilite_3v.lt_mob_ame (code, valeur, affichage)
-	VALUES  ('10', 'Non aménagé (route)', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte) (ASP)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
+	VALUES  ('10', 'Non aménagé (route)', 16), ('11', 'Non aménagé (jalonnement)', 12), ('20', 'Piste cyclable', 1), ('30', 'Bande cyclable', 3),  ('41', 'Double sens cyclable piste', 4), ('42', 'Double sens cyclable bande', 5), ('43', 'Double sens cyclable non matérialisé', 6), ('50', 'Voie verte', 2), ('60', 'Vélo rue', 8), ('61', 'Couloir Bus+Vélo', 9), ('62', 'Rampe', 14), ('63', 'Goulotte', 15), ('64', 'Aménagement mixte piéton-vélo (hors voie verte) (Autre Site Propre)', 7), ('70', 'Chaussée à voie centrale banalisée', 11), ('71', 'Accotement revêtu hors CVCB', 10), ('99', 'Autre', 13), ('ZZ', 'Non concerné', 17);
 ALTER TABLE m_mobilite_3v.lt_mob_ame OWNER to sig_stage;
 
 --############################################################ lt_mob_avanc ##################################################
