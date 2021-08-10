@@ -107,18 +107,18 @@ Paticularité(s) à noter :
 |ame_d|Type d aménagement de droite|character varying(2)| |
 |avanc_d|Niveau d avancement en terme de projet à droite|character varying(2)| |
 |regime_d|Régime présent sur la voie de droite|character varying(2)| |
-|sens_d|Sens de circulation de l aménagement de droite|character varying(2)| |
-|largeur_d|Largeur en mètre de l aménagement de droite|character varying(2)| |
+|sens_d|Sens de circulation de l'aménagement de droite|character varying(2)| |
+|largeur_d|Largeur en mètre de l'aménagement de droite|character varying(2)| |
 |local_d|Localisation de l aménagement de droite|character varying(2)| |
 |revet_d|Type de revêtement du tronçon de droite|character varying(2)| |
 |long_m|Longueur en mètre du tronçon|integer| |
 |src_geom|Référentiel utilisé pour la digitalisation de la géométrie|character varying(2)| |
 |observ|Commentaires|character varying(1000)| |
-|verif|attribut spécifiant que l utilisaetur a vérifier l exactitude du tronçon|boolean|false|
+|verif|attribut spécifiant que l'utilisaetur a vérifier l exactitude du tronçon|boolean|false|
 |op_sai|Opérateur de saisie|character varying(20)| |
 |date_sai|Date de saisie de la donnée|timestamp without time zone| |
 |date_maj|Date de mise à jour de la donnée|timestamp without time zone| |
-|geom|Géométrie de l objet|USER-DEFINED| |
+|geom|Géométrie de l'objet|USER-DEFINED| |
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `idtroncon` lui-même contenant une séquence d'incrémentation automatique (mob_objet_seq_id).
@@ -154,7 +154,7 @@ Paticularité(s) à noter :
 |:---|:---|:---|:---|  
 |idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |libelle|Libellé du carrefour|character varying(255)| |
-|typ_car|Type de carrefour|character varying(15)| |
+|typ_car|Type d'aménagement|character varying(15)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
 |insee|Code insee de la commune d implantation|character varying(5)| |
 |commune|Nom de la commune d implantation|character varying(80)| |
@@ -257,7 +257,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|gid|Identifiant unique (clé primaire) de la relation|bigint|nextval('m_mobilite_3v.mob_lk_gid')|
+|gid|Identifiant unique (clé primaire) de la relation|bigint|nextval('m_mobilite_3v.mob_lk_gid'::regclass)|
 |idtroncon|Identifiant unique du tronçon|text| |
 |iditi|Identifiant unique de litinéraire|text| |
 
@@ -286,8 +286,24 @@ Paticularité(s) à noter :
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `qid` lui-même contenant une séquence pour l'attribution automatique d'une référence tronçon unique.
+
 ---
 
+`[an_mob_log]` : table alpanumérique .
+
+|Nom attribut | Définition | Type  | Valeurs par défaut |
+|:---|:---|:---|:---| 
+|idlog|Identifiant unique de l'opération|integer| |
+|tablename|Nom de la table concernée par l'opération sur l'entité|character varying(80)| |
+|type_ope|Type l'opération sur l'entité|text| |
+|dataold|Valeur ancienne avant l'opération sur l'entité|character varying(10000)| |
+|datanew|Valeur nouvelle après l'opération sur l'entité|character varying(10000)| |
+|date_maj|Horodatage de l'opération sur la donnée aménagements cyclables|timestamp without time zone| |
+
+Paticularité(s) à noter :
+* Une clé primaire existe sur le champ `idlog`.
+
+---
 
 ## Liste de valeurs
 
@@ -299,27 +315,27 @@ Paticularité(s) à noter :
 |valeur|Libellé de la valeur des aménagements cyclables|character varying(100)| |
 |url|Lien URL vers la documentation nationale|character varying(255)| |
 |modele|Code du modèle d'aménagement|character varying(3)| |
-|affichage|Permet le tri de la liste dans géo| integer | |
+|affichage|Attribut de tri pour l'applicatif Geo|integer| |
 
 |Code | Valeur | Url | Modele | affichage |
 |:---|:---|:---|:---|:---| 
-|10|Non aménagé (route)|||16|
-|11|Non aménagé (jalonnement)|||12|
-|20|Piste cyclable|||1|
-|30|Bande cyclable|||3|
-|41|Double sens cyclable piste|||4|
-|42|Double sens cyclable bande|||5|
-|43|Double sens cyclable non matérialisé|||6|
-|50|Voie verte|||2|
-|60|Vélo rue|||8|
-|61|Couloir Bus+Vélo|||9|
-|62|Rampe|||14|
-|63|Goulotte|||15|
-|64|Aménagement mixte piéton-vélo (hors voie verte)(Autre Site Propre)|||7|
-|70|Chaussée à voie centrale banalisée|||11|
-|71|Accotement revêtu hors CVCB|||10|
-|99|Autre|||13|
-|ZZ|Non concerné|||17|
+|10|Non aménagé (route)|
+|11|Non aménagé (jalonnement)|
+|20|Piste cyclable|
+|30|Bande cyclable|
+|41|Double sens cyclable piste|
+|42|Double sens cyclable bande|
+|43|Double sens cyclable non matérialisé|
+|50|Voie verte|
+|60|Vélo rue|
+|61|Couloir Bus+Vélo|
+|62|Rampe|
+|63|Goulotte|
+|64|Aménagement mixte piéton-vélo (hors voie verte) (Autre Site Propre)|
+|70|Chaussée à voie centrale banalisée|
+|71|Accotement revêtu hors CVCB|
+|99|Autre|
+|ZZ|Non concerné|
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
@@ -376,10 +392,11 @@ Paticularité(s) à noter :
 
 |Code | Valeur | Modele |
 |:---|:---|:---|  
-|00|Non renseigné|
 |10|SAS vélo|
 |20|Traversée|
 |30|Feux aménagés|
+|40|Bande d'insertion|
+|50|Signalisation + présignalisation|
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
@@ -465,7 +482,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur du niveau d'isncription|character varying(50)| |
+|valeur|Libellé de la valeur du niveau|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|  
@@ -550,14 +567,15 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des types de réseau locaux|character varying(50)| |
+|valeur|Libellé de la valeur des types de réseaux locaux|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
-|00|Non renseigné|
+|00|non renseigné|
 |10|REV (Réseau Express Vélo)|
 |20|STRUCTURANT|
 |30|AUTRE|
+
 
 Paticularité(s) à noter :
 * Une clé primaire existe sur le champ `code`.
@@ -628,7 +646,7 @@ Paticularité(s) à noter :
 |Nom attribut | Définition | Type  |
 |:---|:---|:---|
 |code|Code de la valeur|character varying(2)| |
-|valeur|Libellé de la valeur des modes d accès aux lieux de stationnement|character varying(50)| |
+|valeur|Libellé de la valeur des modes d'accès aux lieux de stationnement|character varying(50)| |
 
 |Code | Valeur |
 |:---|:---|
