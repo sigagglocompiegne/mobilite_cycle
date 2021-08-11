@@ -81,11 +81,58 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 Sont présentées ici uniquement les fonctionnalités spécifiques à l'application.
 
-## Recherche globale : `[libellé]`
+## Recherche globale : `[Rechercher un itinéraire]`
+
+Cette recherche permet à l'utilisateur de faire une recherche libre sur un nom d'itinéraire.
+
+
+## Recherche globale : `[Recherche dans la Base Adresse Locale]`
 
 Cette recherche permet à l'utilisateur de faire une recherche libre sur une adresse.
 
 Cette recherche a été créée pour l'application RVA. Le détail de celle-ci est donc à visualiser dans le répertoire GitHub rva au niveau de la documentation applicative.
+
+
+
+## Recherche (clic sur la carte) : `[Recherche d'un troçon]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations sur le tronçon sélectionné.
+
+  * Configuration :
+
+Source : `[geo_v_mob_troncon]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres : aucun
+
+ * Fiches d'information active : Fiche du tronçon cyclable
+ 
+
+
+
+## Recherche (clic sur la carte) : `[libellé]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
+
+  * Configuration :
+
+Source : `[libellé]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres : aucun
+
+ * Fiches d'information active : Fiche adresse
 
 
 
@@ -108,7 +155,67 @@ Source : `[libellé]`
  * Filtres : aucun
 
  * Fiches d'information active : Fiche adresse
- 
+
+
+
+
+
+## Recherche (clic sur la carte) : `[libellé]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
+
+  * Configuration :
+
+Source : `[libellé]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres : aucun
+
+ * Fiches d'information active : Fiche adresse
+
+
+
+
+## Recherche (clic sur la carte) : `[libellé]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
+
+  * Configuration :
+
+Source : `[libellé]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres : aucun
+
+ * Fiches d'information active : Fiche adresse
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
