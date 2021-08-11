@@ -241,18 +241,54 @@ Source : `[libellé]`
 `Chiffres clés des itinéraires cyclables` : vue utilisée `xapps_an_v_mob3v_tab31` pour afficher le nombre total d'itinéraire et le nombre total de kilomètre de tronçons.
 
 
-## Modification géométrique : `[libellé]`
+## Modification géométrique : `[Modification troncon]`
 
-Cette recherche permet à l'utilisateur de saisir un sigbnalement concernant une voie ou une adresse.
+Cette modification permet d'ajouter, de mettre à jour ou de supprimer de la données de la couche `geo_mob_troncon`.
 
   * Configuration :
   
-Source : `[libellé]`
+Source : `[geo_v_mob_troncon]`
+
+ * Filtres : aucun
+ * Accrochage : 
+    * `geo_v_mob_troncon` : segment, noeud, extrémité.
+    * `Commune` : sgment, noeud.
+ * Fiches d'information active : ......
+ * Topologie : aucune 
+ 
+ 
+ 
+ ## Modification géométrique : `[Saisie des stationnements cyclables]`
+
+Cette recherche permet à l'utilisateur de saisir, de modifier ou de supprimer des stationnements cyclabels.
+
+  * Configuration :
+  
+Source : `[geo_mob_lieustatio]`
 
  * Filtres : aucun
  * Accrochage : aucun
  * Fiches d'information active : ......
  * Topologie : aucune 
+ 
+ 
+ 
+ ## Modification géométrique : `[Saisie carrefour cyclable]`
+
+Cette recherche permet à l'utilisateur de saisir, de modifier ou de supprimer des carrefours cyclables.
+
+  * Configuration :
+  
+Source : `[geo_mob_carrefour ]`
+
+ * Filtres : aucun
+ * Accrochage : 
+    * `geo_v_mob_troncon` : noeud.
+ * Fiches d'information active : ......
+ * Topologie : aucune 
+
+ 
+ 
  
  # La cartothèque
 
