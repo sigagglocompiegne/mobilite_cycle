@@ -11,7 +11,8 @@
 
 ## Schéma fonctionnel
 
-(à venir)
+![schema_fonctionnel_v2](https://user-images.githubusercontent.com/84439263/129044901-e8251633-ef84-4856-bccb-cd35662880b9.png)
+
 
 
 ## Dépendances
