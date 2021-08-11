@@ -300,23 +300,36 @@ $(".sidepanel-item.launcher-application").click();
 |:---|:---|:---|:---|
 |Recherche dans la Base Adresse Locale,Recherche d'une voie, Localiser un équipement|alpha|15|Rechercher une adresse, une voie,  un équipement, ...|
 
-* Carte : `[libellé]`
+* Carte : `[Aménagements cyclables]`
 
 Comportement au clic : (dés)active uniquement l'item cliqué
-Liste des recherches : Recherche dans la Base Adresse Locale, Recherche tronçon, Signalement voie/adresse, Recherche avancée d'une voie, Parcelle(s) sélectionnée(s) (description : GeoCadastre V3)
+Liste des recherches : Recherche dans la Base Adresse Locale, recherche un itinéraire.
 
 * Fonds de plan :
 
 |Nom|Au démarrage|opacité|
 |:---|:---|:---|
-|Cadastre|x|80%|
-|Plan de ville|x|60%|
-|Photographie aérienne 2013|x|80%|
+|Cadastre||100%|
+|Plan de ville||100%|
+|Photographie aérienne 2018|x|80%|
+|Carte IGN 25000||100%|
 
 * Fonctionnalités
 
 |Groupe|Nom|
 |:---|:---|
+|Itinéraires cyclables||
+||Ajouter un nouvel itinéraire|
+||Recherche et modification d'un itinéraire|
+|Tronçons cyclables||
+||Ajout et modification d'un tronçon|
+||Recherche d'un tronçon|
+|Stationnements cyclables||
+||Saisie des stationnements cyclables|
+||Recherche stationnement cyclable|
+|Carrefours cyclables||
+||Ajout d'un carrefour cyclable|
+||Recherche et modification d'un carrefour cyclable|
 |Recherche cadastrale (V3)||
 ||Parcelles par référence|
 ||Parcelles par adresse fiscale (V3)|
