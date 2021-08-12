@@ -59,6 +59,7 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 |avanc|avanc|||est similaire à une valeur choisie par l'utilisateur|lt_mob_avanc||
 |commune|insee|||est similaire à une valeur choisie par l'utilisateur|Commune APC||
 |protégé|protection|||est similaire à une valeur choisie par l'utilisateur|lt_mob_statio_protec||
+
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
