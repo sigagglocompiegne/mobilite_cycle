@@ -51,6 +51,7 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 |:---|:-:|:-:|:---|:---|:---|:---|
 
    * filtres :
+   * 
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
 |gestionnaire|gest|||est similaire à une valeur choisie par l'utilisateur|lt_mob_gest||
@@ -61,6 +62,7 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 |protégé|protection|||est similaire à une valeur choisie par l'utilisateur|lt_mob_statio_protec||
 
    * relations :
+   * 
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
 |an_mob_equstatio|idlieustatio|1..n|
