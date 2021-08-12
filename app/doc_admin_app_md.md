@@ -108,20 +108,65 @@ Source : `[geo_v_mob_troncon]`
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
 
- * Filtres : aucun
-
+ * Filtres : 
+    * choix commune : est similaire à une valeur de la liste de choix `Commune APC`.
+    * choix amenagement : est similaire à une valeur de la liste de choix `lt_mob_ame`.
+    * choix avancement : est similaire à une valeur de la liste de choix `lt_mob_avanc`.
+    * choix revetement : est similaire à une valeur de la liste de choix `lt_mob_revet`.
  * Fiches d'information active : Fiche du tronçon cyclable
  
 
 
+## Recherche (clic sur la carte) : `[Rechercher un itinéraire]`
 
-## Recherche (clic sur la carte) : `[libellé]`
-
-Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations des itinéraires.
 
   * Configuration :
 
-Source : `[libellé]`
+Source : `[an_mob_itineraire]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres :
+    * gest_iti : est similaire à une valeur de la liste de choix `lt_mob_gest_iti`.
+    * affiche_iti : est égale à une valeur choisi par l'utilisateur.
+ * Fiches d'information active : Fiche de l'itinéraire
+
+
+
+## Recherche (clic sur la carte) : `[Recherche carrefour cyclable]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations des carrefours cyclables.
+
+  * Configuration :
+
+Source : `[geo_mob_carrefour ]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient les mots entiers")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres : 
+    * Commune : est similaire à une valeur de la liste de choix `Commune APC`.
+    * typ_car : est similaire à une valeur de la liste de choix `lt_mob_carrefour`.
+    * avancement : est similaire à une valeur de la liste de choix `lt_mob_avanc`.
+ * Fiches d'information active : Fiche du carrefour cyclable
+
+
+
+## Recherche (clic sur la carte) : `[Recherche stationnement cyclable]`
+
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations des stationnements cyclables.
+
+  * Configuration :
+
+Source : `[geo_mob_lieustatio]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
@@ -130,92 +175,36 @@ Source : `[libellé]`
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
 
- * Filtres : aucun
+ * Filtres : 
+    * accès : est similaire à une valeur de la liste de choix `lt_mob_statio_acces`.
+    * gratuit : est vrai ou faux selon le choix de l'utilisateur.
+    * protégé : est similaire à une valeur de la liste de choix `lt_mob_statio_protec`.
+    * avanc : est similaire à une valeur de la liste de choix `lt_mob_avanc`.
+    * commune : est similaire à une valeur de la liste de choix `Commune APC`.
+ * Fiches d'information active : Fiche du lieu de stationnement
 
- * Fiches d'information active : Fiche adresse
 
 
+## Recherche (clic sur la carte) : `[Parcelle par adresse]`
 
-
-## Recherche (clic sur la carte) : `[libellé]`
-
-Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
+Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse et des parcelles.
 
   * Configuration :
 
-Source : `[libellé]`
+Source : `[Parcelle (Alpha)]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
 
-
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
 
- * Filtres : aucun
-
- * Fiches d'information active : Fiche adresse
-
-
-
-
-
-## Recherche (clic sur la carte) : `[libellé]`
-
-Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
-
-  * Configuration :
-
-Source : `[libellé]`
-
-|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
-|:---|:-:|:-:|:-:|:-:|:-:|
-
-
-(Calcul des suggestions par "Contient les mots entiers")
-(la détection des doublons n'est pas activée ici)
-
- * Filtres : aucun
-
- * Fiches d'information active : Fiche adresse
-
-
-
-
-## Recherche (clic sur la carte) : `[libellé]`
-
-Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse.
-
-  * Configuration :
-
-Source : `[libellé]`
-
-|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
-|:---|:-:|:-:|:-:|:-:|:-:|
-
-
-(Calcul des suggestions par "Contient les mots entiers")
-(la détection des doublons n'est pas activée ici)
-
- * Filtres : aucun
-
- * Fiches d'information active : Fiche adresse
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ * Filtres : 
+    * Commune de votre territoire (Parcelle (Alpha)) : 
+    * Lieu-dit (Parcelle (Alpha)) : ...
+    * Adresse (Parcelle (Alpha)) : ...
+    * N° de voirie (Parcelle (Alpha)) : ...
+ * Fiches d'information active : Fiche parcelle / Note de renseignements d'urbanisme
 
 
 
@@ -227,23 +216,65 @@ Seul le nom des certaines recherches a été modifié par l'ARC pour plus de com
 Cette recherche est détaillée dans le répertoire GitHub `docurba`.
 
 
-## Recherche : `[libellé]`
 
-Cette recherche permet à l'utilisateur de faire une recherche sur les signalements.
+
+
+
+
+
+
+
+
+
+
+## Recherche : `[Rechercher un itinéraire]`
+
+Cette recherche permet à l'utilisateur de faire une recherche sur les itinéraires.
 
   * Configuration :
 
-Source : `[libellé]`
+Source : `[an_mob_itineraire]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
-
 
 (Calcul des suggestions par "Contient la chaine")
 (la détection des doublons n'est pas activée ici)
 
  * Filtres :
+    * gest_iti
+    * affiche_iti
+|Groupe|Jointure|Filtres liés|
+|:---|:-:|:-:|
 
+|Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
+|:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
+
+(1) si liste de domaine
+
+ * Fiches d'information active : Fiche de l'itinéraire
+ 
+ 
+
+## Recherche : `[Recherche d'un tronçon]`
+
+Cette recherche permet à l'utilisateur de faire une recherche sur les tronçons cyclables.
+
+  * Configuration :
+
+Source : `[geo_v_mob_troncon]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient la chaine")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres :
+    * choix commune
+    * choix amenagement
+    * choix avancement
+    * choix revetement
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
 
@@ -253,21 +284,72 @@ Source : `[libellé]`
 
 (1) si liste de domaine
 
- * Fiches d'information active : ....
+ * Fiches d'information active : Fiche du tronçon cyclable
  
  
  
+## Recherche : `[Recherche carrefour cyclable]`
+
+Cette recherche permet à l'utilisateur de faire une recherche sur les carrefours cyclables.
+
+  * Configuration :
+
+Source : `[geo_mob_carrefour]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient la chaine")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres :
+    * Commune
+    * typ_car
+    * avancement
+|Groupe|Jointure|Filtres liés|
+|:---|:-:|:-:|
+
+|Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
+|:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
+
+(1) si liste de domaine
+
+ * Fiches d'information active : Fiche du carrefour cyclable 
+ 
+
+
+## Recherche : `[Recherche stationnement cyclable]`
+
+Cette recherche permet à l'utilisateur de faire une recherche sur les stationnements cyclables.
+
+  * Configuration :
+
+Source : `[geo_mob_lieustatio]`
+
+|Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
+|:---|:-:|:-:|:-:|:-:|:-:|
+
+(Calcul des suggestions par "Contient la chaine")
+(la détection des doublons n'est pas activée ici)
+
+ * Filtres :
+    * accès
+    * gratuit
+    * protégé
+    * avanc
+    * commune
+|Groupe|Jointure|Filtres liés|
+|:---|:-:|:-:|
+
+|Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
+|:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
+
+(1) si liste de domaine
+
+ * Fiches d'information active : Fiche du lieu de stationnement
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  
 
 ## Fiche d'information : `[Fiche de l'itinéraire]`
