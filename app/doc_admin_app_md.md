@@ -42,20 +42,6 @@ Sans objet
 
 Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les besoins de l'application. Les autres données servant d'habillage (pour la cartographie ou les recherches) sont listées dans les autres parties ci-après. Le tableau ci-dessous présente uniquement les changements (type de champ, formatage du résultat, ...) ou les ajouts (champs calculés, filtre, ...) non présents dans la donnée source. 
 
-## GeoTable : `[geo_v_mob_troncon]`
-
-|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
-|:---|:-:|:-:|:---|:---|:---|:---|
-
-   * filtres :
-|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
-|:---|:---|:-:|:---:|:---:|:---|:---|
-   
-   * relations :
-|Géotables ou Tables| Champs de jointure | Type |
-|:---|:---|:---|
-
-   * particularité(s) : aucune
 
 
 
@@ -67,11 +53,17 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|gestionnaire|gest|||est similaire à une valeur choisie par l'utilisateur|lt_mob_gest||
+|gratuit|gratuit||booléen|est vraie ou fausse selon le choix de l'utilisateur|||
+|acces|acces|||est similaire à une valeur choisie par l'utilisateur|lt_mob_statio_acces||
+|avanc|avanc|||est similaire à une valeur choisie par l'utilisateur|lt_mob_avanc||
+|commune|insee|||est similaire à une valeur choisie par l'utilisateur|Commune APC||
+|protégé|protection|||est similaire à une valeur choisie par l'utilisateur|lt_mob_statio_protec||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
-
+|an_mob_equstatio|idlieustatio|1..n|
+|an_mob_media|id - idlieustatio|0..n|
    * particularité(s) : aucune
 
 
@@ -84,7 +76,7 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|Paramètre global|iditi|x||la valeur de l'attribut est égale à un paramètre global de l'application|||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
@@ -101,11 +93,11 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|Paramètre global|iditi|x|la valeur de l'attribut est égale à un paramètre global de l'application||||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
-
+|an_mob_itineraire|iditi|0..1|
    * particularité(s) : aucune
 
 
@@ -118,11 +110,14 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|typ_car|typ_car|||est similaire à une valeur choisie par l'utilisateur|lt_mob_carrefour||
+|avancement|avanc|||est similaire à une valeur choisie par l'utilisateur|lt_mob_avanc||
+|commune|insee|||est similaire à une valeur choisie par l'utilisateur|Commune APC||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
-
+|geo_vmr_mob_iti / an_mob_itineraire|geom / iditi|0..n / 0..1|
+|an_mob_media|id - idcarrefour|0..n|
    * particularité(s) : aucune
 
 
@@ -152,11 +147,22 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|choix revetement|revetement_recherche|||est similaire à une valeur choisie par l'utilisateur|lt_mob_revet||
+|choix avanc_g|avanc_g|||est égale à une valeur choisie par l'utilisateur|||
+|choix idtroncon|idtroncon|||est égale à une valeur choisie par l'utilisateur|||
+|select spatiale geom contenue|geom|||est contenue dans la sélection issue d'une donnée spatiale|||
+|choix avancement|avancement_recherche|||est similaire à une valeur choisie par l'utilisateur|lt_mob_avanc||
+|choix commune|commune_recherche|||est similaire à une valeur choisie par l'utilisateur|Commune APC||
+|choix avanc_d|avanc_d|||est égale à une valeur choisie par l'utilisateur|||
+|choix commune_g|commune_g|||est égale à une valeur choisie par l'utilisateur|||
+|choix ame_d|ame_d|||est égale à une valeur choisie par l'utilisateur|||
+|choix amenagement|amenagement_recherche|||est similaire à une valeur choisie par l'utilisateur|lt_mob_ame||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
-
+|an_mob_media|gid - idtroncon|0..n|
+|lk_mob_ititroncon / an_mob_itineraire|idtroncon / iditi|0..n / 1|
+|xapps_an_v_mob_erreur|id - troncon|0..1|
    * particularité(s) : aucune
 
 
@@ -169,11 +175,12 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|avancement|avanc|||est égale à une valeur choisie par l'utilisateur|||
+|aménagement|ame|||est égale à une valeur choisie par l'utilisateur|||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
-
+|lk_mob_ititroncon / an_mob_itineraire|idtroncon / iditi|0..n / 1|
    * particularité(s) : aucune
 
 
@@ -186,7 +193,7 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
    * filtres :
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
-   
+|Filtre zoom auto utilisateur|insee|x||est égale à ccocom|||
    * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
