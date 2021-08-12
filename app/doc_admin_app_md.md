@@ -14,7 +14,7 @@
 
 |Représentation| Nom de l'application |Résumé|
 |:---|:---|:---|
-|![picto](.png)|Itinéraires cyclables||
+|![picto](.png)|Aménagements cyclables||
 
 # Accès
 
