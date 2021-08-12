@@ -140,10 +140,12 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 |:---|:-:|:-:|:---|:---|:---|:---|
 
    * filtres :
+   
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
    
    * relations :
+   
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
 
