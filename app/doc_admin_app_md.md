@@ -394,6 +394,7 @@ Source : `[an_mob_itineraire]`
  * Filtres :
     * gest_iti
     * affiche_iti
+    
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
 
@@ -425,6 +426,7 @@ Source : `[geo_v_mob_troncon]`
     * choix amenagement
     * choix avancement
     * choix revetement
+    
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
 
@@ -456,6 +458,7 @@ Source : `[geo_mob_carrefour]`
     * Commune
     * typ_car
     * avancement
+    
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
 
@@ -488,6 +491,7 @@ Source : `[geo_mob_lieustatio]`
     * protégé
     * avanc
     * commune
+    
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
 
