@@ -46,28 +46,148 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-|affiche_blanc|x|||N'affiche rien pour pouvoir contourner la première ligne en gras dans les résultats des recherches de Géo.|Résultat de recherche|| 
-|affiche_message|x|x||Affiche un message en HTML pour préciser que la droite et la gauche se remplissent en fonction du sens de saisie.|Fiche d'information|<center><font size=2 color="#FF0000"><b><i>La gauche ou la droite se détermine par rapport au sens de saisie du tronçon.</i></b></font></center>|
-|ame_d|||Aménagement (droite)||Fiche d'information des tronçons||
-|ame_g|||Aménagement (gauche)||Fiche d'information des tronçons||
-|amenagement_recherche|x|||Utile à un autre champ calculé pour une recherche|Recherche sur les aménagements||{ame_g};{ame_d}|
-|avanc_d|||Avancement (droite)||Fiche d'information des tronçons||
-|avanc_g|||Avancement (gauche)||Fiche d'information des tronçons||
-|avancement_recherche|x|||Utile à un autre champs calculé pour une recherche sur les avancements||{avanc_g};{avanc_d}|
-|code_com_d|||Code Insee (droite)||Fiche d'information des tronçons||
-|code_com_g|||Code Insee (gauche)||Fiche d'information des tronçons||
-|commune_d|||Commune (droite)||||
-|commune_g|||Commune (gauche)||||
-|commune_recherche|x|||Utile à un autre champs calculé pour une recherche sur les communes||{code_com_g};{code_com_d}|
-|SUITE A ECRIRE||||||
 
    * filtres :
-
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
    
    * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
 
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_mob_lieustatio]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[xapps_geo_vmr_mob_iti_deparr]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_vmr_mob_iti_affiche]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_mob_carrefour]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_v_mob_noeud]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_v_mob_troncon]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[xapps_geo_vmr_mob_troncon_affiche]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
+|Géotables ou Tables| Champs de jointure | Type |
+|:---|:---|:---|
+
+   * particularité(s) : aucune
+
+
+
+## GeoTable : `[geo_vm_osm_commune_apc]`
+
+|Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
+|:---|:-:|:-:|:---|:---|:---|:---|
+
+   * filtres :
+|Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
+|:---|:---|:-:|:---:|:---:|:---|:---|
+   
+   * relations :
 |Géotables ou Tables| Champs de jointure | Type |
 |:---|:---|:---|
 
