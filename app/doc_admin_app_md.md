@@ -1,4 +1,3 @@
-![image_app](https://user-images.githubusercontent.com/84439263/129336167-63efe009-6107-4fba-9d99-d4b8baec857c.PNG)
 ![picto](https://github.com/sigagglocompiegne/orga_gest_igeo/blob/master/doc/img/geocompiegnois_2020_reduit_v2.png)
 
 # Documentation d'administration de l'application Itinéraires cyclables #
