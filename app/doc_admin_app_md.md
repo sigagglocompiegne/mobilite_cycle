@@ -217,53 +217,53 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-|affiche_blanc|x||||||
-|affiche_message|x||||||
-|ame_d|||||||
-|ame_g|||||||
-|amenagement_recherche|x||||||
-|avanc_d|||||||
-|avanc_g|||||||
-|avancement_recherche|x||||||
-|code_com_d|||||||
-|code_com_g|||||||
-|commune_d|||||||
-|commune_g|||||||
-|commune_recherche|x||||||
-|controle_d_service|x||||||
-|d_service|||||||
-|date_maj|||||||
-|date_sai|||||||
+|affiche_blanc|x||||sert à ne pas afficher un résultat en gras||
+|affiche_message|x||||sert à afficher le message de saisie droite/gauche||
+|ame_d|||Aménagement (droite)||||
+|ame_g|||Aménagement (gauche)||||
+|amenagement_recherche|x||||sert à mutualiser les aménagements||
+|avanc_d|||Avancement (droite)||||
+|avanc_g|||Avancement (gauche)||||
+|avancement_recherche|x||||sert à mutualiser les avancements||
+|code_com_d|||Code Insee (droite)||||
+|code_com_g|||Code Insee (gauche)||||
+|commune_d|||Commune (droite)||||
+|commune_g|||Commune (gauche)||||
+|commune_recherche|x||||sert à mutualiser les communes||
+|controle_d_service|x||||sert au contrôle de la date de service||
+|d_service|||Année de mise en service||||
+|date_maj|||Date de mise à jour||||
+|date_sai|||Date de saisie||||
 |geom|||||||
-|gest|||||||
-|id_on3v|||||||
-|id_osm|||||||
-|idtroncon|||||||
-|largeur_d|||||||
-|largeur_g|||||||
-|loc_ame|||||||
-|local_d|||||||
-|local_g|||||||
-|long_m|||||||
+|gest|||Gestionnaire||||
+|id_on3v|||Identifiant 3v||||
+|id_osm|||Id OpenStreetMap||||
+|idtroncon|||Identifiant des troncons||||
+|largeur_d|||Largeur (droite)||||
+|largeur_g|||Largeur (gauche)||||
+|loc_ame|||Loc Ame||||
+|local_d|||Local (droite)||||
+|local_g|||Local (gauche)||||
+|long_m|||Longueur||||
 |lumiere|||||||
-|observ|||||||
-|op_sai|||||||
+|observ|||Observation||||
+|op_sai|||Opérateur de saisie||||
 |propriete|||||||
-|recherche_affiche|x||||||
-|recherche_ame|x||||||
-|recherche_commune|x||||||
-|regime_d|||||||
-|regime_g|||||||
-|revet_d|||||||
-|revet_g|||||||
-|revetement_recherche|x||||||
-|sens_d|||||||
-|sens_g|||||||
-|src_geom|||||||
-|trafic_vit|||||||
-|typ_res|||||||
-|verif|||||||
-|verif_topo|x||||||
+|recherche_affiche|x||||sert à afficher le résultats des recherches||
+|recherche_ame|x||||sert à afficher et mutualiser les aménagements||
+|recherche_commune|x||||sert à afficher et mutualiser les communes||
+|regime_d|||Régime (droite)||||
+|regime_g|||Régime (gauche)||||
+|revet_d|||Revêtement (droite)||||
+|revet_g|||Revêtement (gauche)||||
+|revetement_recherche|x||||sert à mutualiser les revêtements||
+|sens_d|||Sens (droite)||||
+|sens_g|||Sens (gauche)||||
+|src_geom|||Source de la géometrie||||
+|trafic_vit|||Vitesse du trafic||||
+|typ_res|||Type de réseau||||
+|verif|||Vérification||||
+|verif_topo|x||||...||
    * filtres :
    
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
@@ -294,6 +294,14 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
+|ame|||Aménagement||||
+|avanc|||Avancement||||
+|geom|||||||
+|gid|||||||
+|idtroncon|||Identifiant du troncon||||
+|infobulle_affiche|x||||sert à afficher le résultat des infobulles||
+|infobulle_ame|x||||sert à afficher les aménagements||
+|infobulle_avanc|x||||sert à afficher les avancements||
 
    * filtres :
    
@@ -315,6 +323,13 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
+|affiche_commune|x||||sert à afficher les communes||
+|commune|||||||
+|commune_m|||||||
+|geom|||||||
+|gid|||||||
+|insee|||||||
+|lib_epci|||||||
 
    * filtres :
    
@@ -360,6 +375,8 @@ Source : `[geo_v_mob_troncon]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_blanc|x|||geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
@@ -383,6 +400,8 @@ Source : `[an_mob_itineraire]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_vide|x|||geom||
+|info_bulle_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
@@ -404,6 +423,8 @@ Source : `[geo_mob_carrefour ]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_vide|x|x|x|geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
