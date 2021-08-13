@@ -1,3 +1,4 @@
+![image_app](https://user-images.githubusercontent.com/84439263/129336167-63efe009-6107-4fba-9d99-d4b8baec857c.PNG)
 ![picto](https://github.com/sigagglocompiegne/orga_gest_igeo/blob/master/doc/img/geocompiegnois_2020_reduit_v2.png)
 
 # Documentation d'administration de l'application Itinéraires cyclables #
@@ -14,7 +15,7 @@
 
 |Représentation| Nom de l'application |Résumé|
 |:---|:---|:---|
-|![picto](.png)|Aménagements cyclables||
+|![image_app](https://user-images.githubusercontent.com/84439263/129336203-ff601a48-c1bc-4475-b7e4-46012b60ea2d.PNG)|Aménagements cyclables||
 
 # Accès
 
@@ -49,7 +50,40 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-
+|a_service|||Année d'installation||||
+|acces|||Moyen d'accès||||
+|adresse|||Adresse ou libellé||||
+|affiche_vide|x||||sert à ne pas afficher un résultat en gras||
+|avanc|||Niveau d'avancement en terme de projet||||
+|capacite|||||||
+|capacite_gt|||Capacité grandes tailles||||
+|cmplt_adr|||Complément d'adresse||||
+|commune|||||||
+|controle_a_service|x||||sert aux contrôles||
+|controle_protection|x||||sert aux contrôles||
+|couverture|||Présence d'un toit||||
+|date_maj|||Date de mise à jour||||
+|date_sai|||Date de saisie||||
+|geom|||||||
+|gest|||Gestionnaire||||
+|gratuit|||Gratuité||||
+|id_osm|||Identifiant unique du tronçon sur OpenStreetMap||||
+|idlieustatio|||Identifiant unique (clé primaire) du lieu de stationnement||||
+|insee|||||||
+|lumiere|||Éclairage||||
+|observ|||Commentaire||||
+|op_sai|||Opérateur de saisie||||
+|propriete|||Propriétaire||||
+|protection|||Protection||||
+|recherche_affiche|x||||sert à afficher le résultat des recherches||
+|src_geom|||Référentiel utilisé pour la digitalisation de la géométrie||||
+|surveillance|||||||
+|url|||Site Web||||
+|verif|||||||
+|x_l93|||Coordonnée X en Lambert 93||||
+|x_wgs84|||Longitude||||
+|y_l93|||Coordonnée Y en Lambert 93||||
+|y_wgs84|||Latitude||||
    * filtres :
    
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
