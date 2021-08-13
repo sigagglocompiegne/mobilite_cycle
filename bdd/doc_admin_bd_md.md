@@ -153,7 +153,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|idcarrefour|Identifiant unique (clé primaire) du tronçon|text|('C'::text nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |libelle|Libellé du carrefour|character varying(255)| |
 |typ_car|Type d'aménagement|character varying(15)| |
 |avanc|Niveau d avancement en terme de projet|character varying(2)| |
