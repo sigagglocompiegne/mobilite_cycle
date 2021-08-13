@@ -109,8 +109,12 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
+|geom|||||||
+|gid|||||||
+|iditi|||||||
+|terminus|||||||
 
-   * filtres :
+* filtres :
   
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
 |:---|:---|:-:|:---:|:---:|:---|:---|
@@ -129,6 +133,12 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
+|ame|||||||
+|ame_avanc|x||||sert à afficher sur l'application la catégorisation||
+|avanc|||||||
+|geom|||||||
+|gid|||||||
+|iditi|||||||
 
    * filtres :
    
@@ -149,7 +159,22 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-
+|affiche_vide|x||||sert à ne pas afficher un résultat en gras||
+|avanc|||Niveau d'avancement en terme de projet||||
+|commune|||Nom de la commune d implantation||||
+|date_maj|||Date de mise à jour de la donnée||||
+|date_sai|||Date de saisie de la donnée||||
+|geom|||||||
+|idcarrefour|||Identifiant unique (clé primaire) du tronçon||||
+|infobulle_affiche|x||||sert à afficher le résultat dans les infobulles||
+|insee|||Code insee de la commune d'implantation||||
+|libelle|||Libellé du carrefour||||
+|observ|||Commentaire||||
+|op_sai|||Opérateur de saisie||||
+|recherche avanc|x||||sert à afficher le nom des  avancements||
+|recherche_affiche|x||||sert à afficher le résultat des recherches||
+|recherche_typcar|x||||sert à afficher le nom des aménagements||
+|typ_car|||Type d'aménagement||||
    * filtres :
    
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
@@ -172,7 +197,8 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-
+|geom|||||||
+|idtroncon|||||||
    * filtres :
    
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
@@ -191,7 +217,53 @@ Sont décrites ici les Géotables et/ou Tables intégrées dans GEO pour les bes
 
 |Attributs| Champ calculé | Formatage |Renommage|Particularité/Usage|Utilisation|Exemple|
 |:---|:-:|:-:|:---|:---|:---|:---|
-
+|affiche_blanc|x||||||
+|affiche_message|x||||||
+|ame_d|||||||
+|ame_g|||||||
+|amenagement_recherche|x||||||
+|avanc_d|||||||
+|avanc_g|||||||
+|avancement_recherche|x||||||
+|code_com_d|||||||
+|code_com_g|||||||
+|commune_d|||||||
+|commune_g|||||||
+|commune_recherche|x||||||
+|controle_d_service|x||||||
+|d_service|||||||
+|date_maj|||||||
+|date_sai|||||||
+|geom|||||||
+|gest|||||||
+|id_on3v|||||||
+|id_osm|||||||
+|idtroncon|||||||
+|largeur_d|||||||
+|largeur_g|||||||
+|loc_ame|||||||
+|local_d|||||||
+|local_g|||||||
+|long_m|||||||
+|lumiere|||||||
+|observ|||||||
+|op_sai|||||||
+|propriete|||||||
+|recherche_affiche|x||||||
+|recherche_ame|x||||||
+|recherche_commune|x||||||
+|regime_d|||||||
+|regime_g|||||||
+|revet_d|||||||
+|revet_g|||||||
+|revetement_recherche|x||||||
+|sens_d|||||||
+|sens_g|||||||
+|src_geom|||||||
+|trafic_vit|||||||
+|typ_res|||||||
+|verif|||||||
+|verif_topo|x||||||
    * filtres :
    
 |Nom|Attribut| Au chargement | Type | Condition |Valeur|Description|
