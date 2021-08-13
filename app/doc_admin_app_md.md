@@ -520,6 +520,7 @@ Source : `[an_mob_itineraire]`
     
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
+||ET|x|
 
 |Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
 |:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
@@ -540,6 +541,8 @@ Source : `[geo_v_mob_troncon]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_blanc|x|||geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient la chaine")
 (la détection des doublons n'est pas activée ici)
@@ -552,6 +555,8 @@ Source : `[geo_v_mob_troncon]`
     
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
+||OU||
+||ET||
 
 
 |Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
@@ -573,6 +578,8 @@ Source : `[geo_mob_carrefour]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_vide|x|x|x|geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient la chaine")
 (la détection des doublons n'est pas activée ici)
@@ -584,6 +591,7 @@ Source : `[geo_mob_carrefour]`
     
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
+||ET||
 
 |Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
 |:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
@@ -604,6 +612,8 @@ Source : `[geo_mob_lieustatio]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_vide|x|||geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient la chaine")
 (la détection des doublons n'est pas activée ici)
@@ -617,6 +627,7 @@ Source : `[geo_mob_lieustatio]`
     
 |Groupe|Jointure|Filtres liés|
 |:---|:-:|:-:|
+||OU||
 
 |Nom|Obligatoire|Attribut|Condition|Valeur|Champ d'affichage (1)|Champ de valeurs (1)|Champ de tri (1)|Ajout autorisé (1)|Particularités|
 |:---|:-:|:---|:---|:---|:---|:---|:---|:-:|:---|
