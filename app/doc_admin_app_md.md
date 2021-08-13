@@ -447,7 +447,8 @@ Source : `[geo_mob_lieustatio]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
-
+|affiche_vide|x|||geom||
+|recherche_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
@@ -462,7 +463,7 @@ Source : `[geo_mob_lieustatio]`
 
 
 
-## Recherche (clic sur la carte) : `[Parcelle par adresse]`
+## Recherche (clic sur la carte) : `[Parcelles par adresse]`
 
 Cette recherche permet à l'utilisateur de cliquer sur la carte et de remonter les informations de l'adresse et des parcelles.
 
@@ -472,6 +473,8 @@ Source : `[Parcelle (Alpha)]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|Bg Emplacement|x|||Parcelle geom||
+|Adresse complète|x|||Parcelle geom||
 
 (Calcul des suggestions par "Contient les mots entiers")
 (la détection des doublons n'est pas activée ici)
@@ -495,15 +498,6 @@ Cette recherche est détaillée dans le répertoire GitHub `docurba`.
 
 
 
-
-
-
-
-
-
-
-
-
 ## Recherche : `[Rechercher un itinéraire]`
 
 Cette recherche permet à l'utilisateur de faire une recherche sur les itinéraires.
@@ -514,6 +508,8 @@ Source : `[an_mob_itineraire]`
 
 |Attribut|Afficher|Rechercher|Suggestion|Attribut de géométrie|Tri des résultats|
 |:---|:-:|:-:|:-:|:-:|:-:|
+|affiche_vide|x|||geom||
+|info_bulle_affiche|x|||geom||
 
 (Calcul des suggestions par "Contient la chaine")
 (la détection des doublons n'est pas activée ici)
