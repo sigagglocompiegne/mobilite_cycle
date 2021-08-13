@@ -755,6 +755,7 @@ Source : `[lk_mob_ititroncon]`
 
  * Saisie : aucune
  * Modèle d'impression : Fiche standard + carte
+ * Particularité : n'apparait pas à l'utilisateur
  
  
 
@@ -775,7 +776,7 @@ Source : `[an_mob_media]`
 
  * Saisie : aucune
  * Modèle d'impression : Fiche standard + carte
-
+ * Particularité : n'apparait pas à l'utilisateur
 
 
  
