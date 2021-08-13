@@ -38,7 +38,7 @@ L'ensemble des classes d'objets unitaires sont stockées dans le schéma m_mobli
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|iditi|Identifiant unique (clé primaire) de l itinéraire|text|('I'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|iditi|Identifiant unique (clé primaire) de l itinéraire|text|('I'::text nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |num_iti|Numéro de l itinéraire des schémas supra-intercommunaux|character varying(10)| |
 |num_loc|Numéro de l itinéraire local|character varying(10)| |
 |nom_off|Nom officiel ou à défaut celui mentionné dans un document de communication grand public|character varying(100)| |
@@ -179,7 +179,7 @@ Paticularité(s) à noter :
 
 |Nom attribut | Définition | Type  | Valeurs par défaut |
 |:---|:---|:---|:---|  
-|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|('S'::text || nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
+|idlieustatio|Identifiant unique (clé primaire) du lieu de stationnement|text|('S'::text  nextval('m_mobilite_3v.mob_objet_seq_id'::regclass))|
 |id_osm|Identifiant unique du tronçon sur OpenStreetMap|character varying(30)| |
 |capacite|Capacité de stationnement du lieu|integer| |
 |capacite_gt|Capacité de stationnement du lieu pour des vélos de grandes tailles|integer| |
