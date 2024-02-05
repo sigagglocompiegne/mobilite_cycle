@@ -8,7 +8,7 @@ Ensemble des éléments constituant la mise en oeuvre de la base de données sur
 
 - Script d'initialisation de la base de données
   * [Suivi des modifications](bdd/md_00_trace.sql)
-  * [Création  de la structure initiale](bdd/init_db_mod.sql)
+  * [Création  de la structure initiale](bdd/md_10_squelette.sql)
   * Création des vues de gestion
   * Création des vues applicatives
   * Création des vues OpenData
