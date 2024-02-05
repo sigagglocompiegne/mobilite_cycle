@@ -34,6 +34,7 @@ De plus cette thématique est partagée dans le cadre de la mutualisation avec l
 - [Documentation sur les aménagements cyclables (ETALAB)](https://doc.transport.data.gouv.fr/producteurs/amenagements-cyclables#amenagements-cyclables)
 - [VéloObs - Observatoire du vélo](https://github.com/2p2r/velobs_web/blob/master/documentation_utilisateurs.md)
 - [Outil de signalement Vélo&Territoires](https://www.velo-territoires.org/observatoires/observatoire-national-des-veloroutes-et-voies-vertes/outil-signalement-anomalies-cyclables/)
+- [GéoVélo](https://geovelo.app/fr/)
 
 ## Jeu de données consolidé
 
