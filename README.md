@@ -8,13 +8,13 @@ Ensemble des éléments constituant la mise en oeuvre de la base de données sur
 
 - Script d'initialisation de la base de données
   * [Suivi des modifications](bdd/md_00_trace.sql)
-  * [Création  de la structure initiale](bdd/md_10_squelette.sql)
-  * [Création des vues de gestion](bdd/md_20_vues_gestion.sql)
-  * [Création des vues applicatives](bdd/md_21_vues_xapps.sql)
-  * [Création des vues OpenData](bdd/md_23_vues_xopendata.sql)
+  * [Création  de la structure initiale](bdd/init_db_mod.sql)
+  * Création des vues de gestion
+  * Création des vues applicatives
+  * Création des vues OpenData
   * [Création des privilèges](bdd/md_99_grant.sql)
-- [Documentation d'administration de la base](bdd/doc_admin_bd_md.md)
-- [Documentation d'administration de l'application](app/doc_admin_app_md.md)
+- Documentation d'administration de la base
+- Documentation d'administration de l'application
 
 
 ## Contexte
