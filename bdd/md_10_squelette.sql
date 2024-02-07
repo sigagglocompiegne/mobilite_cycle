@@ -583,6 +583,24 @@ AS $function$
 
 BEGIN
 
+if new.op_maj is null and 
+	(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
+	   || '%'
+	) = 0 
+	then raise exception 'Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.<br><br>';
+end if;
+if new.op_maj is not null and
+(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
+	   || '%'
+	) = 0 
+	then raise exception 'Vous ne pouvez pas modifier/déplacer un lieu de stationnement cyclable en dehors de votre EPCI.<br><br>';
+
+end if;
+	
 
  -- automatisation des valeurs d'accroche en fonction du type de mobilier saisie (l'accroche peut-être saisie si le mobilier non)
 IF new.mobil || new.typ_accro = '0000' then
@@ -621,7 +639,6 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_gestion_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs';
-
 
 
 
