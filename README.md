@@ -36,6 +36,7 @@ De plus cette thématique est partagée dans le cadre de la mutualisation avec l
 - [VéloObs - Observatoire du vélo](https://github.com/2p2r/velobs_web/blob/master/documentation_utilisateurs.md)
 - [Outil de signalement Vélo&Territoires](https://www.velo-territoires.org/observatoires/observatoire-national-des-veloroutes-et-voies-vertes/outil-signalement-anomalies-cyclables/)
 - [GéoVélo](https://geovelo.app/fr/)
+- [PANO](https://github.com/IGNF/pano?tab=readme-ov-file)
 
 ## Jeu de données consolidé
 
