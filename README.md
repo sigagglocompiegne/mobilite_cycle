@@ -37,6 +37,7 @@ De plus cette thématique est partagée dans le cadre de la mutualisation avec l
 - [Outil de signalement Vélo&Territoires](https://www.velo-territoires.org/observatoires/observatoire-national-des-veloroutes-et-voies-vertes/outil-signalement-anomalies-cyclables/)
 - [GéoVélo](https://geovelo.app/fr/)
 - [PANO](https://github.com/IGNF/pano?tab=readme-ov-file)
+- [Schéma de randonnées](https://schema.data.gouv.fr/PnX-SI/schema_randonnee/)
 
 ## Jeu de données consolidé
 
