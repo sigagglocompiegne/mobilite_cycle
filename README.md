@@ -38,6 +38,7 @@ De plus cette thématique est partagée dans le cadre de la mutualisation avec l
 - [GéoVélo](https://geovelo.app/fr/)
 - [PANO](https://github.com/IGNF/pano?tab=readme-ov-file)
 - [Schéma de randonnées](https://schema.data.gouv.fr/PnX-SI/schema_randonnee/)
+- [Schéma de randonnées (GitHub)](https://github.com/PnX-SI/schema_randonnee?tab=readme-ov-file)
 
 ## Jeu de données consolidé
 
