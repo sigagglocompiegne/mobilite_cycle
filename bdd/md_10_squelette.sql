@@ -6701,7 +6701,7 @@ ALTER TABLE m_mobilite_douce.lt_vmr_mob_troncon OWNER TO create_sig;
 
 */
 -- #################################################################### vue xapps_geo_vmr_mob_amgt_troncon ###############################################
--- drop view if exists m_mobilite_douce.xapps_geo_v_mob_amgt_troncon;
+-- drop materialized view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
 --CREATE OR REPLACE VIEW m_mobilite_douce.xapps_geo_v_mob_amgt_troncon AS
 create materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon
 TABLESPACE pg_default
@@ -7011,7 +7011,7 @@ GRANT SELECT ON TABLE m_mobilite_douce.xapps_geo_v_mob_amgt_troncon TO sig_edit;
 GRANT ALL ON TABLE m_mobilite_douce.xapps_geo_v_mob_amgt_troncon TO postgres;
 */
 -- #################################################################### vue xapps_geo_vmr_mob_amgt_troncon_etat ###############################################
-drop view if exists m_mobilite_douce.xapps_geo_v_mob_amgt_troncon_etat;
+drop materialized view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
 --CREATE OR REPLACE VIEW m_mobilite_douce.xapps_geo_v_mob_amgt_troncon_etat AS
 create materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat
 TABLESPACE pg_default
@@ -7028,6 +7028,7 @@ with req_t as
 			t.dbetat_d as dbetat,
 			t.dbstatut as dbstatut,
 			t.typ_mob,
+			t.regime_d as regime,
 			t.local_d as local,
 			i.id_iticycl,
 			r.id_itirand,
@@ -7056,6 +7057,7 @@ with req_t as
 		d.dbetat,
 		d.dbstatut,
 		d.typ_mob,
+		d.regime,
 		d.LOCAL,
 		d.epci,
 		string_agg(d.id_iticycl,',') AS code_iditicycl,
@@ -7065,7 +7067,7 @@ with req_t as
 	
 	FROM
 		req_d d	
-	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.typ_mob,d.dbetat,d.geom,d.local, d.epci
+	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.typ_mob,d.regime,d.dbetat,d.geom,d.local, d.epci
 )
 union ALL
 (
@@ -7077,6 +7079,7 @@ union ALL
 			t.dbetat_d as dbetat,
 			t.dbstatut as dbstatut,
 			t.typ_mob,
+			t.regime_d as regime,
 			t.local_d as local,
 			i.id_iticycl,
 			r.id_itirand,
@@ -7105,6 +7108,7 @@ union ALL
 		d.dbetat,
 		d.dbstatut,
 		d.typ_mob,
+		d.regime,
 		d.LOCAL,
 		d.epci,
 		string_agg(d.id_iticycl,',') AS code_iditicycl,
@@ -7114,7 +7118,7 @@ union ALL
 	
 	FROM
 		req_d1 d	
-	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.dbetat,d.typ_mob,d.geom,d.local, d.epci
+	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.dbetat,d.typ_mob,d.regime,d.geom,d.local, d.epci
 )
 
 UNION ALL
@@ -7129,6 +7133,7 @@ UNION ALL
 			t.dbetat_d as dbetat,
 			t.dbstatut as dbstatut,
 			t.typ_mob,
+			t.regime_d as regime,
 			t.local_d as local,
 			i.id_iticycl,
 			r.id_itirand,
@@ -7157,6 +7162,7 @@ UNION ALL
 		d.dbetat,
 		d.dbstatut,
 		d.typ_mob,
+		d.regime,
 		d.local,
 		d.epci,
 		string_agg(d.id_iticycl,',') AS code_iditicycl,
@@ -7166,7 +7172,7 @@ UNION ALL
 	
 	FROM
 		req_d_chaussee d	
-	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.typ_mob,d.dbetat,d.geom,d.local,d.epci
+	GROUP BY d.id_tronc,d.ame,d.dbstatut,d.typ_mob,d.regime,d.dbetat,d.geom,d.local,d.epci
 )	
 	union all 
 	-- tronçon de gauche décalé
@@ -7179,6 +7185,7 @@ WITH req_g_chaussee AS
 			t.dbetat_g as dbetat,
 			t.dbstatut as dbstatut,
 			t.typ_mob,
+			t.regime_g as regime,
 			t.local_g as local,
 			i.id_iticycl,
 			r.id_itirand,
@@ -7207,6 +7214,7 @@ WITH req_g_chaussee AS
 		g.dbetat,
 		g.dbstatut,
 		g.typ_mob,
+		g.regime,
 		g.local,
 		g.epci,
 		string_agg(g.id_iticycl,',') AS code_iditicycl,
@@ -7216,7 +7224,7 @@ WITH req_g_chaussee AS
 	
 	FROM
 		req_g_chaussee g	
-	GROUP BY g.id_tronc,g.ame,g.dbstatut,g.typ_mob,g.dbetat,g.geom,g.local,g.epci
+	GROUP BY g.id_tronc,g.ame,g.dbstatut,g.typ_mob,g.regime,g.dbetat,g.geom,g.local,g.epci
 )
 union ALL
 -- tronçon de droite non concerné)
@@ -7229,6 +7237,7 @@ union ALL
 			t.dbetat_g as dbetat,
 			t.dbstatut as dbstatut,
 			t.typ_mob,
+			t.regime_g as regime,
 			t.local_g as local,
 			i.id_iticycl,
 			r.id_itirand,
@@ -7257,6 +7266,7 @@ union ALL
 		g.dbetat,
 		g.dbstatut,
 		g.typ_mob,
+		g.regime,
 		g.local,
 		g.epci,
 		string_agg(g.id_iticycl,',') AS code_iditicycl,
@@ -7266,7 +7276,7 @@ union ALL
 	
 	FROM
 		req_g g
-	GROUP BY g.id_tronc,g.ame,g.dbstatut,g.dbetat,g.typ_mob,g.geom,g.local,g.epci
+	GROUP BY g.id_tronc,g.ame,g.dbstatut,g.dbetat,g.typ_mob,g.regime,g.geom,g.local,g.epci
 	)
 )
 select 
@@ -7276,6 +7286,7 @@ select
 	dbetat,
 	dbstatut,
 	typ_mob,
+	regime,
 	LOCAL,
 	epci,
 	code_iditicycl,
@@ -7313,13 +7324,13 @@ GRANT ALL ON TABLE m_mobilite_douce.xapps_geo_v_mob_amgt_troncon_etat TO postgre
 */
 
 -- #################################################################### vue xapps_geo_vmr_mob_amgt_troncon_requa ###############################################
--- drop view materialized if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
+-- drop materialized view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
 
 create materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa
 TABLESPACE pg_default
 AS
 
-SELECT id_tronc, geom FROM m_mobilite_douce.geo_mob_troncon WHERE requal_g IS TRUE OR requal_d IS TRUE
+SELECT id_tronc, st_buffer(geom,2,'endcap=flat join=round') AS geom FROM m_mobilite_douce.geo_mob_troncon WHERE requal_g IS TRUE OR requal_d IS TRUE
 
 WITH DATA;
 
