@@ -23,13 +23,10 @@ begin;
 -- ## VUE
 drop view if exists m_mobilite_douce.xapps_an_v_amgt_cycl_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_cycl_tab1;
-drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_cycl_pan_tab;
-drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_cycl_tab;
+drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_pan_tab;
+drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_tab;
+drop view if exists m_mobilite_douce.xapps_an_v_iti_cycl_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_iti_tab;
---drop view if exists m_mobilite_douce.xapps_geo_v_iti_cycl;
---drop view if exists m_mobilite_douce.xapps_geo_v_iti_rand;
-drop view if exists m_mobilite_douce.xapps_geo_v_mob_amgt_troncon;
-drop view if exists m_mobilite_douce.xapps_geo_v_mob_amgt_troncon_etat;
 drop view if exists m_mobilite_douce.xapps_geo_v_noeud_troncon_tab;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl;
@@ -48,7 +45,10 @@ drop MATERIALIZED view if exists m_mobilite_douce.lt_vmr_mob_tronc_res;
 drop MATERIALIZED view if exists m_mobilite_douce.lt_vmr_mob_tronc_revet;
 drop MATERIALIZED view if exists m_mobilite_douce.lt_vmr_mob_tronc_sens;
 drop MATERIALIZED view if exists m_mobilite_douce.lt_vmr_mob_troncon;
---drop materialized view IF EXISTS m_mobilite_douce.lt_vmr_mob_troncon;
+drop view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
+drop view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
+drop view if exists m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
+
 
 -- ## CONTRAINTES
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_statio_cycl DROP CONSTRAINT IF EXISTS lt_mob_statio_gratuit_fkey;
@@ -65,8 +65,8 @@ ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_statio_cycl DROP CONSTRAINT IF EX
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_statio_cycl DROP CONSTRAINT IF EXISTS lt_mob_statio_proprio_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_statio_cycl DROP CONSTRAINT IF EXISTS lt_mob_iti_typparc_fkey;
 
-ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS _fkey;
-ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS _fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_etat_avancement_dbetat_d_requal_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_etat_avancement_dbetat_g_requal_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_lum_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_ame_d_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_ame_g_fkey;
@@ -88,6 +88,8 @@ ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_conv_g_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_posi_dg_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_src_geom_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_ame_d_requal_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_ame_g_requal_fkey;
 
 
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_repere DROP CONSTRAINT IF EXISTS lt_mob_rep_typrep_fkey;
@@ -151,6 +153,7 @@ DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_itirand_com;
 DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_itirand_sign;
 DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_iticycl_sign;
 DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_tronc_iti_decoupe;
+DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_droit_delegue_iti;
 
 -- ## DOMAINE DE VALEUR
 drop table if exists m_mobilite_douce.lt_mob_etat;
@@ -212,6 +215,7 @@ drop sequence if EXISTS m_signalement.geo_mob_sign_id_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_iticycl_sign_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_itirand_sign_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq;
+drop sequence if EXISTS m_mobilite_douce.lk_mob_droit_delegue_iti_seq;
 
 
 
