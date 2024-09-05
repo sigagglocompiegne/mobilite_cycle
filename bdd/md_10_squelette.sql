@@ -8540,6 +8540,42 @@ GRANT SELECT ON TABLE m_mobilite_douce.xapps_an_v_iti_ame_pan_tab TO sig_edit;
 GRANT ALL ON TABLE m_mobilite_douce.xapps_an_v_iti_ame_pan_tab TO postgres;
 
 
+-- #################################################################### vue xapps_an_v_statio_cycl_tab ###############################################
+-- requête pour gérer un TAB d'exploitation : récupération des informations des stationnements par EPCI et commune
+
+drop view if exists m_mobilite_douce.xapps_an_v_statio_cycl_tab1;
+CREATE OR REPLACE VIEW m_mobilite_douce.xapps_an_v_statio_cycl_tab1 AS
+
+with req_commune as
+(
+SELECT insee, commune,epci, sum(CASE when cap IS NULL THEN 0 ELSE cap end) as cap,sum(CASE when cap_cargo IS NULL THEN 0 ELSE cap_cargo end) as cap_cargo  
+FROM m_mobilite_douce.geo_mob_statio_cycl WHERE dbetat = '40' and dbstatut = '10'
+group by insee, commune,epci
+),
+	req_nb_lieu as
+(
+SELECT insee, commune,epci, count(*) as nb_lieu  
+FROM m_mobilite_douce.geo_mob_statio_cycl WHERE dbetat = '40' and dbstatut = '10'
+group by insee, commune,epci
+)
+select c.insee, c.commune,c.epci, c.cap, c.cap_cargo, l.nb_lieu
+from req_commune c, req_nb_lieu l where c.insee = l.insee
+order by l.insee;
+
+	
+
+
+COMMENT ON VIEW m_mobilite_douce.xapps_an_v_statio_cycl_tab1 IS 'Vue attributaire pour la génération du TAB (synthèse par commune )';
+
+-- Permissions
+
+ALTER TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 OWNER TO sig_create;
+GRANT TRUNCATE, INSERT, SELECT, UPDATE, DELETE ON TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 TO sig_create;
+GRANT TRUNCATE, INSERT, SELECT, UPDATE, DELETE ON TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 TO create_sig;
+GRANT SELECT ON TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 TO sig_read;
+GRANT SELECT ON TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 TO sig_edit;
+GRANT ALL ON TABLE m_mobilite_douce.xapps_an_v_statio_cycl_tab1 TO postgres;
+
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
 -- ###                                                             VUE OPEN DATA                                                                    ###
