@@ -4469,7 +4469,9 @@ IF (TG_OP = 'INSERT') then
 
 END IF;
 
-IF (TG_OP = 'UPDATE') AND St_Equals(new.geom,OLD.geom) IS false then
+-- si je modifie la géométrie du tronçon en deça de 7m, je ne relance pas les moulinettes
+
+IF (TG_OP = 'UPDATE') AND St_Equals(new.geom,OLD.geom) IS false and ST_HausdorffDistance(old.geom, new.geom) > 7 then 
    -- raise exception 'je passe ici après fusion 2';
     --raise exception 'je passe dans le contrôle NEW.GEOM <> OLD.GEOM pour mise à jour panneau';
 	-- POUR LES PANNEAUX
