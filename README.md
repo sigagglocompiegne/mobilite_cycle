@@ -12,7 +12,7 @@ Ensemble des éléments constituant la mise en oeuvre de la base de données sur
   * [Création des vues applicatives](bdd/md_21_vues_xapps.sql)
   * [Création des vues Open Data](bdd/md_23_vues_xopendata.sql)
   * [Création des privilèges](bdd/md_99_grant.sql)
-- [Documentation d'administration de la base de données](app/doc_admin_bd_md.md)
+- [Documentation d'administration de la base de données](bdd/doc_admin_bd_md.md)
 - [Documentation des utilisateurs de l'application (authentification nécessaire)](https://geo.compiegnois.fr/portail/index.php/2024/05/29/les-mobilites-douces/)
 
 
