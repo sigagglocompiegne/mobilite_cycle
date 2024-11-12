@@ -21,8 +21,9 @@ drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_pan_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_iti_cycl_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_iti_tab;
-DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl_tab1;
 drop view if exists m_mobilite_douce.xapps_geo_v_noeud_troncon_tab;
+DROP VIEW IF EXISTS m_mobilite_douce.xapps_an_v_statio_cycl_tab1;
+
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl;
 DROP VIEW IF exists m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl;
