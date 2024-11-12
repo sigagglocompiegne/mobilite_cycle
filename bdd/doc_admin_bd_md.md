@@ -586,12 +586,12 @@ Particularité(s) à noter :
  
 #### Liste de valeurs
 
-`[m_spanc].[lt_spanc_confor]` : Liste de valeurs des conformités du contrôle
+`[m_mobilite_douce].[lt_mob_etat]` : Liste de valeurs de l'état de vétusté
 
 |Nom attribut | Définition |
 |:---|:---|
-|code|Code des conformités du contrôle|character varying(2)| |
-|valeur|Valeur des conformités du conclusion du contrôle|text| |
+|code|Code de valeurs de l'état du mobilier de l'équipement|character varying(2)| |
+|valeur|Libellé de valeurs de l'état du mobilier de l'équipement|character varying(30)| |
 
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ code 
@@ -600,15 +600,809 @@ Valeurs possibles :
 
 |Code|Valeur|
 |:---|:---|
-|00|Non renseigné (non attribuée)|
-|10|Conforme|
-|20|Non conforme|
-|30|Absence d'installation|
-|ZZ|Non concerné (refus du contrôle)|
+|00|Non renseigné|
+|10|Bon|
+|20|Moyen|
+|30|Vétuste|
 
 ---
 
 
+`[m_mobilite_douce].[lt_mob_iti_pratrand]` : Liste de valeurs de la pratique de l'itinéraire de randonnée
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
+|valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|10|Pédestre|
+|20|Trail|
+|31|VTT|
+|32|Cyclo|
+|40|Gravel|
+|50|Accessible à tous|
+|99|Autre|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_iti_typparc]` : Liste de valeurs du type de parcours de l'itinéraire de randonnées
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
+|valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Parcours d'interprétation|
+|20|Chemin de randonnée|
+|99|Autre|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_iti_typrand]` : Liste de valeurs du type de randonnée
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
+|valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Parcours d'interprétation|
+|20|Chemin de randonnée|
+|99|Autre|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_iti_usage]` : Liste de valeurs du type de randonnée
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des usages des itinéraires cyclables|character varying(2)| |
+|valeur|Valeur des usages des itinéraires cyclables|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Utilitaire|
+|20|Touristique|
+|30|Utilitaire et touristique|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_media_typdoc]` : Liste de valeurs du type de document des médias
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de documents joints|character varying(2)| |
+|valeur|Valeur du type de documents joints|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Photographie|
+|20|Plan de travaux|
+|30|Plan d'aménagement (schéma directeur, ...)|
+|40|Présentation|
+|41|Fiche projet|
+|50|Arrêté de classement|
+|60|Concention de gestion|
+|99|Autre|
+
+---
+
+`[m_mobilite_douce].[lt_mob_pan_codepan]` : Liste de valeurs des panneaux routiers à destination des mobilités douces
+
+|Nom attribut | Définition |
+|:---|:---|:---|
+|code|Code officiel du panneau|character varying(50)| |
+|typpan|Type de panneau (code liste lt_mob_pan_typpan)|character varying(2)| |
+|url|URL d'accès au symbole du panneau|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|Non renseigné|00|<img src="https://geo.compiegnois.fr/documents/metiers/mob/sr/non_disponible.jpg" alt="image" width=30/>|
+|A1a|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A1a.png alt='image' width=30/>|
+|A1b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A1b.png alt='image' width=30/>|
+|A1c|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A1c.png alt='image' width=30/>|
+|A1d|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A1d.png alt='image' width=30/>|
+|A2a|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A2a.png alt='image' width=30/>|
+|A2b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A2b.png alt='image' width=30/>|
+|A3|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A3.png alt='image' width=30/>|
+|A3a|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A3a.png alt='image' width=30/>|
+|A3b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A3b.png alt='image' width=30/>|
+|A4|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A4.png alt='image' width=30/>|
+|A6|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A6.png alt='image' width=30/>|
+|A7|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A7.png alt='image' width=30/>|
+|A8|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A8.png alt='image' width=30/>|
+|A9b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A9b.png alt='image' width=30/>|
+|A13a|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A13a.png alt='image' width=30/>|
+|A13b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A13b.png alt='image' width=30/>|
+|A14|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A14.png alt='image' width=30/>|
+|A15a1|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A15a1.png alt='image' width=30/>|
+|A15a2|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A15a2.png alt='image' width=30/>|
+|A15b|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A15b.png alt='image' width=30/>|
+|A15c|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A15c.png alt='image' width=30/>|
+|A16|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A16.png alt='image' width=30/>|
+|A17|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A17.png alt='image' width=30/>|
+|A18|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A18.png alt='image' width=30/>|
+|A19|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A19.png alt='image' width=30/>|
+|A20|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A20.png alt='image' width=30/>|
+|A21|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A21.png alt='image' width=30/>|
+|A23|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A23.png alt='image' width=30/>|
+|A24|10|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/A24.png alt='image' width=30/>|
+|AB1|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB1.png alt='image' width=30/>|
+|AB2|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB2.png alt='image' width=30/>|
+|AB25|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB25.png alt='image' width=30/>|
+|AB3a|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB3a.png alt='image' width=30/>|
+|AB3b|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB3b.png alt='image' width=30/>|
+|AB5|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB5.png alt='image' width=30/>|
+|AB4|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB4.png alt='image' width=30/>|
+|AB6|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB6.png alt='image' width=30/>|
+|AB7|20|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/AB7.png alt='image' width=30/>|
+|B0|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B0.png alt='image' width=30/>|
+|B1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B1.png alt='image' width=30/>|
+|B1_sc|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B1_sc.png alt='image' width=30/>|
+|B2a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B2a.png alt='image' width=30/>|
+|B2b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B2b.png alt='image' width=30/>|
+|B2c|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B2c.png alt='image' width=30/>|
+|B3|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B3.png alt='image' width=30/>|
+|B3a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B3a.png alt='image' width=30/>|
+|B4|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B4.png alt='image' width=30/>|
+|B5a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B5a.png alt='image' width=30/>|
+|B5b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B5b.png alt='image' width=30/>|
+|B5c|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B5c.png alt='image' width=30/>|
+|B6a1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B6a1.png alt='image' width=30/>|
+|B6a2|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B6a2.png alt='image' width=30/>|
+|B6a3|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B6a3.png alt='image' width=30/>|
+|B6d|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B6d.png alt='image' width=30/>|
+|B7a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B7a.png alt='image' width=30/>|
+|B7b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B7b.png alt='image' width=30/>|
+|B8|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B8.png alt='image' width=30/>|
+|B9a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9a.png alt='image' width=30/>|
+|B9b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9b.png alt='image' width=30/>|
+|B9c|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9c.png alt='image' width=30/>|
+|B9d|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9d.png alt='image' width=30/>|
+|B9e|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9e.png alt='image' width=30/>|
+|B9f|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9f.png alt='image' width=30/>|
+|B9g|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9g.png alt='image' width=30/>|
+|B9h|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9h.png alt='image' width=30/>|
+|B9i|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B9i.png alt='image' width=30/>|
+|B10a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B10a.png alt='image' width=30/>|
+|B11|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B11.png alt='image' width=30/>|
+|B12|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B12.png alt='image' width=30/>|
+|B13|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B13.png alt='image' width=30/>|
+|B13a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B13a.png alt='image' width=30/>|
+|B14_15|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_15.png alt='image' width=30/>|
+|B14_30|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_30.png alt='image' width=30/>|
+|B14_50|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_50.png alt='image' width=30/>|
+|B14_70|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_70.png alt='image' width=30/>|
+|B14_90|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_90.png alt='image' width=30/>|
+|B14_110|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_110.png alt='image' width=30/>|
+|B14_130|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B14_130.png alt='image' width=30/>|
+|B15|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B15.png alt='image' width=30/>|
+|B16|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B16.png alt='image' width=30/>|
+|B17|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B17.png alt='image' width=30/>|
+|B18a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B18a.png alt='image' width=30/>|
+|B18b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B18b.png alt='image' width=30/>|
+|B18c|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B18c.png alt='image' width=30/>|
+|B19|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B19.png alt='image' width=30/>|
+|B19a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B19a.png alt='image' width=30/>|
+|B21-1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21-1.png alt='image' width=30/>|
+|B21-2|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21-2.png alt='image' width=30/>|
+|B21a1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21a1.png alt='image' width=30/>|
+|B21a2|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21a2.png alt='image' width=30/>|
+|B21b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21b.png alt='image' width=30/>|
+|B21c1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21c1.png alt='image' width=30/>|
+|B21c2|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21c2.png alt='image' width=30/>|
+|B21d1|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21d1.png alt='image' width=30/>|
+|B21d2|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21d2.png alt='image' width=30/>|
+|B21e|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B21e.png alt='image' width=30/>|
+|B22a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B22a.png alt='image' width=30/>|
+|B22b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B22b.png alt='image' width=30/>|
+|B22c|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B22c.png alt='image' width=30/>|
+|B25|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B25.png alt='image' width=30/>|
+|B26|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B26.png alt='image' width=30/>|
+|B27a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B27a.png alt='image' width=30/>|
+|B27b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B27b.png alt='image' width=30/>|
+|B29|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B29.png alt='image' width=30/>|
+|B30|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B30.png alt='image' width=30/>|
+|B31|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B31.png alt='image' width=30/>|
+|B33_15|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_15.png alt='image' width=30/>|
+|B33_30|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_30.png alt='image' width=30/>|
+|B33_50|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_50.png alt='image' width=30/>|
+|B33_70|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_70.png alt='image' width=30/>|
+|B33_90|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_90.png alt='image' width=30/>|
+|B33_110|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_110.png alt='image' width=30/>|
+|B33_130|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B33_130.png alt='image' width=30/>|
+|B34|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B34.png alt='image' width=30/>|
+|B34a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B34a.png alt='image' width=30/>|
+|B35|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B35.png alt='image' width=30/>|
+|B39|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B39.png alt='image' width=30/>|
+|B40|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B40.png alt='image' width=30/>|
+|B41|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B41.png alt='image' width=30/>|
+|B42|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B42.png alt='image' width=30/>|
+|B43|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B43.png alt='image' width=30/>|
+|B44|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B44.png alt='image' width=30/>|
+|B45a|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B45a.png alt='image' width=30/>|
+|B45b|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B45b.png alt='image' width=30/>|
+|B49|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B49.png alt='image' width=30/>|
+|B51|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B51.png alt='image' width=30/>|
+|B52|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B52.png alt='image' width=30/>|
+|B53|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B53.png alt='image' width=30/>|
+|B54|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B54.png alt='image' width=30/>|
+|B55|30|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/B55.png alt='image' width=30/>|
+|C1a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C1a.png alt='image' width=30/>|
+|C1b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C1b.png alt='image' width=30/>|
+|C1c|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C1c.png alt='image' width=30/>|
+|C3|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C3.png alt='image' width=30/>|
+|C4a_50|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C4a_50.png alt='image' width=30/>|
+|C4b_50|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C4b_50.png alt='image' width=30/>|
+|C5|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C5.png alt='image' width=30/>|
+|C6|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C6.png alt='image' width=30/>|
+|C8|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C8.png alt='image' width=30/>|
+|C12|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C12.png alt='image' width=30/>|
+|C13a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C13a.png alt='image' width=30/>|
+|C13b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C13b.png alt='image' width=30/>|
+|C13d|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C13d.png alt='image' width=30/>|
+|C14_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C14_1.png alt='image' width=30/>|
+|C14_2|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C14_2.png alt='image' width=30/>|
+|C18|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C18.png alt='image' width=30/>|
+|C20a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C20a.png alt='image' width=30/>|
+|C20b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C20b.png alt='image' width=30/>|
+|C20c|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C20c.png alt='image' width=30/>|
+|C23|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C23.png alt='image' width=30/>|
+|C24a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24a.png alt='image' width=30/>|
+|C24a_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24a_1.png alt='image' width=30/>|
+|C24a_4|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24a_4.png alt='image' width=30/>|
+|C24b_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24b_1.png alt='image' width=30/>|
+|C24b_2|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24b_2.png alt='image' width=30/>|
+|C24c|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24c.png alt='image' width=30/>|
+|C24c_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C24c_1.png alt='image' width=30/>|
+|C25a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C25a.png alt='image' width=30/>|
+|C25b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C25b.png alt='image' width=30/>|
+|C26a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C26a.png alt='image' width=30/>|
+|C26b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C26b.png alt='image' width=30/>|
+|C27|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C27.png alt='image' width=30/>|
+|C28_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C28_1.png alt='image' width=30/>|
+|C28_3|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C28_3.png alt='image' width=30/>|
+|C29a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C29a.png alt='image' width=30/>|
+|C29b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C29b.png alt='image' width=30/>|
+|C30|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C30.png alt='image' width=30/>|
+|C50|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C50.png alt='image' width=30/>|
+|C62|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C62.png alt='image' width=30/>|
+|C64a|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C64a.png alt='image' width=30/>|
+|C64b|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C64b.png alt='image' width=30/>|
+|C64c|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C64c.png alt='image' width=30/>|
+|C64d_1|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C64d_1.png alt='image' width=30/>|
+|C64d_2|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C64d_2.png alt='image' width=30/>|
+|C107|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C107.png alt='image' width=30/>|
+|C108|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C108.png alt='image' width=30/>|
+|C111|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C111.png alt='image' width=30/>|
+|C112|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C112.png alt='image' width=30/>|
+|C113|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C113.png alt='image' width=30/>|
+|C114|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C114.png alt='image' width=30/>|
+|C115|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C115.png alt='image' width=30/>|
+|C116|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C116.png alt='image' width=30/>|
+|C207|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C207.png alt='image' width=30/>|
+|C208|40|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/C208.png alt='image' width=30/>|
+|CE1|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE1.png alt='image' width=30/>|
+|CE2a|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE2a.png alt='image' width=30/>|
+|CE2b|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE2b.png alt='image' width=30/>|
+|CE3a|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE3a.png alt='image' width=30/>|
+|CE3b|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE3b.png alt='image' width=30/>|
+|CE4a|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE4a.png alt='image' width=30/>|
+|CE4b|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE4b.png alt='image' width=30/>|
+|CE4c|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE4c.png alt='image' width=30/>|
+|CE5a|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE5a.png alt='image' width=30/>|
+|CE5b|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE5b.png alt='image' width=30/>|
+|CE6a|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE6a.png alt='image' width=30/>|
+|CE6b|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE6b.png alt='image' width=30/>|
+|CE7|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE7.png alt='image' width=30/>|
+|CE8|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE8.png alt='image' width=30/>|
+|CE9|50|<img src=https://geo.compiegnois.fr/documents/metiers/mob/sr/CE9.png alt='image' width=30/>|
+
+---
+
+`[m_mobilite_douce].[lt_mob_pan_typpan]` : Liste de valeurs du type de panneaux
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de panneau|character varying(2)| |
+|typsign|Code du type de signalétique|character varying(2)| |
+|typpan|Libellé du type de panneau|character varying(80)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|00|Non renseigné|
+|20|10|Intersection et priorité (type AB)|
+|30|10|Interdiction, obligation, stationnement, ... (type B)|
+|40|10|Indication (type C)|
+|50|10|Service (type CE)|
+|60|10|Panonceau (type M)|
+|71|20|Directionnel/Balisage (cyclable)|
+|72|30|Directionnel/Balisage (randonnée)|
+|80|10|Localisation (type E, EB))|
+|90|10|Signalisation lumineuse (type R)|
+|10|10|Danger (type A ou M)|
+
+---
+
+`[m_mobilite_douce].[lt_mob_pan_typsign]` : Liste de valeurs du type de signalétique
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de signalétique|character varying(2)| |
+|valeur|Type de signalétique|character varying(80)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Signalétique routière|
+|20|Signalétique directionnelle cyclable|
+|30|Signalétique directionnelle de randonnées|
+
+---
+
+`[m_mobilite_douce].[lt_mob_plan_niveau]` : Liste de valeurs des niveaux des plans d'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du niveau administratif du schéma dans lequel sont inscrits les itinéraires|character varying(2)| |
+|valeur|Valeur du niveau administratif du schéma dans lequel sont inscrits les itinéraires|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|10|Européen|
+|20|National|
+|30|Régional|
+|40|Départemental|
+|50|Intercommunal|
+|60|Communal|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_plan_usage]` : Liste de valeurs des usages des plans d'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des mobilités douces concernées par le plan|character varying(2)| |
+|valeur|Valeur des mobilités douces concernées par le plan|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|10|Cyclable|
+|20|Piétonne|
+|30|Cyclable/Piétonne|
+|99|Autre|
+
+---
+
+`[m_mobilite_douce].[lt_mob_rep_typrep]` : Liste de valeurs des types de repères
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de repère|character varying(2)| |
+|valeur|Libellé du type de repère|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Début/fin d'itinéraire|
+|20|Intersection d'itinéraire|
+|30|Bifurcation|
+|40|Accès POI|
+|50|Compteur|
+|60|Passage délicat|
+|70|Carrefour ou passage protégé|
+|80|SAS Vélo|
+|99|Autre|
+
+---
+
+`[m_mobilite_douce].[lt_mob_rep_usarep]` : Liste de valeurs des usages des repères
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de repère|character varying(2)| |
+|valeur|Libellé du type de repère|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Cyclable|
+|20|Piéton|
+|30|Cyclable et piéton|
+
+---
+
+`[m_mobilite_douce].[lt_mob_statio_acces]` : Liste de valeurs des usages des repères
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des modes d'accès à l'emplacement de stationnement|character varying(2)| |
+|valeur|Libellé des modes d'accès à l'emplacement de stationnement|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Libre accès|
+|20|Abonnement ou inscription préalable|
+|30|Privé|
+
+---
+
+`[m_mobilite_douce].[lt_mob_statio_mobil]` : Liste de valeurs des types d'accroche
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de valeurs des types d'accroche|character varying(2)| |
+|valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Arceau|
+|11|Arceau vélo grande taille|
+|20|Ratelier|
+|30|Rack double étage|
+|40|Crochet|
+|50|Support guidon|
+|60|Potelet|
+|90|Aucun équipement|
+|99|Autre|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_statio_protect]` : Liste des modes d'accès à l'emplacement de stationnement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de valeurs des types d'accroche|character varying(2)| |
+|valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Stationnement non fermé|
+|20|Consigne collective fermée|
+|30|Box individuel fermé|
+|99|Autre|
+
+---
+
+`[m_mobilite_douce].[lt_mob_statio_typ_accro]` : Liste des modes d'accès à l'emplacement de stationnement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de valeurs des types d'accroche|character varying(2)| |
+|valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Roue|
+|20|Cadre|
+|21|Cadre et roue|
+|30|Sans accroche|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_tronc_acces]` : Liste des modes d'accès des tronçons
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des types d'accessibilité des aménagements par type de véhicule à deux roues non motorisé|character varying(2)| |
+|valeur|Libellé des types d'accessibilité des aménagements par type de véhicule à deux roues non motorisé|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Roller|
+|20|Vélo de route|
+|30|VTC|
+|40|VTT|
+|ZZ|Non concerné|
+
+---
+
+
+
+`[m_mobilite_douce].[lt_mob_tronc_ame]` : Liste des modes d'accès des tronçons
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des types d'aménagement|character varying(2)| |
+|valeur|Libellé des types d'aménagement|character varying(80)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|20|Bande cyclable|
+|21|Bande piétonne|
+|31|Double sens cyclable piste|
+|32|Double sens cyclable bande|
+|33|Double sens cyclable non matérialisé|
+|40|Voie verte|
+|50|Vélo rue|
+|60|Couloir bus+vélo|
+|71|Rampe|
+|72|Goulotte|
+|73|Trottoir élargi|
+|81|Aménagement mixte piéton vélo hors voie verte|
+|82|Chaussée à voie centrale banalisée (CVCB)|
+|83|Accotement revêtu hors CVCB|
+|85|Jalonnement|
+|90|Aucun (route, chemin, ...)|
+|99|Autre site propre|
+|ZZ|Non concerné|
+|10|Piste cyclable|
+|84|Chaussée réservée temporairement|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_tronc_dg]` : Liste de valeurs des positions de l'aménagement 
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de la position de l'aménagement|character varying(2)| |
+|valeur|Valeur de la position de l'aménagement|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|11|A droite (par défaut si ne jouxte pas de voirie de circulation)|
+|12|A gauche|
+|20|A droite et à gauche|
+
+---
+
+
+`[m_mobilite_douce].[lt_mob_tronc_local]` : Liste des valeurs de la localisation de l'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de localisation de l'aménagement|character varying(2)| |
+|valeur|Libellé de localisation de l'aménagement|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Trottoir|
+|11|Parking|
+|20|Chaussée|
+|30|Intermédiaire|
+|40|Chemin|
+|41|Chemin balisé|
+|42|Chemin non balisé|
+|51|Passerelle|
+|52|Escalier|
+|ZZ|Non concerné|
+
+---
+
+
+
+`[m_mobilite_douce].[lt_mob_tronc_regime]` : Liste des valeurs du régime présent sur la voie
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du régime présent sur la voie|character varying(2)| |
+|valeur|Libellé du du régime présent sur la voie|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Zone 30|
+|20|Aire piétonne|
+|30|Zone de rencontre|
+|40|En agglomération|
+|50|Hors agglomération|
+|99|Autre|
+|ZZ|Non concerné|
+
+---
+
+`[m_mobilite_douce].[lt_mob_tronc_res]` : Liste des types de réseau structurant local auquel appartient l'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code des types de réseau structurant local auquel appartient l'aménagement|character varying(2)| |
+|valeur|Libellé des types de réseau structurant local auquel appartient l'aménagement|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|REV|
+|20|Structurant|
+|99|Autre|
+|ZZ|Non concerné|
+
+---
+
+`[m_mobilite_douce].[lt_mob_tronc_revet]` : Liste des valeurs des niveaux de qualité du revêtement de l'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du niveau de qualité du revêtement de l'aménagement|character varying(2)| |
+|valeur|Libellé du niveau de qualité du revêtement de l'aménagement|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Lisse|
+|20|Rugueux|
+|30|Meuble|
+|ZZ|Non concerné|
+
+---
+
+`[m_mobilite_douce].[lt_mob_tronc_sens]` : Liste des valeurs des sens de circulation de l'aménagement
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du sens de circulation de l'aménagement|character varying(2)| |
+|valeur|Libellé du sens de circulation de l'aménagement|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|00|Non renseigné|
+|10|Unidirectionnel|
+|20|Bidirectionnel|
+|ZZ|Non concerné|
+
+---
+
+`[m_mobilite_douce].[lt_mob_tronc_typ]` : Liste des valeurs des types de tronçon
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type de tronçon|character varying(2)| |
+|valeur|Libellé du type de tronçon|character varying(40)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|10|Cyclable|
+|20|Piéton|
+
+---
 
 ### Classes d'objets attributaire gérant les associations (ou relation d'appartenance des objets entre eux) :
 
