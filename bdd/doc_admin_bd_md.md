@@ -365,10 +365,225 @@ Particularité(s) à noter :
   * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
   * `t_t8_refresh_iti` : trigger permettant de rafraîchir les itinéraires après modification
-  * `t_t91_planvelo` : trigger permettant de récupérer 
-  * `t_t9_droit_delegue` : trigger permettant de récupérer l'EPCI d'appartenance de l'utilisateur pour insertion dans les données afin de gérer les droits et l'étanchéïté des données 
+  * `t_t91_planvelo` : trigger permettant de gérer la mise à jour des données pour l'affichage dans le plan vélo de l'ARC
+  * `t_t9_droit_delegue` : trigger permettant de gérer les droits délégués des itinéraires partagés entre plusieurs EPCI
 ---
 
+`[m_mobilite_douce].[an_mob_iti_rand]` : table alphanumérique contenant les itinéraires de randonnées
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id_itirand|Identifiant unique interne|text|uuid_generate_v4()|
+|numero|Numérotation de l'itinéraire|character varying(10)| |
+|nomoff|Nom officiel de l'itinéraire, à défaut celui présent sur les document de communication|character varying(255)| |
+|nomusage|Autre nom ou appellation de l’itinéraire en usage|character varying(255)| |
+|prat_iti|Pratique de l'itinéraire|character varying(2)|'10'::character varying|
+|typ_iti|Type d'itinéraire|character varying(2)|'00'::character varying|
+|typ_parc|Type de parcours|character varying(2)|'00'::character varying|
+|dbetat|Etat d'avancement (Niveau d'avancement) de l'itinéraire|character varying(2)|'40'::character varying|
+|dbstatut|Statut de l'itinéraire|character varying(2)|'10'::character varying|
+|depart|Nom de la localité située au départ de l'itinéraire|character varying(255)| |
+|arrivee|Nom de la localité située à l’arrivée de l'itinéraire|character varying(255)| |
+|duree|Durée de l'itinéraire en heures|double precision| |
+|balisage|Balisage(s) utilisé(s) sur l'itinéraire|text| |
+|lin_iti|Longueur de l'itinéraire (en mètres)|double precision| |
+|diff_iti|Difficulté de l'itinéraire|text| |
+|alti_max|Altitude maximum de l'itinéraire (en mètres)|integer| |
+|alti_min|Altitude minimum de l'itinéraire (en mètres)|integer| |
+|deni_pos|Dénivelé positif de l'itinéraire (en mètres)|integer| |
+|deni_neg|Dénivelé négatif de l'itinéraire (en mètres)|integer| |
+|instruc|Description détaillée (pas à pas) du tracé de l'itinéraire|text| |
+|present_d|Présentation détaillée de l'itinéraire|text| |
+|present_c|Présentation courte résumant l'itinéraire|text| |
+|theme|Thèmes ou mots-clefs caractérisant l'itinéraire|text| |
+|recommand|Recommandations sur l'itinéraire|text| |
+|accessi|Accessibilité de l'itinéraire à des publics particuliers|text| |
+|acces_r|Informations sur les accès routiers|text| |
+|acces_tc|Informations sur les accès en transports en commun|text| |
+|park_inf|Informations sur le parking|text| |
+|park_loc|Localisation du parking (coordonnées lat/long en JSON)|text| |
+|typ_sol|Types de sol sur lesquels se parcourt l'itinéraire|text| |
+|pdipr|Inscription au PDIPR|character varying(1)|'0'::character varying|
+|pdipr_d|Date d'inscription au PDIPR|date| |
+|contact|Email de contact de la structure publicatrice du jeu de données|character varying(255)| |
+|url|URL de la fiche source de l'itinéraire|text| |
+|gestio|Aménageur de l'itinéraire|text|'00'::text|
+|observ|Commentaire(s)|character varying(1000)| |
+|epci|EPCI d'assise de l'itinértaire|text| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+|proprio|Organisme qui entretient l'itinéraire|text|'00'::text|
+|p_cout|Coût total de l'aménagement de l'itinéraire|integer| |
+|p_subv|Subvention totale reçue pour l'aménagement de l'itinéraire|integer| |
+|gestio_a|Libellé de l'autre aménageur (rempli uniquement si gestio = autre)|text| |
+|proprio_a|Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)|text| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id_itirand` l'attribution automatique de la référence par un identifiant de type UUID V4. 
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_dbetat_fkey`  (lien vers la liste de valeurs de l'état d'avancement de l'itinéraire `lt_etat_avancement`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_dbstatut_fkey` (lien vers la liste de valeurs du statut de l'itinéraire `lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_pdipr_fkey` (lien vers la liste d'appartenance de l'itinéraire au PDIPR `lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_pratrand_fkey` (lien vers la liste de valeurs du type de pratique de randonnées `lt_mob_iti_pratrand`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_typparc_fkey` (lien vers la liste de valeurs du type de parcours `lt_mob_iti_typparc`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_iti_typrand_fkey` (lien vers la liste de valeurs du type de randonnées `lt_mob_iti_typrand`) 
+
+* 6 triggers :
+  * `t_t0_controle` : trigger permettant de contrôler la saisie utilisateur et l'enregistrement de certaines valeurs
+  * `t_t1_100_log` : trigger permettant d'insérer toutes les modifications dans la table des logs
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
+  * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  * `t_t8_refresh_iti` : trigger permettant de rafraîchir les itinéraires après modification
+
+  ---
+
+`[m_mobilite_douce].[an_mob_log]` : table alphanumérique contenant les logs
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|idlog|Identifiant unique|integer|nextval('m_mobilite_douce.an_mob_log_seq'::regclass)|
+|tablename|Nom de la classe concernée par une opération|character varying(80)| |
+|type_ope|Type d'opération|text| |
+|dataold|Anciennes données|text| |
+|datanew|Nouvelles données|text| |
+|dbupdate|Date d'exécution de l'opération|timestamp without time zone|now()|
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `idlog` l'attribution automatique par une séquence automatique. 
+
+  ---  
+`[m_mobilite_douce].[an_mob_media]` : table alphanumérique contenant les médias joints aux plans de mobilités, itinéraires, repères ou tronçon
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|gid|Identifiant unique non signifiant|integer|nextval('m_mobilite_douce.an_mob_media_seq'::regclass)|
+|id|Identifiant unique de l'objet vélo|text| |
+|media|Champ Média de GEO|text| |
+|miniature|Champ miniature de GEO|bytea| |
+|n_fichier|Nom du fichier|text| |
+|t_fichier|Type de média dans GEO|text| |
+|t_doc|Type de documents|character varying(2)|'00'::character varying|
+|t_doc_p|Précisions sur le type de documents|character varying(255)| |
+|op_sai|opérateur intégrant le média|text| |
+|dbinsert|Date de saisie du média|timestamp without time zone|('now'::text)::date|
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `gid` l'attribution automatique par une séquence automatique. 
+* Une clé étrangère existe sur la table de valeur `lt_mob_media_typdoc_fkey`  (lien vers la liste de valeurs du type de procédure `lt_mob_media_typdoc`)
+
+* 1 trigger :
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  
+  ---
+
+ `[m_mobilite_douce].[an_mob_pan_media]` : table alphanumérique contenant les médias joints aux panneaux routiers
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|gid|Identifiant unique non signifiant|integer|nextval('m_mobilite_douce.an_mob_pan_media_seq'::regclass)|
+|id|Identifiant unique du panneau|text| |
+|media|Champ Média de GEO|text| |
+|miniature|Champ miniature de GEO|bytea| |
+|n_fichier|Nom du fichier|text| |
+|t_fichier|Type de média dans GEO|text| |
+|op_sai|opérateur intégrant le média|text| |
+|dbinsert|Date de saisie du média|timestamp without time zone|('now'::text)::date|
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `gid` l'attribution automatique par une séquence automatique. 
+
+* 1 trigger :
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  
+  ---
+
+`[m_mobilite_douce].[an_mob_plan]` : table alphanumérique contenant les plans d'aménagements
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id_plan|Identifiant unique interne|text|uuid_generate_v4()|
+|libelle|Libellé du plan, du schéma d'aménagement|text| |
+|usa_plan|Types de mobilités douces concernées par le plan|character varying(2)| |
+|plan_niv|Niveau administratif du schéma dans lequel sont inscrits les itinéraires|character varying(2)| |
+|d_appro|Année d'approbation|integer| |
+|url|Référence du site internet faisant référence au schéma, plan …|character varying(255)| |
+|gestio|Aménageur|text| |
+|dbetat|Etat d'avancement (Niveau d'avancement) du plan|character varying(2)|'40'::character varying|
+|dbstatut|Statut du plan|character varying(2)|'10'::character varying|
+|observ|Commentaire(s)|character varying(1000)| |
+|epci|EPCI du plan|character varying(5)| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id_plan` l'attribution automatique de la référence par un identifiant de type UUID V4.  
+
+* 1 trigger :
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  
+  ---
+
+`[m_mobilite_douce].[an_mob_pn]` : table alphanumérique contenant les pannonceaux
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id_pn|Identifiant unique interne|text|(('PN'::text || nextval('m_mobilite_douce.an_mob_pn_seq'::regclass)) || '_'::text)|
+|id_pan|Identifiant unique interne du panneau de signalisation routière|text| |
+|code_pn|Code officiel du pannonceau|character varying(5)|'00'::character varying|
+|inscrip_pn|Inscription sur le pannonceau|text| |
+|etat_mob|Etat du pannonceau|character varying(2)|'00'::character varying|
+|an_pose|Année de pose du pannonceau si différent du panneau|integer| |
+|observ|Commentaire(s)|character varying(1000)| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id_pn` l'attribution automatique de la référence par une séquence préfixée 'PN' et suffixé avec '_'
+
+* 1 trigger :
+  * `t_t1_100_log` : trigger permettant d'insérer toutes les modifications dans la table des logs
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
+
+---
+
+`[m_mobilite_douce].[an_mob_statio_cylc_media]` : table alphanumérique contenant les médias joints au stationnement cyclable
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|gid|Identifiant unique non signifiant|integer|nextval('m_mobilite_douce.an_mob_statio_cylc_media_seq'::regclass)|
+|id|Identifiant unique du stationnement vélo|text| |
+|media|Champ Média de GEO|text| |
+|miniature|Champ miniature de GEO|bytea| |
+|n_fichier|Nom du fichier|text| |
+|t_fichier|Type de média dans GEO|text| |
+|op_sai|opérateur intégrant le média|text| |
+|dbinsert|Date de saisie du média|timestamp without time zone|('now'::text)::date|
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `gid` l'attribution automatique par une séquence automatique. 
+
+* 1 trigger :
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  
+
+### Classes d'objets géographique reconstruite :
+
+`[m_mobilite_douce].[geo_mob_iti_cycl_planvelo_60159_gdpublic]` : table géographique contenant la localisation des itinéraires du plan vélo de l'ARC gérée par la commune de Compiègne pour l'application Grand Public
+
+`[m_mobilite_douce].[geo_mob_iti_cycl_planvelo_arc_gdpublic]` : table géographique contenant la localisation des itinéraires du plan vélo géré par l'ARC pour l'application Grand Public
+
+
+`[m_mobilite_douce].[geo_mob_iti_cycl_rep_planvelo_60159_gdpublic]` : table géographique contenant la localisation des repères (fin/début d'itinéraire) du plan vélo géré par la ville de Compiègne pour l'application Grand Public
+
+`[m_mobilite_douce].[geo_mob_iti_cycl_rep_planvelo_arc_gdpublic]` : table géographique contenant la localisation des repères du plan vélo géré par l'ARC pour l'application Grand Public   
+ 
 #### Liste de valeurs
 
 `[m_spanc].[lt_spanc_confor]` : Liste de valeurs des conformités du contrôle
