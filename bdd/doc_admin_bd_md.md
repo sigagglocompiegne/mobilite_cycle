@@ -31,7 +31,7 @@ Pour rappel des grands principes :
 
 ## Dépendances
 
-Cette base de donnnées n'a pas de dépendances.
+Cette base de donnnées est dépendante de listes de valeurs contenues dans le schéma r_objet (lt_etat_avancement, lt_statut, lt_src_geom, lt_gestio_proprio).
 
 
 ## Classes d'objets des mobilités douces
@@ -40,45 +40,56 @@ L'ensemble des classes d'objets de gestion sont stockés dans le schéma `m_mobi
 
 ### Classes d'objets géographique :
 
-`[m_spanc].[an_spanc_installation]` : table alphanumérique contenant les attributs métiers de l'installation
+`[m_mobilite_douce].[geo_mob_pan]` : table géographique contenant la localisation des panneaux routiers et de signalétiques cyclables/randonnées
    
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
-|idinstal|Identifiant interne non signifiant|bigint|nextval('m_spanc.an_spanc_installation_id_seq'::regclass)|
-|idadresse|Identifiant de base adresse locale du Grand Compiégnois|bigint| |
-|adcompl|Complément d'adresse|text| |
-|typ_im|Type d'immeuble concerné|character varying(2)| |
-|nb_piece|Nombre de pièces principales|integer| |
-|inst_eh|Equivalent habitant de l'installation|character varying(2)|'00'::character varying|
-|inst_com|Installation commune à plusieurs immeubles|boolean|false|
-|inst_acontr|Installation soumis à un contrôle|boolean|true|
-|inst_conv|Installation soumis à une convention|boolean|false|
-|date_crea|Date de création de l'installation|timestamp without time zone| |
-|inst_age|Age de l'installation sans connaître la date de création|integer| |
-|inst_etat|Etat de l'installation|character varying(2)|'10'::character varying|
-|cad_sect|Section cadastrale|character varying(2)| |
-|cad_par|Parcelle cadastrale|character varying(4)| |
-|observ|Commentaires divers|character varying(5000)| |
-|date_sai|Date de saisie des informations d'installation|timestamp without time zone| |
-|date_maj|Date de mise à jour des informations d'installation|timestamp without time zone| |
-|op_sai|Opérateur ayant saisi l'information d'installation|character varying(20)| |
-|op_maj|Opérateur ayant modifier les informations d'installation|character varying(20)| |
-|epci|Acronyme de l'EPCI d'assise de l'installation|text| |
-|geom1|Géométrie du point d'adresse récupéré à la saisie pour la fonctionnalité d'association d'adresse à une installation pour la sélection via l'objet courant dans GEO et affichage des adresses dans un rayon de 50m|Geometry(point,2154)| |
+|id_pan|Identifiant unique interne|text|('P'::text || nextval('m_mobilite_douce.geo_mob_pan_seq'::regclass))|
+|id_tronc|Identifiant du tronçon le plus proche|text| |
+|typ_sign|Type de signalisation|character varying(2)|'00'::character varying|
+|typ_pan|Type de panneau|character varying(2)|'00'::character varying|
+|code_pan|Code officiel du panneau|character varying(50)|'00'::character varying|
+|etat_mob|Etat du support|character varying(2)|'00'::character varying|
+|an_pose|Année de pose|integer| |
+|azimuth|Angle en degrés entre la direction du panneau dans son axe de lecture et le nord. Indique la direction vers laquelle l'information portée par le panneau s'applique.|integer| |
+|rattach|Référence le tronçon de route sur lequel s'applique la directive inscrite sur le panneau.|text| |
+|dbetat|Etat d'avancement (Niveau de réalisation) du panneau|character varying(2)|'40'::character varying|
+|dbstatut|Statut du panneau|character varying(2)|'10'::character varying|
+|proprio|Nom de l'organisme qui entretient le panneau|text|'00'::text|
+|gestio|Nom de l'aménageur|text|'00'::text|
+|observ|Commentaire(s)|character varying(1000)| |
+|src_geom|Code du référentiel géographique utilisé pour la saisie|character varying(2)|'24'::character varying|
+|src_annee|Année du référentiel géographique|character varying(4)|'2021'::character varying|
+|insee|Code Insee  de la commune d'implantation du panneau|character varying(5)| |
+|commune|Commune d'implantation du panneau|character varying(80)| |
+|epci|EPCI d'assise du panneau|character varying(5)| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+|x_l93|Coordonnées X en Lambert 93|numeric| |
+|y_l93|Coordonnées Y en Lambert 93|numeric| |
+|geom|Classe d'objets géométrique|USER-DEFINED| |
+|gestio_a|Libellé de l'autre aménageur (rempli uniquement si gestio = autre)|text| |
+|proprio_a|Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)|text| |
 
 Particularité(s) à noter :
-* Une clé primaire existe sur le champ `idinstal` l'attribution automatique de la référence unique s'effectue via une séquence. 
-* Une clé étrangère existe sur la table de valeur `an_spanc_installation_eh_fkey` (lien vers la liste de valeurs du type d'installation `lt_spanc_eh`)
-* Une clé étrangère existe sur la table de valeur `an_spanc_installation_inst_etat_fkey` (lien vers la liste de valeurs de l'état de l'installation `lt_spanc_etatinstall`)
-* Une clé étrangère existe sur la table de valeur `an_spanc_installation_typim_fkey` (lien vers la liste de valeurs du type d'immeuble `lt_spanc_typim`)
+* Une clé primaire existe sur le champ `id_pan` l'attribution automatique est sous forme d'un UUID V4. 
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_codepan_fkey` (lien vers la liste de valeurs du type de panneau `lt_mob_pan_codepan`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement du panneau `lt_etat_avancement`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_dbstatut_fkey` (lien vers la liste de valeurs le statut du panneau `lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_etat_fkey` (lien vers la liste de valeurs de l'état du panneau `lt_mob_etat`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_srcgeom_fkey` (lien vers la liste de valeurs des sources de saisies géographiques `lt_src_geom`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_typpan_fkey` (lien vers la liste de valeurs du type de panneau `lt_mob_pan_typ`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_pan_typsign_fkey` (lien vers la liste de valeurs du type de signalétique `lt_mob_pan_typsign`)
 
 * 6 triggers :
   * `t_t1_100` : trigger permettant d'insérer toutes les modifications dans la table des logs
-  * `t_t1_an_spanc_installation_date_sai` : trigger permettant d'insérer la date de saisie
-  * `t_t2_an_spanc_installation_date_maj` : trigger permettant d'insérer la date de mise à jour
-  * `t_t3_an_spanc_installation_controle_saisie` : trigger permettant de gérer les contrôles de saisie et les insertions de certains attributs particulier à l'insertion
-  *  `t_t8_refresh_carto` : trigger permettant de rafraichir la vue matérialisée `m_spanc.xapps_geo_vmr_spanc_anc`
-  *  `t_t9_autorite_competente` : trigger permettant de récupérer l'EPCI d'appartenance de l'utilisateur pour insertion dans les données afin de gérer les droits et l'étanchéïté des données 
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
+  * `t_t3_xyl93` : trigger permettant de calculer les coordonnées avant enregistrement
+  *  `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  *  `t_t6_controle` : trigger permettant de contrôler la saisie et d'automatiser certaines valeurs à l'enregistrement 
  
 
 ### Classes d'objets attributaire :
