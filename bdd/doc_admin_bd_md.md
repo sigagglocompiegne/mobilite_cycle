@@ -1406,39 +1406,203 @@ Valeurs possibles :
 
 ### Classes d'objets attributaire gérant les associations (ou relation d'appartenance des objets entre eux) :
 
-`[m_spanc].[lk_spanc_contact]` : table alphanumérique de relation entre les installations et les contacts
+`[m_mobilite_douce].[lk_mob_droit_delegue_iti]` : Table de relation entre l'itnéraire et les EPCI ayant droit
    
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
-|id|Identifiant interne non signifiant|bigint|nextval('lk_spanc_contact_seq'::regclass)|
-|idinstal|Identifiant de l'installation|bigint| |
-|idcontact|Identifiant interne du contact|bigint| |
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_droit_delegue_iti_seq'::regclass)|
+|id_iti|Identifiant de l'itinéraire|text| |
+|epci_ad|EPCI ayant un droit délégué|text| |
 
 
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
 
 * 1 triggers :
-  * `t_t1_100` : trigger permettant d'insérer toutes les modifications dans la table des logs
+  * `t_t1_controle` : trigger permettant de gérer le contrôle de saisie
  
+---
+
+`[m_mobilite_douce].[lk_mob_iti_plan]` : Table de relation entre l'itnéraire et son plan de mise en oeuvre
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_iti_plan_seq'::regclass)|
+|id_iti|Identifiant de l'itinéraire|text| |
+|id_plan|Identifiant du plan|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_iticycl_sign]` : Table de relation permettant un signalement à un itinéraire cyclable
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_iticycl_sign_seq'::regclass)|
+|id_iticycl|Identifiant de l'itinéraire cyclable|text| |
+|id_sign|Identifiant du signalement|integer| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_itirand_com]` : Table de relation permettant de lister les communes traversées par un itinéraire de randonnée
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_itirand_com_seq'::regclass)|
+|id_itirand|Identifiant de l'itinéraire de randonnée|text| |
+|insee|Code insee de la commune traversée|character varying(5)| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_itirand_sign]` : Table de relation permettant un signalement à un itinéraire de randonnée
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_itirand_sign_seq'::regclass)|
+|id_itirand|Identifiant de l'itinéraire de randonnées|text| |
+|id_sign|Identifiant du signalement|integer| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_pan_iti]` : Table de relation entre les panneaux et les itinéraires
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_pan_iti_seq'::regclass)|
+|id_pan|Identifiant du panneau|text| |
+|id_iti|Identifiant de l'itinéraire|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_rep_iti]` : Table de relation entre les repères et les itinéraires
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_rep_iti_seq'::regclass)|
+|id_rep|Identifiant du repère cyclable|text| |
+|id_iti|Identifiant de l'itinéraire|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+
+`[m_mobilite_douce].[lk_mob_rep_troncon]` : Table de relation entre les repères et les tronçons
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_rep_troncon_seq'::regclass)|
+|id_rep|Identifiant du repère cyclable|text| |
+|id_tronc|Identifiant du tronçon|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+`[m_mobilite_douce].[lk_mob_tronc_iti]` : Table de relation entre les itinéraires et les tronçons
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation|integer|nextval('m_mobilite_douce.lk_mob_tronc_iti_seq'::regclass)|
+|id_tronc|Identifiant du tronçon|text| |
+|id_iti|Identifiant de l'itinéraire|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
+* 1 triggers :
+  * `t_t100_log` : trigger permettant de gérer la traçabilité des modifications des données dans la table de log
+ 
+---
+
+
+`[m_mobilite_douce].[lk_mob_tronc_iti_decoupe]` : Table de relation entre les itinéraires et les tronçons suite à un découpe de ligne
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id|Identifiant unique de la relation supprimé par un découpage de ligne|integer| |
+|id_tronc|Identifiant du tronçon supprimé par un découpage de ligne|text| |
+|id_iti|Identifiant de l'itinéraire supprimé par un découpage de ligne|text| |
+
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id` l'attribution automatique de la référence unique s'effectue via une séquence. 
+
 ---
 
 ### classes d'objets applicatives métiers (vue) :
 
-  * xapps_an_v_spanc_dernier_etat_equi : Vue applicative formattant l'affichage des derniers contrôles à l'installation (soit le diag initial ou la demande de travaux et le dernier contrôle)
-  * xapps_geo_an_spanc_contr_export : Vue applicative générant les exports des contrôles
-  * xapps_geo_an_spanc_install_export : Vue applicative générant les exports des installations
-  * xapps_geo_v_spanc_rpqs_tab1 : Vue applicative ressortant les indicateurs RPQS pour le tableau de bord n°1 du SPANC
-  * xapps_geo_v_spanc_tab2 : Vue applicative ressortant les indicateurs des types de contrôles par année par commune et  pour l'EPCI
-  * xapps_geo_v_spanc_tab3 : Vue applicative ressortant le nombre total de contrôles par année et par epci
-  * xapps_geo_v_spanc_tab4 : Vue applicative ressortant le montant de la redevance et des pénalités
-  * xapps_geo_v_spanc_tab5 : Vue applicative ressortant les chiffres clés du SPANC
-  * xapps_geo_v_spanc_tri_contr : Vue applicative pour palier au bug de GEO2.2 pour l'affichage des contrôles triés par date dans la fiche de l'installation
-  * xapps_an_vmr_spanc_conception : Vue matérialisée applicative gérant la recherche des installations en conception rafraichie à chaque insertion ou modification d'un contrôle (par défaut rafraichie toutes les nuits)
-  * xapps_an_vmr_spanc_conformite : Vue matérialisée applicative gérant la recherche des installations selon leur conformité rafraichie à chaque insertion ou modification d'un contrôle (par défaut rafraichie toutes les nuits)
-  * xapps_geo_vmr_spanc_periodicite : Vue matérialisée applicative calculant les dates des prochains contrôles à partir des derniers contrôles en fonction de leur nature et de leur conclusion de chaque installation active (rafraichie après chaque insertion ou mise à jour d'un contrôle)
-  * xapps_geo_vmr_spanc_anc : Vue matérialiséVue matérialisée applicative gérant la recherche des installations selon leur conformité rafraichie à chaque insertion ou modification d'un contrôlee applicative générant la récupération des adresses et les informations liées aux installations pour l'affichage cartographique et le fonctionnel au clic dans l'application (par défaut rafraichie toutes les nuits)
-  * xapps_geo_vmr_spanc_anc : Vue matérialisée rafraichie applicative récupérant le nombre de dossier SPANC de conformité par adresse et affichant l'état du dernier contrôle (conforme ou non conforme) pour affichage dans GEO
+  * xapps_an_v_amgt_cycl_tab : Vue attributaire pour la génération du TAB (synthèse du linéaire d'aménagement en service par EPCI )
+  * xapps_an_v_cycl_tab1 : Vue attributaire des indicateurs génériques cyclables par EPCI
+  * xapps_an_v_iti_ame_pan_tab : Vue attributaire pour la génération du TAB (liste des panneaux présent sur l'itinéraire)
+  * xapps_an_v_iti_ame_tab : Vue attributaire pour la génération du TAB (statut et type d'aménagement par itinéraire)
+  * xapps_an_v_iti_cycl_tab : Vue attributaire pour la génération du TAB (synthèse du linéaire d'aménagement en service par EPCI et par itinéraire (dont plan) )
+  * xapps_an_v_iti_tab : Vue attributaire pour la génération du TAB (synthèse du linéaire d'aménagement en service par EPCI et par itinéraire )
+  * xapps_an_v_statio_cycl_tab1 : Vue attributaire pour la génération du TAB (synthèse par commune )
+  * xapps_geo_v_noeud_troncon_tab : Vue géographique des extrémités des tronçons
+
+  * lt_vmr_mob_pan_typcode : Vue matériliasée des types et codes des panneaux pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_acces : Vue matériliasée des accès par type de mobilité pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_ame : Vue matérialisée des aménagements par position pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_local : Vue matérialisée des localisations des aménagements pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_regime : Vue matérialisée des régimes de circulation pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_res : Vue matérialisée des types de réseaux pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_revet : Vue matérialisée des revêtements des aménagements pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_tronc_sens : Vue matérialisée des sens de circulation pour la gestion des listes imbriquées dans GEO
+  * lt_vmr_mob_troncon : Vue matériliasée qualifiant les tronçons aménagés pour la gestion des listes imbriquées dans GEO
+  * xapps_geo_vmr_amgt_cycl_hors_planvelo_arc : Vue géographique matérialisée des aménagements cyclables hors plan vélo 2021-2026 géré par l'ARC et en service
+  * xapps_geo_vmr_iti_cycl : Vue géographique matérialisée gérant l'affichage des itinéraires cyclables
+  * xapps_geo_vmr_iti_cycl_rep_planvelo_60159_gdpublic : Vue géographique matérialisée des repères (début/fin) des itinéraires cyclables du plan vélo 2021-2026 géré par l'ARC
+  * xapps_geo_vmr_iti_cycl_rep_planvelo_arc_gdpublic : Vue géographique matérialisée des repères (début/fin) des itinéraires cyclables du plan vélo 2021-2026 géré par l'ARC
+  * xapps_geo_vmr_iti_rand : Vue géographique matérialisée gérant l'affichage des itinéraires de randonnées
+  * xapps_geo_vmr_mob_amgt_troncon : Vue géographique gérant l'affichage des aménagements
+  * xapps_geo_vmr_mob_amgt_troncon_etat : Vue géographique gérant l'affichage des aménagements par état d'avancement (décalage du tronçon)
+  * xapps_geo_vmr_mob_amgt_troncon_requa : Vue géographique gérant l'affichage des aménagements en requalification
  
 ### classes d'objets applicatives grands publics:
 
@@ -1446,17 +1610,16 @@ Sans objet
 
 ### classes d'objets opendata sont classés :
 
-Sans objet
+  * xopendata_an_v_mob_iti_cycl : Vue opendata des itinéraires cyclables en service avec un statut actif pour les itinéraires de niveau commune/interco
+  * xopendata_an_v_statio_cycl : Vue opendata des lieux de stationnements cyclables actifs et en service
+  * xopendata_geo_v_mob_amgt_cycl : Vue opendata des aménagements cyclables
+  * xopendata_geo_v_mob_iti_rand : Vue opendata des itinéraires de randonnées en service et avec un statut actif
 
 ## Projet QGIS pour la gestion
 
 Sans objet
 
 ## Traitement automatisé mis en place (Workflow de l'ETL FME)
-
-Sans objet
-
-## Export Open Data
 
 Sans objet
 
