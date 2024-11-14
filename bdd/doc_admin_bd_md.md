@@ -22,7 +22,7 @@ Pour rappel des grands principes :
 
 ## Schéma fonctionnel
 
-(en cours de réalisation)
+![md_schema](mob_douce_schema_fonctionnel.png)
 
 ## Modèle relationel simplifié
 
