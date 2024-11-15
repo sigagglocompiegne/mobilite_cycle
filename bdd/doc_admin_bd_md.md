@@ -158,9 +158,9 @@ Particularité(s) à noter :
 |acces|Mode d'accès à l'emplacement de stationnement|character varying(2)|'00'::character varying|
 |gratuit|L'usage de l'équipement de stationnement est-il gratuit ?|character varying(2)|'00'::character varying|
 |protect|Protection du stationnement|character varying(2)|'00'::character varying|
-|couvert|Le stationnement est-il couvert et est donc protégé de la pluie, de la neige et de la grêle ?|character varying(1)|'00'::character varying|
-|surv|Le stationnement est-il surveillé par un gardien ou par de la vidéosurveillance ?|character varying(1)|'00'::character varying|
-|lum| L'emplacement est-il éclairé la nuit (par de l'éclairage urbain ou dédié à l'emplacement) ?|character varying(1)|'00'::character varying|
+|couvert|Le stationnement est-il couvert et est donc protégé de la pluie, de la neige et de la grêle ?|character varying(1)|'0'::character varying|
+|surv|Le stationnement est-il surveillé par un gardien ou par de la vidéosurveillance ?|character varying(1)|'0'::character varying|
+|lum| L'emplacement est-il éclairé la nuit (par de l'éclairage urbain ou dédié à l'emplacement) ?|character varying(1)|'0'::character varying|
 |url|Site web d'information|text| |
 |an_pose|Année de mise en service du stationnement vélo|integer| |
 |proprio|Nom de l'organisme qui entretient|text|'00'::character varying|
