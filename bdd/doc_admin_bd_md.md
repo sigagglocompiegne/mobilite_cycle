@@ -182,11 +182,21 @@ Particularité(s) à noter :
 |proprio_a|Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)|text| |
 
 Particularité(s) à noter :
-* Une clé primaire existe sur le champ `id_rep` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'R'
-* Une clé étrangère existe sur la table de valeur `lt_mob_pan_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement du panneau `lt_etat_avancement`)
-* Une clé étrangère existe sur la table de valeur `lt_mob_pan_dbstatut_fkey` (lien vers la liste de valeurs le statut du panneau `lt_statut`)
-* Une clé étrangère existe sur la table de valeur `lt_mob_rep_typrep_fkey` (lien vers la liste de valeurs du type de repère `lt_mob_rep_typr`)
-* Une clé étrangère existe sur la table de valeur `lt_mob_rep_usarep_fkey` (lien vers la liste de valeurs de l'usage du repère `lt_mob_rep_usar`)
+* Une clé primaire existe sur le champ `id_statio` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'SC'
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_acces_fkey` (lien vers la liste de valeurs de l'état d'avancement du panneau `lt_mob_statio_acces`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_couvert_fkey` (lien vers la liste de valeurs si couvert `r_objet.lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement `lt_etat_avancement`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_dbstatut_fkey` (lien vers la liste de valeurs du statut `r_objet.lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_etat_mob_fkey` (lien vers la liste de valeurs de l'état du mobilier `lt_mob_etat`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_gestio_fkey` (lien vers la liste de valeurs de l'aménageur `r_objet.lt_gestio_proprio`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_gratuit_fkey` (lien vers la liste de valeurs sur la gratuité ` r_objet.lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_lum_fkey` (lien vers la liste de valeurs sur la présence de l'éclairage ` r_objet.lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_mobil_fkey` (lien vers la liste de valeurs du type de mobilier `lt_mob_statio_mobil`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_proprio_fkey` (lien vers la liste de valeurs sur l'organisme d'entretien `r_objet.lt_gestio_proprio`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_protect_fkey` (lien vers la liste de valeurs sur le présence d'une protection `lt_mob_statio_protect`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_surv_fkey` (lien vers la liste de valeurs si un surveillance existe ` r_objet.lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_statio_typ_accro_fkey` (lien vers la liste de valeurs sur le type d'accroche `lt_mob_statio_typ_accro`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_station_srcgeom_fkey` (lien vers la liste de valeurs des sources de saisies `r_objet.lt_src_geom`)
 
 * 6 triggers :
   * `t_t0_controle` : trigger permettant de contrôler la saisie et d'automatiser certaines valeurs à l'enregistrement 
