@@ -1475,7 +1475,7 @@ CREATE TABLE m_mobilite_douce.geo_mob_statio_cycl (
 	gestio text NOT NULL DEFAULT '00',
 	proprio_a text,
 	gestio_a text,
-	src_geom varchar(100) not null default '21',
+	src_geom varchar(2) not null default '21',
 	src_annee varchar(4) not null default '2021' ,
 	observ varchar(1000),
 	epci varchar(5) not null,
