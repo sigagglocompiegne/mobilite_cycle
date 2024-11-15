@@ -1603,6 +1603,10 @@ ALTER TABLE m_mobilite_douce.geo_mob_statio_cycl
         REFERENCES r_objet.lt_gestio_proprio (code) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION;   
 
+ALTER TABLE m_mobilite_douce.geo_mob_statio_cycl
+    ADD CONSTRAINT lt_mob_station_srcgeom_fkey FOREIGN KEY (src_geom)
+        REFERENCES r_objet.lt_src_geom (code) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE NO ACTION; 
        
 -- ################################################################# TABLE geo_mob_troncon ###############################################
 
