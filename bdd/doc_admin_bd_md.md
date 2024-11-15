@@ -165,7 +165,7 @@ Particularité(s) à noter :
 |an_pose|Année de mise en service du stationnement vélo|integer| |
 |proprio|Nom de l'organisme qui entretient|text|'00'::character varying|
 |gestio|Nom de l'aménageur|text|'00'::text|
-|src_geom|Référentiel géographique de saisie|character varying(100)|'24'::character varying|
+|src_geom|Référentiel géographique de saisie|character varying(2)|'24'::character varying|
 |src_annee|Année du référentiel de saisie|character varying(4)|'2021'::character varying|
 |observ|Commentaire(s)|character varying(1000)| |
 |epci|EPCI d'assise de l'équipement|character varying(5)| |
