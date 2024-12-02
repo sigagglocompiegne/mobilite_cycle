@@ -5097,6 +5097,36 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_troncon_controle_after_decoupe() IS 'Fonction test pour réintégrer les relations d'' tronçon découpé';
 
+-- #################################################################### FONCTION/TRIGGER ft_r_autorite_competente_user_login ###############################################
+
+-- function du schéma public
+/*
+-- DROP FUNCTION public.ft_r_autorite_competente_user_login();
+
+CREATE OR REPLACE FUNCTION public.ft_r_autorite_competente_user_login()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+BEGIN
+
+  --raise exception 'op_maj --> %', new.op_maj;
+  -- function récupérant l'EPCI d'appartenance affecté à l'utilisateur
+   NEW.epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
+  
+ 
+
+return new;
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION public.ft_r_autorite_competente_user_login() IS 'Fonction trigger affecter l''autorité compétente en fonction de l''utilisateur de saisie';
+
+
+*/
+
 
 -- #################################################################### FONCTION/TRIGGER ft_r_autorite_competente_user_login_iti ###############################################
 
