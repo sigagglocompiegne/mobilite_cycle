@@ -3435,7 +3435,7 @@ refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
 
 END IF;
 
-IF (TG_OP = 'UPDATE') and (st_equals(new.geom,old.geom) is false
+IF (TG_OP = 'UPDATE') and (st_equals(new.geom,old.geom) is false or new.dbstatut <> old.dbstatut
  OR new.ame_d <> old.ame_d OR new.ame_g <> old.ame_g or new.dbetat_d <> old.dbetat_d or new.dbetat_g <> old.dbetat_g or new.gestio_g <> old.gestio_g 
 or new.gestio_d <> old.gestio_d or new.proprio_g <> old.proprio_g or new.proprio_d <> old.proprio_d or new.regime_d <> old.regime_d  or new.regime_g <> old.regime_g) then	
 
