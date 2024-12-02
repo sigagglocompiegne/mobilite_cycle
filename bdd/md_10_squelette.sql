@@ -5119,7 +5119,7 @@ BEGIN
 
   ELSE
   -- function récupérant l'EPCI d'appartenance affecté à l'utilisateur
-   NEW.epci := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
+  NEW.epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 	  /* if new.epci_cg_d = false then
 		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
 		NEW.epci_cg := null;
@@ -5202,31 +5202,31 @@ BEGIN
 
 IF (TG_OP = 'INSERT') THEN
 
-  	NEW.epci := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
+  	NEW.epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 	 
    if new.epci_cg_d = false then
-		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
+		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 		NEW.epci_cg := null;
 		-- ventilation des droits aux objets liés aux itinéraires (panneaux, repère, tronçon) uniquement pour l'EPCI maitre
   		
   		UPDATE m_mobilite_douce.geo_mob_troncon 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) WHERE
   		geo_mob_troncon.id_tronc IN (SELECT id_tronc FROM m_mobilite_douce.lk_mob_tronc_iti WHERE id_iti = NEW.id_iticycl);
 		
   		UPDATE m_mobilite_douce.geo_mob_repere
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) WHERE
   		geo_mob_repere.id_rep IN (SELECT id_rep FROM m_mobilite_douce.lk_mob_rep_iti WHERE id_iti = NEW.id_iticycl);
   	
  	   else
-   		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg;
+   		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg;
    		-- ventilation des droits aux objets liés aux itinéraires (panneaux, repère, tronçon) aux EPCI maître et esclave
 		-- et uniquement sur commune de l'EPCI esclave
 		UPDATE m_mobilite_douce.geo_mob_troncon 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg WHERE
   		geo_mob_troncon.id_tronc IN (SELECT id_tronc FROM m_mobilite_douce.lk_mob_tronc_iti WHERE id_iti = NEW.id_iticycl);
 	
   		UPDATE m_mobilite_douce.geo_mob_repere 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg WHERE
   		geo_mob_repere.id_rep IN (SELECT id_rep FROM m_mobilite_douce.lk_mob_rep_iti WHERE id_iti = NEW.id_iticycl);
   	
 	end if;
@@ -5245,30 +5245,30 @@ IF (OLD.gestio <> NEW.gestio) OR (OLD.epci_cg_d <> NEW.epci_cg_d) THEN
     new.epci_access := 'all';
   ELSE
   -- function récupérant l'EPCI d'appartenance affecté à l'utilisateur
-   NEW.epci := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
+   NEW.epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 	   if new.epci_cg_d = false then
-		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai);
+		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 		NEW.epci_cg := null;
 		-- ventilation des droits aux objets liés aux itinéraires (panneaux, repère, tronçon) uniquement pour l'EPCI maitre
   		
   		UPDATE m_mobilite_douce.geo_mob_troncon 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and(user_login = NEW.op_sai or user_login = NEW.op_maj)) WHERE
   		geo_mob_troncon.id_tronc IN (SELECT id_tronc FROM m_mobilite_douce.lk_mob_tronc_iti WHERE id_iti = NEW.id_iticycl);
 		
   		UPDATE m_mobilite_douce.geo_mob_repere
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) WHERE
   		geo_mob_repere.id_rep IN (SELECT id_rep FROM m_mobilite_douce.lk_mob_rep_iti WHERE id_iti = NEW.id_iticycl);
   	
  	   else
-   		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg;
+   		NEW.epci_acces := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg;
    		-- ventilation des droits aux objets liés aux itinéraires (panneaux, repère, tronçon) aux EPCI maître et esclave
 		-- et uniquement sur commune de l'EPCI esclave
 		UPDATE m_mobilite_douce.geo_mob_troncon 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg WHERE
   		geo_mob_troncon.id_tronc IN (SELECT id_tronc FROM m_mobilite_douce.lk_mob_tronc_iti WHERE id_iti = NEW.id_iticycl);
 	
   		UPDATE m_mobilite_douce.geo_mob_repere 
-  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and user_login = NEW.op_sai) || NEW.epci_cg WHERE
+  		SET epci_acces = (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj)) || NEW.epci_cg WHERE
   		geo_mob_repere.id_rep IN (SELECT id_rep FROM m_mobilite_douce.lk_mob_rep_iti WHERE id_iti = NEW.id_iticycl);
   	
 	   end if;
@@ -5284,6 +5284,7 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_r_autorite_competente_user_login_rep() IS 'Fonction trigger affecter l''autorité compétente en fonction de l''utilisateur de saisie';
+
 
 
 
