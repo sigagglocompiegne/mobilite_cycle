@@ -3450,6 +3450,12 @@ refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
 
 END IF;
 
+IF (TG_OP = 'UPDATE') and (new.reqame_g <> old.reqame_g or new.reqame_d <> old.reqame_d) THEN
+
+refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
+
+END IF; 
+
 RETURN NEW;
 
 end;
