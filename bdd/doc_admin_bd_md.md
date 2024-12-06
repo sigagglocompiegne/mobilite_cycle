@@ -317,7 +317,31 @@ Particularité(s) à noter :
   * `t_t7_majpan_rep` : trigger permettant de gérer les associations des panneaux et repères aux tronçons
   * `t_t8_refresh_iti` : trigger permettant de rafraîchir les itinéraires après modification
 
- ---
+---
+
+`[m_mobilite_douce].[xapps_geo_vmr_mob_amgt_troncon]` : table géographique applicative contenant les informations des tronçons pour l'affichage cartographique (tronçon aménagé décalé, état et requalification). Cette table est alimentée par les différents triggers positionnés sur la table `geo_mob_troncon` et `lk_mob_tronc_iti`.
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|gid|Identifiant interne (séquence)|bigint| |
+|id_tronc|Identifiant du tronçon|text| |
+|ame|Type d'aménagement|character varying(2)| |
+|dbetat|Etat d'avancement|character varying(2)| |
+|dbstatut|Statut|character varying(2)| |
+|typ_mob|Type de mobilité|character varying(2)| |
+|regime|Régime de circulation|character varying(2)| |
+|local|Localisation|character varying(2)| |
+|requal|Requalification|boolean| |
+|gestio|Aménageur|text| |
+|proprio|Entretien|text| |
+|lib_gestio|Autre aménageur|text| |
+|lib_proprio|Autre entretien|text| |
+|epci|EPCI de droit|character varying(5)| |
+|observ|Observations|character varying(1000)| |
+|code_iditicycl|Code des itinéraires cyclables empruntant le tronçon|text| |
+|code_iditirand|Code des itinéraires de randonnées empruntant le tronçon|text| |
+|code_idplan|Code du plan d'aménagement à l'initiative de l'itinéraire auquel appartient le tronçon|text| |
+|geom|Géométrie des tronçons décalés ou non|multilinestring(2154)| |
 
 ### Classes d'objets attributaire :
 
@@ -1610,9 +1634,6 @@ Particularité(s) à noter :
   * xapps_geo_vmr_iti_cycl_rep_planvelo_60159_gdpublic : Vue géographique matérialisée des repères (début/fin) des itinéraires cyclables du plan vélo 2021-2026 géré par l'ARC
   * xapps_geo_vmr_iti_cycl_rep_planvelo_arc_gdpublic : Vue géographique matérialisée des repères (début/fin) des itinéraires cyclables du plan vélo 2021-2026 géré par l'ARC
   * xapps_geo_vmr_iti_rand : Vue géographique matérialisée gérant l'affichage des itinéraires de randonnées
-  * xapps_geo_vmr_mob_amgt_troncon : Vue géographique gérant l'affichage des aménagements
-  * xapps_geo_vmr_mob_amgt_troncon_etat : Vue géographique gérant l'affichage des aménagements par état d'avancement (décalage du tronçon)
-  * xapps_geo_vmr_mob_amgt_troncon_requa : Vue géographique gérant l'affichage des aménagements en requalification
  
 ### classes d'objets applicatives grands publics:
 
