@@ -28,6 +28,8 @@ DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl;
 DROP VIEW IF exists m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_iti_rand;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_equip;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_regroup;
 
 
 drop materialized view IF EXISTS m_mobilite_douce.xapps_geo_vmr_amgt_cycl_hors_planvelo_arc;
