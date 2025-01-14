@@ -399,7 +399,7 @@ Particularité(s) à noter :
 |geom|Classe d'objets géométrique|geometry(point, 2154)| |
 
 Particularité(s) à noter :
-* Une clé primaire existe sur le champ `id_eqvelo` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'EQ'
+* Une clé primaire existe sur le champ `id_eqvelo` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'EQ'. Ce numéro séquentile est commun aux équipements de stationnement des vélos pour assurer une unicité des identifiants à la sortie OpenData des équipements liés aux vélos
 * Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement `lt_etat_avancement`)
 * Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbstatut_fkey` (lien vers la liste de valeurs du statut `lt_statut`)
 * Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_accespmr_fkey` (lien vers la liste de valeurs du booléen `lt_booleen`)
