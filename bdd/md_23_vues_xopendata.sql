@@ -19,6 +19,8 @@ DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl;
 DROP VIEW IF exists m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_iti_rand;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_equip;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_regroup;
 
 
 -- ####################################################################################################################################################
@@ -316,5 +318,196 @@ AS SELECT r.id_itirand AS id_local,
   GROUP BY r.id_itirand, r.epci, r.contact, r.url, r.nomoff, pr.valeur, tr.valeur, r.depart, r.arrivee, r.duree, r.balisage, r.lin_iti, r.diff_iti, r.alti_max, r.alti_min, r.deni_pos, r.deni_neg, r.instruc, r.present_d, r.present_c, r.theme, r.recommand, r.accessi, r.acces_r, r.acces_tc, r.park_inf, r.park_loc, r.dbinsert, r.dbupdate, r.typ_sol, r.pdipr, r.pdipr_d;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand IS 'Vue opendata des itinéraires de randonnées en service et avec un statut actif';
+
+-- #################################################################### vue xopendata_geo_v_mob_regroup ###############################################
+
+-- m_mobilite_douce.xopendata_geo_v_mob_regroup source
+
+CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup
+AS WITH req_photo AS (
+         SELECT an_mob_equip_regroup_media.id,
+            'https://geo.compiegnois.fr/fichier_ref/metiers/mob/mob_douce/equip_regroup/'::text || an_mob_equip_regroup_media.n_fichier AS photo
+           FROM m_mobilite_douce.an_mob_equip_regroup_media
+          GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
+         LIMIT 1
+        )
+ SELECT (r.insee::text || '_REQUIP_'::text) || lpad(replace(r.id_regroup, 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+    r.nom,
+        CASE
+            WHEN r.dbetat::text = ANY (ARRAY['40'::character varying, '90'::character varying]::text[]) THEN 'existante'::text
+            WHEN r.dbetat::text = ANY (ARRAY['10'::character varying, '20'::character varying, '30'::character varying]::text[]) THEN 'en projet'::text
+            WHEN r.dbetat::text = '00'::text THEN 'préconisé'::text
+            ELSE NULL::text
+        END AS statut,
+    i.valeur AS importance,
+    r.nb_equip,
+        CASE
+            WHEN p.photo IS NULL THEN p.photo
+            ELSE NULL::text
+        END AS photo,
+    r.insee AS code_com,
+    NULL::text AS src_photo,
+    NULL::text AS l_photo
+   FROM m_mobilite_douce.geo_mob_regroup r
+     JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
+     LEFT JOIN req_photo p ON p.id = r.id_regroup;
+
+COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
+
+-- #################################################################### vue xopendata_geo_v_mob_equip ###############################################
+
+-- m_mobilite_douce.xopendata_geo_v_mob_equip source
+
+CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_equip
+AS ( WITH req_photo AS (
+         SELECT an_mob_equip_regroup_media.id,
+            'https://geo.compiegnois.fr/documents/metiers/mob/mob_douce/equip_regroup/'::text || an_mob_equip_regroup_media.n_fichier AS photo
+           FROM m_mobilite_douce.an_mob_equip_regroup_media
+          GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
+        )
+ SELECT (e.insee::text || '_EV_'::text) || lpad(replace(e.id_eqvelo, 'EQ'::text, ''::text), 4, '0'::text) AS id_equip,
+    e.id_eqvelo AS id_local,
+    e.insee AS code_com,
+    lte.valeur AS type_equip,
+    lste.valeur AS ss_type_equip,
+    p.valeur AS protection,
+    NULL::smallint AS capacite,
+        CASE
+            WHEN e.dbetat::text = ANY (ARRAY['00'::character varying, 'ZZ'::character varying]::text[]) THEN 'Non renseigné'::character varying
+            WHEN e.dbetat::text = ANY (ARRAY['10'::character varying, '20'::character varying, '30'::character varying]::text[]) THEN 'en projet'::character varying
+            WHEN e.dbetat::text = '90'::text THEN 'moyen'::character varying
+            WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
+            ELSE em.valeur
+        END AS etat,
+    ( WITH req_p AS (
+                 SELECT unnest(string_to_array(e.proprio, ';'::text)) AS code
+                )
+         SELECT string_agg(l.valeur::text, ', '::text) AS string_agg
+           FROM req_p p_1
+             LEFT JOIN r_objet.lt_gestio_proprio l ON p_1.code = l.code::text) AS proprietaire,
+    ( WITH req_g AS (
+                 SELECT unnest(string_to_array(e.gestio, ';'::text)) AS code
+                )
+         SELECT string_agg(lg.valeur::text, ', '::text) AS string_agg
+           FROM req_g g_1
+             LEFT JOIN r_objet.lt_gestio_proprio lg ON g_1.code = lg.code::text) AS gestionnaire,
+        CASE
+            WHEN c.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            ELSE c.valeur
+        END AS couvert,
+        CASE
+            WHEN c1.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            ELSE c1.valeur
+        END AS payant,
+        CASE
+            WHEN c2.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            ELSE c2.valeur
+        END AS acces_pmr,
+    st_x(st_transform(e.geom, 4326)) AS longitude,
+    st_y(st_transform(e.geom, 4326)) AS latitude,
+    e.x_l93 AS x,
+    e.y_l93 AS y,
+    ( SELECT ph.photo
+         LIMIT 1) AS photo,
+    s.valeur AS source,
+    g.lib_epci AS producteur,
+        CASE
+            WHEN e.dbupdate IS NULL THEN to_char(e.dbinsert, 'YYYY-MM-DD'::text)
+            ELSE to_char(e.dbupdate, 'YYYY-MM-DD'::text)
+        END AS date_maj,
+    e.observ AS commentaire,
+    (e.insee::text || '_REQUIP_'::text) || lpad(replace(e.id_regroupement, 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+    NULL::text AS src_photo,
+    'CC BY'::text AS l_photo
+   FROM m_mobilite_douce.geo_mob_equip_velo e
+     LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_type lte ON e.type_equip::text = lte.code::text
+     LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_sstype lste ON e.ss_type_equip::text = lste.code::text
+     LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON e.protect::text = p.code::text
+     LEFT JOIN m_mobilite_douce.lt_mob_etat em ON e.etat_mob::text = em.code::text
+     LEFT JOIN r_objet.lt_booleen c ON e.couvert::text = c.code::text
+     LEFT JOIN r_objet.lt_booleen c1 ON e.payant::text = c1.code::text
+     LEFT JOIN r_objet.lt_booleen c2 ON e.acces_pmr::text = c2.code::text
+     LEFT JOIN r_objet.lt_src_geom s ON e.src_geom::text = s.code::text
+     LEFT JOIN req_photo ph ON ph.id = e.id_eqvelo
+     LEFT JOIN r_administratif.an_geo g ON g.insee::text = e.insee::text
+  WHERE e.dbstatut::text = '10'::text OR e.dbetat::text = '11'::text)
+UNION ALL
+( WITH req_photo AS (
+         SELECT an_mob_statio_cylc_media.id,
+            'https://geo.compiegnois.fr/documents/metiers/mob/mob_douce/statio/'::text || an_mob_statio_cylc_media.n_fichier AS photo
+           FROM m_mobilite_douce.an_mob_statio_cylc_media
+          GROUP BY an_mob_statio_cylc_media.id, an_mob_statio_cylc_media.n_fichier
+        )
+ SELECT (s.insee::text || '_EV_'::text) || lpad(replace(s.id_statio, 'SC'::text, ''::text), 4, '0'::text) AS id_equip,
+    s.id_statio AS id_local,
+    s.insee AS code_com,
+        CASE
+            WHEN s.typ_accro::text = '21'::text THEN 'stationnement ancrage cadre et roue'::text
+            WHEN s.typ_accro::text = '30'::text THEN 'stationnement sans accroche'::text
+            WHEN s.typ_accro::text = '10'::text THEN 'stationnement ancrage roue'::text
+            WHEN s.typ_accro::text = '20'::text THEN 'stationnement ancrage cadre'::text
+            ELSE 'stationnement (ancrage non renseigné)'::text
+        END AS type_equip,
+    m.valeur AS ss_type_equip,
+    p.valeur AS protection,
+    s.cap AS capacite,
+        CASE
+            WHEN s.dbetat::text = ANY (ARRAY['00'::character varying, 'ZZ'::character varying]::text[]) THEN 'Non renseigné'::character varying
+            WHEN s.dbetat::text = ANY (ARRAY['10'::character varying, '20'::character varying, '30'::character varying]::text[]) THEN 'en projet'::character varying
+            WHEN s.dbetat::text = '90'::text THEN 'moyen'::character varying
+            WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
+            ELSE em.valeur
+        END AS etat,
+    ( WITH req_p AS (
+                 SELECT unnest(string_to_array(s.proprio, ';'::text)) AS code
+                )
+         SELECT string_agg(l.valeur::text, ', '::text) AS string_agg
+           FROM req_p p_1
+             LEFT JOIN r_objet.lt_gestio_proprio l ON p_1.code = l.code::text) AS proprietaire,
+    ( WITH req_g AS (
+                 SELECT unnest(string_to_array(s.gestio, ';'::text)) AS code
+                )
+         SELECT string_agg(lg.valeur::text, ', '::text) AS string_agg
+           FROM req_g g_1
+             LEFT JOIN r_objet.lt_gestio_proprio lg ON g_1.code = lg.code::text) AS gestionnaire,
+        CASE
+            WHEN c.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            ELSE c.valeur
+        END AS couvert,
+        CASE
+            WHEN s.gratuit::text = '10'::text THEN 'Non'::text
+            WHEN s.gratuit::text = '30'::text THEN 'Oui'::text
+            ELSE 'Pas d''information'::text
+        END AS payant,
+    'Pas d''information'::character varying AS acces_pmr,
+    st_x(st_transform(s.geom, 4326)) AS longitude,
+    st_y(st_transform(s.geom, 4326)) AS latitude,
+    s.x_l93 AS x,
+    s.y_l93 AS y,
+    ( SELECT ps.photo
+         LIMIT 1) AS photo,
+    src.valeur AS source,
+    g.lib_epci AS producteur,
+        CASE
+            WHEN s.dbupdate IS NULL THEN to_char(s.dbinsert, 'YYYY-MM-DD'::text)
+            ELSE to_char(s.dbupdate, 'YYYY-MM-DD'::text)
+        END AS date_maj,
+    s.observ AS commentaire,
+    (s.insee::text || '_REQUIP_'::text) || lpad(replace(( SELECT r.id_regroup
+           FROM m_mobilite_douce.geo_mob_regroup r
+          WHERE st_intersects(r.geom, s.geom) IS TRUE), 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+    NULL::text AS src_photo,
+    'CC BY'::text AS l_photo
+   FROM m_mobilite_douce.geo_mob_statio_cycl s
+     LEFT JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
+     LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON s.protect::text = p.code::text
+     LEFT JOIN m_mobilite_douce.lt_mob_etat em ON s.etat_mob::text = em.code::text
+     LEFT JOIN r_objet.lt_booleen c ON s.couvert::text = c.code::text
+     LEFT JOIN r_objet.lt_src_geom src ON s.src_geom::text = src.code::text
+     LEFT JOIN req_photo ps ON ps.id = s.id_statio
+     LEFT JOIN r_administratif.an_geo g ON g.insee::text = s.insee::text
+  WHERE s.dbstatut::text = '10'::text OR s.dbetat::text = '11'::text);
+
+COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
 
 
