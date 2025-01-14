@@ -6421,7 +6421,7 @@ insert
 delete
     or
 update
-    of geom on
+     on
     m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_after();
 
 
