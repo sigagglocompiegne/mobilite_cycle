@@ -237,7 +237,7 @@ drop sequence if EXISTS m_mobilite_douce.lk_mob_itirand_sign_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_droit_delegue_iti_seq;
 drop sequence if EXISTS m_mobilite_douce.geo_mob_regroup_seq;
-drop sequence if EXISTS m_mobilite_douce.geo_mob_equip_velo_seq;
+
 
 
 
@@ -1566,19 +1566,6 @@ CREATE SEQUENCE m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq
 	START 1
 	NO CYCLE;
 
--- ################################################################# Séquence sur TABLE geo_mob_equip_velo_seq ###############################################
-
--- m_mobilite_douce.geo_mob_equip_velo_seq definition
-
--- DROP SEQUENCE m_mobilite_douce.geo_mob_equip_velo_seq;
-
-CREATE SEQUENCE m_mobilite_douce.geo_mob_equip_velo_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 9223372036854775807
-	START 1
-	NO CYCLE;
-
 
 -- ################################################################# Séquence sur TABLE geo_mob_regroup_seq ###############################################
 
@@ -2856,7 +2843,7 @@ COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.geom IS 'Classe d''objets gé
 -- DROP TABLE m_mobilite_douce.geo_mob_equip_velo;
 
 CREATE TABLE m_mobilite_douce.geo_mob_equip_velo (
-	id_eqvelo text DEFAULT 'EQ'::text || nextval('m_mobilite_douce.geo_mob_equip_velo_seq'::regclass) NOT NULL, -- Identifiant unique interne
+	id_eqvelo text DEFAULT 'EQ'::text || nextval('m_mobilite_douce.geo_mob_statio_cycl_seq'::regclass) NOT NULL, -- Identifiant unique interne
 	id_regroupement text NULL, -- identifiant de l'aire de service ou de la halte repos auquel appartient l'équipement
 	type_equip varchar(2) NOT NULL, -- type d'équipement
 	ss_type_equip varchar(2) NULL, -- Sous-type d'équipement
