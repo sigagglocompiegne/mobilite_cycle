@@ -319,6 +319,52 @@ Particularité(s) à noter :
 
 ---
 
+
+`[m_mobilite_douce].[geo_mob_regroup]` : Classe d'objet géographique localisant les regroupemenrts d'équipements pour vélo
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id_regroup|Identifiant unique interne|text|('RV'::text || nextval('m_mobilite_douce.geo_mob_regroup_seq'::regclass))|
+|nom|nom de l'aire de service ou de la halte repos|text| |
+|importance|indique l'importance du pôle|character varying(2)|'00'::character varying|
+|nb_equip|nombre d'équipements faisant partis du regroupement|integer| |
+|dbetat|Niveau d'avancement de l'équipement|character varying(2)|'40'::character varying|
+|dbstatut|Statut de l'équipement|character varying(2)|'10'::character varying|
+|proprio|Nom de l'organisme qui entretient|text|'00'::character varying|
+|gestio|Nom de l'aménageur|text|'00'::text|
+|gestio_a|Libellé de l'autre aménageur (rempli uniquement si gestio = autre)|text| |
+|proprio_a|Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)|text| |
+|src_geom|Référentiel géographique de saisie|character varying(2)|'24'::character varying|
+|src_annee|Année du référentiel de saisie|character varying(4)|'2023'::character varying|
+|observ|Commentaire(s)|character varying(1000)| |
+|epci|EPCI d'assise de l'équipement|character varying(5)| |
+|insee|Code Insee  de la commune d'implantation de l'équipement|character varying(5)| |
+|commune|Commune d'implantation de l'équipement|character varying(80)| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+|geom|Classe d'objets géométrique|USER-DEFINED| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id_regroup` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'RV'
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement `lt_etat_avancement`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_import_fkey` (lien vers la liste de valeurs du statut `lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_tronc_acces_fkey` (lien vers la liste de valeurs de l'importance du regroupement `lt_mob_regroup_imp`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_srcgeom_fkey` (lien vers la liste de valeurs de la source du référentiel géographique de saisie `lt_src_geom`)
+
+
+* 6 triggers :
+  * `t_t0_controle` : trigger permettant de contrôler la saisie et d'automatiser certaines valeurs à l'enregistrement 
+  * `t_t1_100_log` : trigger permettant d'insérer toutes les modifications dans la table des logs
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
+  * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
+  * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement
+
+---
+
 `[m_mobilite_douce].[xapps_geo_vmr_mob_amgt_troncon]` : table géographique applicative contenant les informations des tronçons pour l'affichage cartographique (tronçon aménagé décalé, état et requalification). Cette table est alimentée par les différents triggers positionnés sur la table `geo_mob_troncon` et `lk_mob_tronc_iti`.
    
 |Nom attribut | Définition | Type | Valeurs par défaut |
