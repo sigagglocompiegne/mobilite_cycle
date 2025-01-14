@@ -1544,6 +1544,85 @@ Valeurs possibles :
 
 ---
 
+`[m_mobilite_douce].[lt_mob_eqvelo_sstype]` : Liste des valeurs des Sous-Type des équipements vélo (hors stationnement)
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du sous-type d'équipements|character varying(2)| |
+|valeur|Valeur du sous-type d'équipements|character varying(255)| |
+|typ|Code du type d'équipement associé|character varying(2)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|01|Station de lavage|
+|02|Station de réparation|
+|03|Station de gonflage|
+|04|permettant le remplissage d'une bouteille|
+|05|ne permettant pas le remplissage d'une bouteille|
+|06|Téléphone|
+|07|VAE|
+|08|Tout venant|
+|09|Tri sélectif|
+|10|Duo|
+|11|Douche|
+|12|Toilettes|
+|13|Toilettes sèches|
+
+---
+
+`[m_mobilite_douce].[lt_mob_eqvelo_type]` : Liste des valeurs des Type des équipements vélo (hors stationnement)
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code du type d'équipements|character varying(2)| |
+|valeur|Valeur du type d'équipements|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|01|Abris|
+|02|Aire de Jeux|
+|03|Atelier d'auto-réparation et d'entretien|
+|04|Banc|
+|05|Borne Wifi|
+|06|Point d'eau potable|
+|07|Point de recharges|
+|08|Poubelles|
+|09|Sanitaires|
+|10|Relais information services|
+|11|Consigne bagage sécurisée|
+|12|Table de pique-nique|
+
+---
+
+`[m_mobilite_douce].[lt_mob_regroup_imp]` : Liste de valeurs de l'importance des regroupements
+
+|Nom attribut | Définition |
+|:---|:---|
+|code|Code de l'importance|character varying(2)| |
+|valeur|Valeur de l'importance|character varying(255)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ code 
+
+Valeurs possibles :
+
+|Code|Valeur|
+|:---|:---|
+|01|Aire de service|
+|02|Halte repos|
+
+---
+
 ### Classes d'objets attributaire gérant les associations (ou relation d'appartenance des objets entre eux) :
 
 `[m_mobilite_douce].[lk_mob_droit_delegue_iti]` : Table de relation entre l'itnéraire et les EPCI ayant droit
@@ -1751,6 +1830,7 @@ Sans objet
   * xopendata_an_v_statio_cycl : Vue opendata des lieux de stationnements cyclables actifs et en service
   * xopendata_geo_v_mob_amgt_cycl : Vue opendata des aménagements cyclables
   * xopendata_geo_v_mob_iti_rand : Vue opendata des itinéraires de randonnées en service et avec un statut actif
+  * xopendata_geo_v_mob_equip : Vue opendata des équipements liés à la pratique du vélo (y compris ici le stationnement cyclable réintégré)
 
 ## Projet QGIS pour la gestion
 
