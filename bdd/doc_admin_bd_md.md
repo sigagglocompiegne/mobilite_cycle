@@ -361,7 +361,7 @@ Particularité(s) à noter :
   * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
   * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
-  * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement
+  * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement et d'affecter l'id_regroupement aux équipements
 
 ---
 
