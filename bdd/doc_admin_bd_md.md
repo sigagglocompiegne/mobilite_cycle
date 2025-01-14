@@ -344,13 +344,13 @@ Particularité(s) à noter :
 |op_maj|Opérateur de mise à jour|character varying(50)| |
 |dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
 |dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
-|geom|Classe d'objets géométrique|USER-DEFINED| |
+|geom|Classe d'objets géométrique|geometry(multipolygon, 2154)| |
 
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ `id_regroup` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'RV'
 * Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement `lt_etat_avancement`)
-* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_import_fkey` (lien vers la liste de valeurs du statut `lt_statut`)
-* Une clé étrangère existe sur la table de valeur `lt_mob_tronc_acces_fkey` (lien vers la liste de valeurs de l'importance du regroupement `lt_mob_regroup_imp`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbstatut_fkey` (lien vers la liste de valeurs du statut `lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_import_fkey` (lien vers la liste de valeurs de l'importance du regroupement `lt_mob_regroup_imp`)
 * Une clé étrangère existe sur la table de valeur `lt_mob_regroup_srcgeom_fkey` (lien vers la liste de valeurs de la source du référentiel géographique de saisie `lt_src_geom`)
 
 
@@ -362,6 +362,66 @@ Particularité(s) à noter :
   * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
   * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement
+
+---
+
+`[m_mobilite_douce].[geo_mob_equip_velo]` : Classe d'objet géographique localisant les équipements vélos (hors stationnement)
+   
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|id_eqvelo|Identifiant unique interne|text|('EQ'::text || nextval('m_mobilite_douce.geo_mob_equip_velo_seq'::regclass))|
+|id_regroupement|identifiant de l'aire de service ou de la halte repos auquel appartient l'équipement|text| |
+|type_equip|type d'équipement|character varying(2)| |
+|ss_type_equip|Sous-type d'équipement|character varying(2)| |
+|dbetat|Niveau d'avancement de l'équipement|character varying(2)|'40'::character varying|
+|dbstatut|Statut de l'équipement|character varying(2)|'10'::character varying|
+|etat_mob|état d’entretien de l'équipement|character varying(2)|'10'::character varying|
+|protect|définit le type de protection de l'équipement|character varying(2)|'00'::character varying|
+|couvert|caractéristique des lieux de restauration (table de pique-nique) et des stationnements vélo : abrité ou non|character varying(1)|'0'::character varying|
+|payant|information sur le caractère  payant pour les équipements spécifiques : sanitaires, stationnement vélo longue durée, consigne bagage sécurisée|character varying(1)|'0'::character varying|
+|acces_pmr|accessibilité PMR|character varying(1)|'0'::character varying|
+|proprio|Nom de l'organisme qui entretient|text|'00'::character varying|
+|gestio|Nom de l'aménageur|text|'00'::text|
+|gestio_a|Libellé de l'autre aménageur (rempli uniquement si gestio = autre)|text| |
+|proprio_a|Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)|text| |
+|src_geom|Référentiel géographique de saisie|character varying(2)|'24'::character varying|
+|src_annee|Année du référentiel de saisie|character varying(4)|'2023'::character varying|
+|observ|Commentaire(s)|character varying(1000)| |
+|epci|EPCI d'assise de l'équipement|character varying(5)| |
+|insee|Code Insee  de la commune d'implantation de l'équipement|character varying(5)| |
+|commune|Commune d'implantation de l'équipement|character varying(80)| |
+|op_sai|Opérateur de saisie|character varying(50)| |
+|op_maj|Opérateur de mise à jour|character varying(50)| |
+|dbinsert|Date d'insertion dans la base de données|timestamp without time zone|now()|
+|dbupdate|Date de mise à jour dans la base de données|timestamp without time zone| |
+|x_l93|Coordonnées X en Lambert 93|numeric| |
+|y_l93|Coordonnées Y en Lambert 93|numeric| |
+|geom|Classe d'objets géométrique|geometry(point, 2154)| |
+
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ `id_eqvelo` l'attribution automatique composé d'un numéro séquentiel préfixé par la lettre 'EQ'
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbetat_fkey` (lien vers la liste de valeurs de l'état d'avancement `lt_etat_avancement`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_regroup_dbstatut_fkey` (lien vers la liste de valeurs du statut `lt_statut`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_accespmr_fkey` (lien vers la liste de valeurs du booléen `lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_couvert_fkey` (lien vers la liste de valeurs du booléen `lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_etat_mob_fkey` (lien vers la liste de valeurs de l'état du mobilier `lt_mob_etat`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_payant_fkey` (lien vers la liste de valeurs du booléen `lt_booleen`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_protect_fkey` (lien vers la liste de valeurs des types de protection `lt_mob_statio_protect`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_srcgeom_fkey` (lien vers la liste de valeurs de la source du référentiel géographique de saisie `lt_src_geom`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_sstype_fkey` (lien vers la liste de valeurs des sous-types d'équipements `lt_mob_eqvelo_sstype`)
+* Une clé étrangère existe sur la table de valeur `lt_mob_eqvelo_type_fkey` (lien vers la liste de valeurs des types d'équipements `lt_mob_eqvelo_type`) 
+
+
+* 6 triggers :
+  * `t_t0_controle` : trigger permettant de contrôler la saisie et d'automatiser certaines valeurs à l'enregistrement 
+  * `t_t1_100_log` : trigger permettant d'insérer toutes les modifications dans la table des logs
+  * `t_t1_dbinsert` : trigger permettant d'insérer la date de saisie
+  * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
+  * `t_t3_xyl93` : trigger permettant d'insérer les coordonnées X et Y en Lambert 93
+  * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
+  * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  * `t_t6_regroup` : trigger permettant de rechercher le regroupement d'appartenance de l'équipement et d'insérer l'id_regroupement
+  * `t_t7_regroup_after` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement et de mettre à jour la table `geo_mob_regroup`
 
 ---
 
