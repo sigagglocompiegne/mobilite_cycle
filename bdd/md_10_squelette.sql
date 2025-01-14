@@ -1247,7 +1247,37 @@ INSERT INTO m_mobilite_douce.lt_mob_eqvelo_sstype(
   ('11','Douche','09'),
   ('12','Toilettes','09'),
   ('13','Toilettes sèches','09');
- 
+
+
+-- ################################################################# lt_mob_regroup_imp ###############################################
+
+-- m_mobilite_douce.lt_mob_regroup_imp definition
+
+-- Drop table
+
+-- DROP TABLE m_mobilite_douce.lt_mob_regroup_imp;
+
+CREATE TABLE m_mobilite_douce.lt_mob_regroup_imp (
+	code varchar(2) NOT NULL, -- Code de l'importance
+	valeur varchar(255) NULL, -- Valeur de l'importance
+	CONSTRAINT lt_mob_regroup_imp_pkey PRIMARY KEY (code)
+);
+CREATE INDEX lt_mob_regroup_imp_idx ON m_mobilite_douce.lt_mob_regroup_imp USING btree (code);
+COMMENT ON TABLE m_mobilite_douce.lt_mob_regroup_imp IS 'Liste de valeurs de l''importance des regroupements';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_regroup_imp.code IS 'Code de l''importance';
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_regroup_imp.valeur IS 'Valeur de l''importance';
+
+
+INSERT INTO m_mobilite_douce.lt_mob_regroup_imp(
+            code, valeur,typ)
+    VALUES
+  ('01','Aire de service'),
+  ('02','Halte repos');
+
+
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
 -- ###                                                                     SEQUENCE                                                                 ###
