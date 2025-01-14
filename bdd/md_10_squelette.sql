@@ -92,7 +92,21 @@ ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_src_geom_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_troncon DROP CONSTRAINT IF EXISTS lt_mob_tronc_typ_fkey;
 
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_accespmr_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_couvert_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_dbetat_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_dbstatut_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_etat_mob_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_payant_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_protect_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_srcgeom_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_sstype_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo DROP CONSTRAINT IF EXISTS lt_mob_eqvelo_type_fkey;
 
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_regroup DROP CONSTRAINT IF EXISTS lt_mob_regroup_dbetat_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_regroup DROP CONSTRAINT IF EXISTS lt_mob_regroup_dbstatut_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_regroup DROP CONSTRAINT IF EXISTS lt_mob_regroup_import_fkey;
+ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_regroup DROP CONSTRAINT IF EXISTS lt_mob_regroup_srcgeom_fkey;
 
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_repere DROP CONSTRAINT IF EXISTS lt_mob_rep_typrep_fkey;
 ALTER TABLE IF EXISTS m_mobilite_douce.geo_mob_repere DROP CONSTRAINT IF EXISTS lt_mob_rep_usarep_fkey;
@@ -143,6 +157,8 @@ DROP TABLE IF EXISTS m_mobilite_douce.an_mob_plan;
 DROP TABLE IF EXISTS m_mobilite_douce.an_mob_media;
 DROP TABLE IF EXISTS m_mobilite_douce.an_mob_pan_media;
 DROP TABLE IF EXISTS m_mobilite_douce.an_mob_log;
+DROP TABLE IF EXISTS m_mobilite_douce.geo_mob_regroup;
+DROP TABLE IF EXISTS m_mobilite_douce.geo_mob_equip_velo;
 
 -- ## TABLE DE RELATION
 DROP TABLE IF EXISTS m_mobilite_douce.lk_mob_tronc_iti;
@@ -192,6 +208,9 @@ drop table if exists m_mobilite_douce.lt_mob_plan_niveau;
 
 drop table if exists m_mobilite_douce.lt_mob_media_typdoc;
 
+drop table if exists m_mobilite_douce.lt_mob_eqvelo_sstype;
+drop table if exists m_mobilite_douce.lt_mob_eqvelo_type;
+
 
 
 
@@ -217,6 +236,8 @@ drop sequence if EXISTS m_mobilite_douce.lk_mob_iticycl_sign_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_itirand_sign_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq;
 drop sequence if EXISTS m_mobilite_douce.lk_mob_droit_delegue_iti_seq;
+drop sequence if EXISTS m_mobilite_douce.geo_mob_regroup_seq;
+drop sequence if EXISTS m_mobilite_douce.geo_mob_equip_velo_seq;
 
 
 
@@ -1145,6 +1166,87 @@ INSERT INTO m_mobilite_douce.lt_mob_tronc_dg(
   ('12','A gauche'),
   ('20','A droite et à gauche')
   ;
+
+-- ################################################################# lt_mob_eqvelo_type ###############################################
+ 
+-- m_mobilite_douce.lt_mob_eqvelo_type definition
+
+-- Drop table
+
+-- DROP TABLE m_mobilite_douce.lt_mob_eqvelo_type;
+
+CREATE TABLE m_mobilite_douce.lt_mob_eqvelo_type (
+	code varchar(2) NOT NULL, 
+	valeur varchar(255) NULL, 
+	CONSTRAINT lt_mob_eqvelo_type_pkey PRIMARY KEY (code)
+);
+CREATE INDEX lt_mob_eqvelo_type_idx ON m_mobilite_douce.lt_mob_eqvelo_type USING btree (code);
+COMMENT ON TABLE m_mobilite_douce.lt_mob_eqvelo_type IS 'Type des équipements vélo (hors stationnement)';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_eqvelo_type.code IS 'Code du type d''équipements';
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_eqvelo_type.valeur IS 'Valeur du type d''équipements';
+
+
+
+INSERT INTO m_mobilite_douce.lt_mob_eqvelo_type(
+            code, valeur)
+    VALUES
+  ('01','Abris'),
+  ('02','Aire de jeux'),
+  ('03','A droite et à gauche'),
+  ('04','Atelier d''auto-réparation et d''entretien'),
+  ('05','Banc'),
+  ('06','Point d''eau potable'),
+  ('07','Point de recharges'),
+  ('08','Poubelles'),
+  ('09','Sanitaires'),
+  ('10','Relais information services'),
+  ('11','Consigne bagage sécurisée'),
+  ('12','Table de pique-nique');
+
+-- ################################################################# lt_mob_eqvelo_sstype ###############################################
+ 
+-- m_mobilite_douce.lt_mob_eqvelo_sstype definition
+
+-- Drop table
+
+-- DROP TABLE m_mobilite_douce.lt_mob_eqvelo_sstype;
+
+CREATE TABLE m_mobilite_douce.lt_mob_eqvelo_sstype (
+	code varchar(2) NOT NULL, 
+	valeur varchar(255) NULL, 
+	typ varchar(2) NULL,
+	CONSTRAINT lt_mob_eqvelo_sstype_pkey PRIMARY KEY (code)
+);
+CREATE INDEX lt_mob_eqvelo_sstype_idx ON m_mobilite_douce.lt_mob_eqvelo_sstype USING btree (code);
+COMMENT ON TABLE m_mobilite_douce.lt_mob_eqvelo_sstype IS 'Sous-Type des équipements vélo (hors stationnement)';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_eqvelo_sstype.code IS 'Code du sous-type d''équipements';
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_eqvelo_sstype.valeur IS 'Valeur du sous-type d''équipements';
+COMMENT ON COLUMN m_mobilite_douce.lt_mob_eqvelo_sstype.typ IS 'Code du type d''équipement associé';
+
+
+
+INSERT INTO m_mobilite_douce.lt_mob_eqvelo_sstype(
+            code, valeur,typ)
+    VALUES
+  ('01','Station de lavage','03'),
+  ('02','Station de réparation','03'),
+  ('03','Station de gonflage','03'),
+  ('04','permettant le remplissage d''une bouteille','06'),
+  ('05','ne permettant pas le remplissage d''une bouteille','06'),
+  ('06','Téléphone','07'),
+  ('07','VAE','07'),
+  ('08','Tout venant','08'),
+  ('09','Tri sélectif'',08'),
+  ('10','Duo'',08'),
+  ('11','Douche','09'),
+  ('12','Toilettes','09'),
+  ('13','Toilettes sèches','09');
  
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -1434,6 +1536,32 @@ CREATE SEQUENCE m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq
 	START 1
 	NO CYCLE;
 
+-- ################################################################# Séquence sur TABLE geo_mob_equip_velo_seq ###############################################
+
+-- m_mobilite_douce.geo_mob_equip_velo_seq definition
+
+-- DROP SEQUENCE m_mobilite_douce.geo_mob_equip_velo_seq;
+
+CREATE SEQUENCE m_mobilite_douce.geo_mob_equip_velo_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	NO CYCLE;
+
+
+-- ################################################################# Séquence sur TABLE geo_mob_regroup_seq ###############################################
+
+-- m_mobilite_douce.geo_mob_regroup_seq definition
+
+-- DROP SEQUENCE m_mobilite_douce.geo_mob_regroup_seq;
+
+CREATE SEQUENCE m_mobilite_douce.geo_mob_regroup_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	NO CYCLE;
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -2625,6 +2753,152 @@ COMMENT ON COLUMN m_mobilite_douce.an_mob_pan_media.t_fichier IS 'Type de média
 COMMENT ON COLUMN m_mobilite_douce.an_mob_pan_media.op_sai IS 'opérateur intégrant le média';
 COMMENT ON COLUMN m_mobilite_douce.an_mob_pan_media.dbinsert IS 'Date de saisie du média';
 
+-- ################################################################# TABLE geo_mob_regroup ###############################################
+
+-- m_mobilite_douce.geo_mob_regroup definition
+
+-- Drop table
+
+-- DROP TABLE m_mobilite_douce.geo_mob_regroup;
+
+CREATE TABLE m_mobilite_douce.geo_mob_regroup (
+	id_regroup text DEFAULT 'RV'::text || nextval('m_mobilite_douce.geo_mob_regroup_seq'::regclass) NOT NULL, -- Identifiant unique interne
+	nom text NULL, -- nom de l'aire de service ou de la halte repos
+	importance varchar(2) DEFAULT '00'::character varying NOT NULL, -- indique l'importance du pôle
+	nb_equip int4 NULL, -- nombre d'équipements faisant partis du regroupement
+	dbetat varchar(2) DEFAULT '40'::character varying NOT NULL, -- Niveau d'avancement de l'équipement
+	dbstatut varchar(2) DEFAULT '10'::character varying NOT NULL, -- Statut de l'équipement
+	proprio text DEFAULT '00'::character varying NOT NULL, -- Nom de l'organisme qui entretient
+	gestio text DEFAULT '00'::text NOT NULL, -- Nom de l'aménageur
+	gestio_a text NULL, -- Libellé de l'autre aménageur (rempli uniquement si gestio = autre)
+	proprio_a text NULL, -- Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)
+	src_geom varchar(2) DEFAULT '24'::character varying NOT NULL, -- Référentiel géographique de saisie
+	src_annee varchar(4) DEFAULT '2023'::character varying NOT NULL, -- Année du référentiel de saisie
+	observ varchar(1000) NULL, -- Commentaire(s)
+	epci varchar(5) NOT NULL, -- EPCI d'assise de l'équipement
+	insee varchar(5) NOT NULL, -- Code Insee  de la commune d'implantation de l'équipement
+	commune varchar(80) NOT NULL, -- Commune d'implantation de l'équipement
+	op_sai varchar(50) NOT NULL, -- Opérateur de saisie
+	op_maj varchar(50) NULL, -- Opérateur de mise à jour
+	dbinsert timestamp DEFAULT now() NULL, -- Date d'insertion dans la base de données
+	dbupdate timestamp NULL, -- Date de mise à jour dans la base de données
+	geom public.geometry(multipolygon, 2154) NOT NULL, -- Classe d'objets géométrique
+	CONSTRAINT geo_mob_regroup_pkey PRIMARY KEY (id_regroup),
+	CONSTRAINT lt_mob_regroup_dbetat_fkey FOREIGN KEY (dbetat) REFERENCES r_objet.lt_etat_avancement(code),
+	CONSTRAINT lt_mob_regroup_dbstatut_fkey FOREIGN KEY (dbstatut) REFERENCES r_objet.lt_statut(code),
+	CONSTRAINT lt_mob_regroup_import_fkey FOREIGN KEY (importance) REFERENCES m_mobilite_douce.lt_mob_regroup_imp(code),
+	CONSTRAINT lt_mob_regroup_srcgeom_fkey FOREIGN KEY (src_geom) REFERENCES r_objet.lt_src_geom(code)
+);
+CREATE INDEX geo_mob_regroup_idx ON m_mobilite_douce.geo_mob_regroup USING gist (geom);
+COMMENT ON TABLE m_mobilite_douce.geo_mob_regroup IS 'Classe d''objet géographique localisant les regroupemenrts d''équipements pour vélo';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.id_regroup IS 'Identifiant unique interne';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.nom IS 'nom de l''aire de service ou de la halte repos';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.importance IS 'indique l''importance du pôle';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.nb_equip IS 'nombre d''équipements faisant partis du regroupement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.dbetat IS 'Niveau d''avancement de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.dbstatut IS 'Statut de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.proprio IS 'Nom de l''organisme qui entretient';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.gestio IS 'Nom de l''aménageur';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.gestio_a IS 'Libellé de l''autre aménageur (rempli uniquement si gestio = autre)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.proprio_a IS 'Libellé de l''autre organisme d''entretien(rempli uniquement si proprio = autre)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.src_geom IS 'Référentiel géographique de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.src_annee IS 'Année du référentiel de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.observ IS 'Commentaire(s)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.epci IS 'EPCI d''assise de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.insee IS 'Code Insee  de la commune d''implantation de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.commune IS 'Commune d''implantation de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.op_maj IS 'Opérateur de mise à jour';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.dbinsert IS 'Date d''insertion dans la base de données';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.dbupdate IS 'Date de mise à jour dans la base de données';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.geom IS 'Classe d''objets géométrique';
+
+
+-- ################################################################# TABLE geo_mob_equip_velo ###############################################
+
+-- m_mobilite_douce.geo_mob_equip_velo definition
+
+-- Drop table
+
+-- DROP TABLE m_mobilite_douce.geo_mob_equip_velo;
+
+CREATE TABLE m_mobilite_douce.geo_mob_equip_velo (
+	id_eqvelo text DEFAULT 'EQ'::text || nextval('m_mobilite_douce.geo_mob_equip_velo_seq'::regclass) NOT NULL, -- Identifiant unique interne
+	id_regroupement text NULL, -- identifiant de l'aire de service ou de la halte repos auquel appartient l'équipement
+	type_equip varchar(2) NOT NULL, -- type d'équipement
+	ss_type_equip varchar(2) NULL, -- Sous-type d'équipement
+	dbetat varchar(2) DEFAULT '40'::character varying NOT NULL, -- Niveau d'avancement de l'équipement
+	dbstatut varchar(2) DEFAULT '10'::character varying NOT NULL, -- Statut de l'équipement
+	etat_mob varchar(2) DEFAULT '10'::character varying NOT NULL, -- état d’entretien de l'équipement
+	protect varchar(2) DEFAULT '00'::character varying NOT NULL, -- définit le type de protection de l'équipement
+	couvert varchar(1) DEFAULT '0'::character varying NOT NULL, -- caractéristique des lieux de restauration (table de pique-nique) et des stationnements vélo : abrité ou non
+	payant varchar(1) DEFAULT '0'::character varying NOT NULL, -- information sur le caractère  payant pour les équipements spécifiques : sanitaires, stationnement vélo longue durée, consigne bagage sécurisée
+	acces_pmr varchar(1) DEFAULT '0'::character varying NOT NULL, -- accessibilité PMR
+	proprio text DEFAULT '00'::character varying NOT NULL, -- Nom de l'organisme qui entretient
+	gestio text DEFAULT '00'::text NOT NULL, -- Nom de l'aménageur
+	gestio_a text NULL, -- Libellé de l'autre aménageur (rempli uniquement si gestio = autre)
+	proprio_a text NULL, -- Libellé de l'autre organisme d'entretien(rempli uniquement si proprio = autre)
+	src_geom varchar(2) DEFAULT '24'::character varying NOT NULL, -- Référentiel géographique de saisie
+	src_annee varchar(4) DEFAULT '2023'::character varying NOT NULL, -- Année du référentiel de saisie
+	observ varchar(1000) NULL, -- Commentaire(s)
+	epci varchar(5) NOT NULL, -- EPCI d'assise de l'équipement
+	insee varchar(5) NOT NULL, -- Code Insee  de la commune d'implantation de l'équipement
+	commune varchar(80) NOT NULL, -- Commune d'implantation de l'équipement
+	op_sai varchar(50) NOT NULL, -- Opérateur de saisie
+	op_maj varchar(50) NULL, -- Opérateur de mise à jour
+	dbinsert timestamp DEFAULT now() NULL, -- Date d'insertion dans la base de données
+	dbupdate timestamp NULL, -- Date de mise à jour dans la base de données
+	x_l93 numeric(9, 2) NOT NULL, -- Coordonnées X en Lambert 93
+	y_l93 numeric(10, 2) NOT NULL, -- Coordonnées Y en Lambert 93
+	geom public.geometry(point, 2154) NOT NULL, -- Classe d'objets géométrique
+	CONSTRAINT geo_mob_equip_velo_pkey PRIMARY KEY (id_eqvelo),
+	CONSTRAINT lt_mob_eqvelo_accespmr_fkey FOREIGN KEY (acces_pmr) REFERENCES r_objet.lt_booleen(code),
+	CONSTRAINT lt_mob_eqvelo_couvert_fkey FOREIGN KEY (couvert) REFERENCES r_objet.lt_booleen(code),
+	CONSTRAINT lt_mob_eqvelo_dbetat_fkey FOREIGN KEY (dbetat) REFERENCES r_objet.lt_etat_avancement(code),
+	CONSTRAINT lt_mob_eqvelo_dbstatut_fkey FOREIGN KEY (dbstatut) REFERENCES r_objet.lt_statut(code),
+	CONSTRAINT lt_mob_eqvelo_etat_mob_fkey FOREIGN KEY (etat_mob) REFERENCES m_mobilite_douce.lt_mob_etat(code),
+	CONSTRAINT lt_mob_eqvelo_payant_fkey FOREIGN KEY (payant) REFERENCES r_objet.lt_booleen(code),
+	CONSTRAINT lt_mob_eqvelo_protect_fkey FOREIGN KEY (protect) REFERENCES m_mobilite_douce.lt_mob_statio_protect(code),
+	CONSTRAINT lt_mob_eqvelo_srcgeom_fkey FOREIGN KEY (src_geom) REFERENCES r_objet.lt_src_geom(code),
+	CONSTRAINT lt_mob_eqvelo_sstype_fkey FOREIGN KEY (ss_type_equip) REFERENCES m_mobilite_douce.lt_mob_eqvelo_sstype(code),
+	CONSTRAINT lt_mob_eqvelo_type_fkey FOREIGN KEY (type_equip) REFERENCES m_mobilite_douce.lt_mob_eqvelo_type(code)
+);
+CREATE INDEX geo_mob_equip_velo_idx ON m_mobilite_douce.geo_mob_equip_velo USING gist (geom);
+COMMENT ON TABLE m_mobilite_douce.geo_mob_equip_velo IS 'Classe d''objet géographique localisant les équipements vélos (hors stationnement)';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.id_eqvelo IS 'Identifiant unique interne';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.id_regroupement IS 'identifiant de l''aire de service ou de la halte repos auquel appartient l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.type_equip IS 'type d''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.ss_type_equip IS 'Sous-type d''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.dbetat IS 'Niveau d''avancement de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.dbstatut IS 'Statut de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.etat_mob IS 'état d’entretien de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.protect IS 'définit le type de protection de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.couvert IS 'caractéristique des lieux de restauration (table de pique-nique) et des stationnements vélo : abrité ou non';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.payant IS 'information sur le caractère  payant pour les équipements spécifiques : sanitaires, stationnement vélo longue durée, consigne bagage sécurisée';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.acces_pmr IS 'accessibilité PMR';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.proprio IS 'Nom de l''organisme qui entretient';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.gestio IS 'Nom de l''aménageur';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.gestio_a IS 'Libellé de l''autre aménageur (rempli uniquement si gestio = autre)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.proprio_a IS 'Libellé de l''autre organisme d''entretien(rempli uniquement si proprio = autre)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.src_geom IS 'Référentiel géographique de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.src_annee IS 'Année du référentiel de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.observ IS 'Commentaire(s)';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.epci IS 'EPCI d''assise de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.insee IS 'Code Insee  de la commune d''implantation de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.commune IS 'Commune d''implantation de l''équipement';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.op_sai IS 'Opérateur de saisie';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.op_maj IS 'Opérateur de mise à jour';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.dbinsert IS 'Date d''insertion dans la base de données';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.dbupdate IS 'Date de mise à jour dans la base de données';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.x_l93 IS 'Coordonnées X en Lambert 93';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.y_l93 IS 'Coordonnées Y en Lambert 93';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.geom IS 'Classe d''objets géométrique';
 
 
 -- ####################################################################################################################################################
@@ -5336,6 +5610,231 @@ $function$
 COMMENT ON FUNCTION m_mobilite_douce.ft_r_autorite_competente_user_login_rep() IS 'Fonction trigger affecter l''autorité compétente en fonction de l''utilisateur de saisie';
 
 
+-- #################################################################### FONCTION/TRIGGER ft_m_regroup_velo_controle ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_regroup_velo_controle();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_regroup_velo_controle()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN	
+-- contrôle de saisie sur EPCI (ne peut pas saisir sur une autre EPCI que la sienne)
+	
+if new.op_maj is null and 
+	(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(st_pointonsurface(new.geom),geom))
+	   || '%'
+	) = 0 
+	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
+end if;
+if new.op_maj is not null and
+(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(st_pointonsurface(new.geom),geom))
+	   || '%'
+	) = 0 
+	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas modifier/déplacer une aire de service en dehors de votre EPCI.</font></b><br><br>';
+
+end if;	
+
+
+	new.gestio_a := CASE WHEN new.gestio like '%99%' then new.gestio_a else null end;
+	new.proprio_a := CASE WHEN new.proprio like '%99%' then new.proprio_a else null end;
+
+
+END IF;
+
+
+
+IF (TG_OP = 'UPDATE') THEN
+
+	IF old.dbstatut <> NEW.dbstatut AND NEW.dbstatut = '10' THEN
+		NEW.dbstatut = '10';
+	END IF;
+END IF;
+
+
+
+IF (TG_OP = 'DELETE') THEN
+
+	-- gestion des états et des statuts à la supression
+	if old.dbstatut = '10' then
+		UPDATE m_mobilite_douce.geo_mob_regroup SET dbstatut = '11' WHERE id_regroup = OLD.id_regroup AND OLD.dbstatut = '10';
+	ELSE
+		return old;
+	end if;
+
+END IF;
+
+  return new;
+
+ 
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_regroup_velo_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs des équipoements vélos (hors stationnement)';
+
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where st_intersects(geom,new.geom) is true);
+
+return new;
+
+
+ 
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
+
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_controle ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_controle();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_controle()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN	
+-- contrôle de saisie sur EPCI (ne peut pas saisir sur une autre EPCI que la sienne)
+	
+if new.op_maj is null and 
+	(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
+	   || '%'
+	) = 0 
+	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
+end if;
+if new.op_maj is not null and
+(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
+	   || '%'
+	) = 0 
+	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas modifier/déplacer un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
+
+end if;	
+
+
+	new.gestio_a := CASE WHEN new.gestio like '%99%' then new.gestio_a else null end;
+	new.proprio_a := CASE WHEN new.proprio like '%99%' then new.proprio_a else null end;
+
+
+END IF;
+
+
+
+IF (TG_OP = 'UPDATE') THEN
+
+	IF old.dbstatut <> NEW.dbstatut AND NEW.dbstatut = '10' THEN
+		NEW.dbstatut = '10';
+	END IF;
+END IF;
+
+
+
+IF (TG_OP = 'DELETE') THEN
+
+	-- gestion des états et des statuts à la supression
+	if old.dbstatut = '10' then
+		UPDATE m_mobilite_douce.geo_mob_equip_velo SET dbstatut = '11' WHERE id_eqvelo = OLD.id_eqvelo AND OLD.dbstatut = '10';
+	ELSE
+		return old;
+	end if;
+
+END IF;
+
+  return new;
+
+ 
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs des équipoements vélos (hors stationnement)';
+
+
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+--raise exception 'ob --> %', (select count(*) from  m_mobilite_douce.geo_mob_regroup where st_intersects(new.geom,geom));
+
+if (select count(*) from  m_mobilite_douce.geo_mob_regroup where st_intersects(new.geom,geom)) > 0 then
+
+new.id_regroupement := (select id_regroup from m_mobilite_douce.geo_mob_regroup where st_intersects(new.geom,geom) is true);
+
+else 
+
+new.id_regroupement := null;
+
+end if;
+
+return new; 
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup() IS 'Fonction affectant l''aire de service à l''équipement';
+
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_after();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_after()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+-- mise à jour du nombre d'équipements par aire de service
+update m_mobilite_douce.geo_mob_regroup set nb_equip = (select count(*) from m_mobilite_douce.geo_mob_equip_velo where st_intersects(geo_mob_equip_velo.geom,geo_mob_regroup.geom) is true);
+	
+return new;
+
+
+ 
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_after() IS 'Fonction calculant le nombre d''équipement par aire de service';
 
 
 -- ####################################################################################################################################################
@@ -5835,3 +6334,92 @@ update
     m_mobilite_douce.lk_mob_tronc_iti for each row execute procedure m_mobilite_douce.ft_m_refresh_iti_lk();   
    
    
+-- ########################################## FONCTION/TRIGGER classe d'objets geo_mob_equip_velo ###############################################   
+
+
+create trigger t_t0_controle before
+insert
+    or
+delete
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_controle();
+create trigger t_t1_dbinsert before
+insert
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_timestamp_dbinsert();
+create trigger t_t2_dbupdate before
+update
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_timestamp_dbupdate();
+create trigger t_t3_xyl93 before
+insert
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_xy_l93();
+create trigger t_t4_inseecommune before
+insert
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_commune_pl();
+create trigger t_t5_autorite before
+insert
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_autorite_competente_user_login();
+create trigger t_t6_regroup before
+insert
+    or
+update
+    of geom on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup();
+create trigger t_t7_regroup_after after
+insert
+    or
+update
+    of geom on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_after();
+
+
+
+-- ########################################## FONCTION/TRIGGER classe d'objets geo_mob_regroup ###############################################   
+
+create trigger t_t0_controle before
+insert
+    or
+delete
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure m_mobilite_douce.ft_m_regroup_velo_controle();
+create trigger t_t1_dbinsert before
+insert
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure ft_r_timestamp_dbinsert();
+create trigger t_t2_dbupdate before
+update
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure ft_r_timestamp_dbupdate();
+create trigger t_t4_inseecommune before
+insert
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure ft_r_commune_c();
+create trigger t_t5_autorite before
+insert
+    or
+update
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure ft_r_autorite_competente_user_login();
+create trigger t_t7_regroup_before before
+insert
+    or
+update
+    of geom on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_before();
+
