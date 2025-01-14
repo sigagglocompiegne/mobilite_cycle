@@ -6418,6 +6418,8 @@ update
 create trigger t_t7_regroup_after after
 insert
     or
+delete
+    or
 update
     of geom on
     m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_after();
