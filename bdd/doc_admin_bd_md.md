@@ -1831,6 +1831,7 @@ Sans objet
   * xopendata_geo_v_mob_amgt_cycl : Vue opendata des aménagements cyclables
   * xopendata_geo_v_mob_iti_rand : Vue opendata des itinéraires de randonnées en service et avec un statut actif
   * xopendata_geo_v_mob_equip : Vue opendata des équipements liés à la pratique du vélo (y compris ici le stationnement cyclable réintégré)
+  * xopendata_geo_v_mob_regroup : Vue opendata des aires de services
 
 ## Projet QGIS pour la gestion
 
