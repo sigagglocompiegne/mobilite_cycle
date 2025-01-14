@@ -5720,7 +5720,6 @@ $function$
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_regroup_velo_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs des équipoements vélos (hors stationnement)';
 
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before()
@@ -5733,6 +5732,17 @@ BEGIN
 
 new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where st_intersects(geom,new.geom) is true);
 
+IF (select count(*) from m_mobilite_douce.geo_mob_equip_velo e, m_mobilite_douce.geo_mob_regroup r  where st_intersects(e.geom,r.geom)) > 1 then
+
+raise exception '<font color="#FF0000"><b>Un équipement ne peut appartenir qu''à une seule aire de service.</font></b><br><br>';
+else
+
+-- mise à jour des id_regroupement dans geo_mob_equip_velo
+update m_mobilite_douce.geo_mob_equip_velo set id_regroupement = 
+new.id_regroup where st_intersects(geo_mob_equip_velo.geom,new.geom) is true;
+	
+end if;
+
 return new;
 
 
@@ -5743,6 +5753,7 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
+
 
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_controle ###############################################
 
