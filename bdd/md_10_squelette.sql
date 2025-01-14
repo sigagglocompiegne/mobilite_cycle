@@ -4119,8 +4119,10 @@ BEGIN
 
 IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN	
 -- contrôle de saisie sur EPCI (ne peut pas saisir sur une autre EPCI que la sienne)
+
 	
-if new.op_maj is null and 
+--if new.op_maj is null and
+ IF (TG_OP = 'INSERT') and
 	(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
 	   and values like '%' ||
 	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
@@ -4128,12 +4130,18 @@ if new.op_maj is null and
 	) = 0 
 	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
 end if;
-if new.op_maj is not null and
-(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
+
+
+ IF (TG_OP = 'UPDATE') and
+(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
 	   and values like '%' ||
 	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
 	   || '%'
-	) = 0 
+	) = 0 or  (select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
+	   and values like '%' ||
+	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
+	   || '%'
+	) = 0
 	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas modifier/déplacer un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
 
 end if;	
