@@ -365,7 +365,7 @@ AS ( WITH req_photo AS (
            FROM m_mobilite_douce.an_mob_equip_regroup_media
           GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
         )
- SELECT (e.insee::text || '_EV_'::text) || num_ordre AS id_equip,
+ SELECT (e.insee::text || '_EV_'::text) || e.num_ordre::text AS id_equip,
     e.id_eqvelo AS id_local,
     e.insee AS code_com,
     lte.valeur AS type_equip,
@@ -373,8 +373,8 @@ AS ( WITH req_photo AS (
     p.valeur AS protection,
     NULL::smallint AS capacite,
         CASE
-            WHEN e.dbetat::text = ANY (ARRAY['00'::character varying, 'ZZ'::character varying]::text[]) THEN 'Non renseigné'::character varying
-            WHEN e.dbetat::text = ANY (ARRAY['10'::character varying, '20'::character varying, '30'::character varying]::text[]) THEN 'en projet'::character varying
+            WHEN e.dbetat::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN 'Non renseigné'::character varying
+            WHEN e.dbetat::text = ANY (ARRAY['10'::character varying::text, '20'::character varying::text, '30'::character varying::text]) THEN 'en projet'::character varying
             WHEN e.dbetat::text = '90'::text THEN 'moyen'::character varying
             WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
             ELSE em.valeur
@@ -392,15 +392,15 @@ AS ( WITH req_photo AS (
            FROM req_g g_1
              LEFT JOIN r_objet.lt_gestio_proprio lg ON g_1.code = lg.code::text) AS gestionnaire,
         CASE
-            WHEN c.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            WHEN c.code::text = ANY (ARRAY['0'::character varying::text, 'z'::character varying::text]) THEN 'Pas d''information'::character varying
             ELSE c.valeur
         END AS couvert,
         CASE
-            WHEN c1.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            WHEN c1.code::text = ANY (ARRAY['0'::character varying::text, 'z'::character varying::text]) THEN 'Pas d''information'::character varying
             ELSE c1.valeur
         END AS payant,
         CASE
-            WHEN c2.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            WHEN c2.code::text = ANY (ARRAY['0'::character varying::text, 'z'::character varying::text]) THEN 'Pas d''information'::character varying
             ELSE c2.valeur
         END AS acces_pmr,
     st_x(st_transform(e.geom, 4326)) AS longitude,
@@ -416,7 +416,7 @@ AS ( WITH req_photo AS (
             ELSE to_char(e.dbupdate, 'YYYY-MM-DD'::text)
         END AS date_maj,
     e.observ AS commentaire,
-    (e.insee::text || '_REQUIP_'::text) || lpad(replace(e.id_regroupement, 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+    (e.insee::text || '_REQUIP_'::text) || num_ordre AS id_regroupement,
     NULL::text AS src_photo,
     'CC BY'::text AS l_photo
    FROM m_mobilite_douce.geo_mob_equip_velo e
@@ -438,7 +438,7 @@ UNION ALL
            FROM m_mobilite_douce.an_mob_statio_cylc_media
           GROUP BY an_mob_statio_cylc_media.id, an_mob_statio_cylc_media.n_fichier
         )
- SELECT (s.insee::text || '_EV_'::text) || num_ordre AS id_equip,
+ SELECT (s.insee::text || '_EV_'::text) || s.num_ordre::text AS id_equip,
     s.id_statio AS id_local,
     s.insee AS code_com,
         CASE
@@ -452,8 +452,8 @@ UNION ALL
     p.valeur AS protection,
     s.cap AS capacite,
         CASE
-            WHEN s.dbetat::text = ANY (ARRAY['00'::character varying, 'ZZ'::character varying]::text[]) THEN 'Non renseigné'::character varying
-            WHEN s.dbetat::text = ANY (ARRAY['10'::character varying, '20'::character varying, '30'::character varying]::text[]) THEN 'en projet'::character varying
+            WHEN s.dbetat::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN 'Non renseigné'::character varying
+            WHEN s.dbetat::text = ANY (ARRAY['10'::character varying::text, '20'::character varying::text, '30'::character varying::text]) THEN 'en projet'::character varying
             WHEN s.dbetat::text = '90'::text THEN 'moyen'::character varying
             WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
             ELSE em.valeur
@@ -471,7 +471,7 @@ UNION ALL
            FROM req_g g_1
              LEFT JOIN r_objet.lt_gestio_proprio lg ON g_1.code = lg.code::text) AS gestionnaire,
         CASE
-            WHEN c.code::text = ANY (ARRAY['0'::character varying, 'z'::character varying]::text[]) THEN 'Pas d''information'::character varying
+            WHEN c.code::text = ANY (ARRAY['0'::character varying::text, 'z'::character varying::text]) THEN 'Pas d''information'::character varying
             ELSE c.valeur
         END AS couvert,
         CASE
@@ -493,9 +493,9 @@ UNION ALL
             ELSE to_char(s.dbupdate, 'YYYY-MM-DD'::text)
         END AS date_maj,
     s.observ AS commentaire,
-    (s.insee::text || '_REQUIP_'::text) || lpad(replace(( SELECT r.id_regroup
+    (s.insee::text || '_REQUIP_'::text) || ( SELECT r.num_ordre
            FROM m_mobilite_douce.geo_mob_regroup r
-          WHERE st_intersects(r.geom, s.geom) IS TRUE), 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+          WHERE st_intersects(r.geom, s.geom) IS TRUE) AS id_regroupement,
     NULL::text AS src_photo,
     'CC BY'::text AS l_photo
    FROM m_mobilite_douce.geo_mob_statio_cycl s
@@ -509,5 +509,4 @@ UNION ALL
   WHERE s.dbstatut::text = '10'::text OR s.dbetat::text = '11'::text);
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
-
 
