@@ -331,7 +331,7 @@ AS WITH req_photo AS (
           GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
          LIMIT 1
         )
- SELECT (r.insee::text || '_REQUIP_'::text) || lpad(replace(r.id_regroup, 'RV'::text, ''::text), 4, '0'::text) AS id_regroupement,
+ SELECT (r.insee::text || '_REQUIP_'::text) || num_ordre AS id_regroupement,
     r.nom,
         CASE
             WHEN r.dbetat::text = ANY (ARRAY['40'::character varying, '90'::character varying]::text[]) THEN 'existante'::text
@@ -365,7 +365,7 @@ AS ( WITH req_photo AS (
            FROM m_mobilite_douce.an_mob_equip_regroup_media
           GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
         )
- SELECT (e.insee::text || '_EV_'::text) || lpad(replace(e.id_eqvelo, 'EQ'::text, ''::text), 4, '0'::text) AS id_equip,
+ SELECT (e.insee::text || '_EV_'::text) || num_ordre AS id_equip,
     e.id_eqvelo AS id_local,
     e.insee AS code_com,
     lte.valeur AS type_equip,
@@ -438,7 +438,7 @@ UNION ALL
            FROM m_mobilite_douce.an_mob_statio_cylc_media
           GROUP BY an_mob_statio_cylc_media.id, an_mob_statio_cylc_media.n_fichier
         )
- SELECT (s.insee::text || '_EV_'::text) || lpad(replace(s.id_statio, 'SC'::text, ''::text), 4, '0'::text) AS id_equip,
+ SELECT (s.insee::text || '_EV_'::text) || num_ordre AS id_equip,
     s.id_statio AS id_local,
     s.insee AS code_com,
         CASE
