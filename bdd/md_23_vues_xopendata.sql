@@ -350,7 +350,7 @@ AS WITH req_photo AS (
     NULL::text AS l_photo
    FROM m_mobilite_douce.geo_mob_regroup r
      JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
-     LEFT JOIN req_photo p ON p.id = r.id_regroup;
+     LEFT JOIN req_photo p ON p.id = r.id_regroup where r.dbstatut = '10' and r.dbetat='11';
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
 
