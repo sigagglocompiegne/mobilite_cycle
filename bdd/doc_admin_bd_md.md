@@ -144,6 +144,7 @@ Particularité(s) à noter :
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
 |id_statio|Identifiant unique interne|text|('SC'::text || nextval('m_mobilite_douce.geo_mob_statio_cycl_seq'::regclass))|
+|num_ordre|Numéro d'ordre dans la commune|varchar(4)| |
 |id_adresse|Identifiant de l'adresse|bigint| |
 |id_voie|Identifiant de la voie|bigint| |
 |complt_adr|Complément d'adresse|character varying(500)| |
@@ -206,6 +207,7 @@ Particularité(s) à noter :
   * `t_t3_xyl93` : trigger permettant de calculer les coordonnées avant enregistrement
   * `t_t4_inseecommune` : trigger permettant de récupérer la valeur du code insee et le nom de la commune d'assise du stationnement
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  * `t_t5_num_ordre` : trigger permettant de générer un numéro d'ordre dans la commune en lien avec les équipements liés au vélo
 
  ---
 
@@ -325,6 +327,7 @@ Particularité(s) à noter :
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
 |id_regroup|Identifiant unique interne|text|('RV'::text || nextval('m_mobilite_douce.geo_mob_regroup_seq'::regclass))|
+|num_ordre|Numéro d'ordre dans la commune|varchar(4)| |
 |nom|nom de l'aire de service ou de la halte repos|text| |
 |importance|indique l'importance du pôle|character varying(2)|'00'::character varying|
 |nb_equip|nombre d'équipements faisant partis du regroupement|integer| |
@@ -361,7 +364,9 @@ Particularité(s) à noter :
   * `t_t2_dbupdate` : trigger permettant d'insérer la date de mise à jour
   * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
-  * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement et d'affecter l'id_regroupement aux équipements
+  * `t_t5_num_ordre` : trigger permettant de générer un numéro d'ordre dans la commune
+  * `t_t7_regroup_before` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement
+  * `t_t8_regroup_after` : trigger permettant d'affecter l'id_regroupement aux équipements vélos présent dans l'aire
 
 ---
 
@@ -370,6 +375,7 @@ Particularité(s) à noter :
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
 |id_eqvelo|Identifiant unique interne|text|('EQ'::text || nextval('m_mobilite_douce.geo_mob_equip_velo_seq'::regclass))|
+|num_ordre|Numéro d'ordre dans la commune|varchar(4)| |
 |id_regroupement|identifiant de l'aire de service ou de la halte repos auquel appartient l'équipement|text| |
 |type_equip|type d'équipement|character varying(2)| |
 |ss_type_equip|Sous-type d'équipement|character varying(2)| |
@@ -420,6 +426,7 @@ Particularité(s) à noter :
   * `t_t3_xyl93` : trigger permettant d'insérer les coordonnées X et Y en Lambert 93
   * `t_t4_inseecommune` : trigger permettant de récupérer les codes insee et le nom de la commune
   * `t_t5_autorite` : trigger permettant de récupérer la valeur de l'EPCI du profil utulisateur
+  * `t_t5_num_ordre` : trigger permettant de générer un numéro d'ordre dans la commune en lien avec le stationnement cyclable
   * `t_t6_regroup` : trigger permettant de rechercher le regroupement d'appartenance de l'équipement et d'insérer l'id_regroupement
   * `t_t7_regroup_after` : trigger permettant de calculer le nombre d'équipements présents dans le regroupement et de mettre à jour la table `geo_mob_regroup`
 
