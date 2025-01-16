@@ -6414,7 +6414,10 @@ update
     on
     m_mobilite_douce.geo_mob_statio_cycl for each row execute procedure ft_r_autorite_competente_user_login();
    
-   
+create trigger t_t5_num_ordre before
+insert
+    on
+    m_mobilite_douce.geo_mob_statio_cycl for each row execute procedure m_mobilite_douce.ft_m_num_ordre();   
    
 -- ########################################## FONCTION/TRIGGER classe d'objets geo_mob_troncon ###############################################   
    
@@ -6614,22 +6617,29 @@ insert
 update
     on
     m_mobilite_douce.geo_mob_equip_velo for each row execute procedure ft_r_autorite_competente_user_login();
+
+create trigger t_t5_num_ordre before
+insert
+    on
+    m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_num_ordre();
+
 create trigger t_t6_regroup before
 insert
     or
 update
-    of geom on
+    of dbstatut,
+    geom on
     m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup();
+
 create trigger t_t7_regroup_after after
 insert
     or
 delete
     or
 update
-     on
+    of dbstatut,
+    geom on
     m_mobilite_douce.geo_mob_equip_velo for each row execute procedure m_mobilite_douce.ft_m_mob_regroup_after();
-
-
 
 -- ########################################## FONCTION/TRIGGER classe d'objets geo_mob_regroup ###############################################   
 
@@ -6661,6 +6671,12 @@ insert
 update
     on
     m_mobilite_douce.geo_mob_regroup for each row execute procedure ft_r_autorite_competente_user_login();
+
+create trigger t_t5_num_ordre before
+insert
+    on
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure m_mobilite_douce.ft_m_num_ordre();
+
 create trigger t_t7_regroup_before before
 insert
     or
@@ -6675,5 +6691,4 @@ delete
     or
 update
     on
-    m_mobilite_douce.geo_mob_regroup for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_after()
-
+    m_mobilite_douce.geo_mob_regroup for each row execute procedure m_mobilite_douce.ft_m_equip_velo_regroup_after();
