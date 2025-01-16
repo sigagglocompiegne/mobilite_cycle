@@ -350,7 +350,7 @@ AS WITH req_photo AS (
     NULL::text AS l_photo
    FROM m_mobilite_douce.geo_mob_regroup r
      JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
-     LEFT JOIN req_photo p ON p.id = r.id_regroup where r.dbstatut = '10' and r.dbetat='11';
+     LEFT JOIN req_photo p ON p.id = r.id_regroup where r.dbstatut = '10' ;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
 
@@ -430,7 +430,7 @@ AS ( WITH req_photo AS (
      LEFT JOIN r_objet.lt_src_geom s ON e.src_geom::text = s.code::text
      LEFT JOIN req_photo ph ON ph.id = e.id_eqvelo
      LEFT JOIN r_administratif.an_geo g ON g.insee::text = e.insee::text
-  WHERE e.dbstatut::text = '10'::text OR e.dbetat::text = '11'::text)
+  WHERE e.dbstatut::text = '10'::text)
 UNION ALL
 ( WITH req_photo AS (
          SELECT an_mob_statio_cylc_media.id,
@@ -506,7 +506,7 @@ UNION ALL
      LEFT JOIN r_objet.lt_src_geom src ON s.src_geom::text = src.code::text
      LEFT JOIN req_photo ps ON ps.id = s.id_statio
      LEFT JOIN r_administratif.an_geo g ON g.insee::text = s.insee::text
-  WHERE s.dbstatut::text = '10'::text OR s.dbetat::text = '11'::text);
+  WHERE s.dbstatut::text = '10'::text);
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
 
