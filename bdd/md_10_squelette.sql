@@ -1599,6 +1599,7 @@ CREATE SEQUENCE m_mobilite_douce.geo_mob_regroup_seq
 
 CREATE TABLE m_mobilite_douce.geo_mob_statio_cycl (
 	id_statio text not null DEFAULT 'SC' || nextval('m_mobilite_douce.geo_mob_statio_cycl_seq'::regclass),
+	num_ordre varchar(4) null,
 	id_adresse int8,
 	id_voie int8,
 	complt_adr varchar(500),
@@ -1643,6 +1644,7 @@ COMMENT ON TABLE m_mobilite_douce.geo_mob_statio_cycl IS 'Classe d''objet géogr
 -- Column comments
 
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_statio_cycl.id_statio IS 'Identifiant unique interne';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_statio_cycl.num_ordre IS 'Numéro d''ordre dans la commune (fonctionne avec les numéros d''ordre des équipements vélos)';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_statio_cycl.id_adresse IS 'Identifiant de l''adresse';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_statio_cycl.id_voie IS 'Identifiant de la voie';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_statio_cycl.complt_adr IS 'Complément d''adresse';
@@ -2782,6 +2784,7 @@ COMMENT ON COLUMN m_mobilite_douce.an_mob_pan_media.dbinsert IS 'Date de saisie 
 
 CREATE TABLE m_mobilite_douce.geo_mob_regroup (
 	id_regroup text DEFAULT 'RV'::text || nextval('m_mobilite_douce.geo_mob_regroup_seq'::regclass) NOT NULL, -- Identifiant unique interne
+	num_ordre varchar(4) null,
 	nom text NULL, -- nom de l'aire de service ou de la halte repos
 	importance varchar(2) DEFAULT '00'::character varying NOT NULL, -- indique l'importance du pôle
 	nb_equip int4 NULL, -- nombre d'équipements faisant partis du regroupement
@@ -2814,6 +2817,7 @@ COMMENT ON TABLE m_mobilite_douce.geo_mob_regroup IS 'Classe d''objet géographi
 -- Column comments
 
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.id_regroup IS 'Identifiant unique interne';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.num_ordre IS 'Numéro d''ordre dans la commune';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.nom IS 'nom de l''aire de service ou de la halte repos';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.importance IS 'indique l''importance du pôle';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.nb_equip IS 'nombre d''équipements faisant partis du regroupement';
@@ -2846,6 +2850,7 @@ COMMENT ON COLUMN m_mobilite_douce.geo_mob_regroup.geom IS 'Classe d''objets gé
 
 CREATE TABLE m_mobilite_douce.geo_mob_equip_velo (
 	id_eqvelo text DEFAULT 'EQ'::text || nextval('m_mobilite_douce.geo_mob_statio_cycl_seq'::regclass) NOT NULL, -- Identifiant unique interne
+	num_ordre varchar(4) null,
 	id_regroupement text NULL, -- identifiant de l'aire de service ou de la halte repos auquel appartient l'équipement
 	type_equip varchar(2) NOT NULL, -- type d'équipement
 	ss_type_equip varchar(2) NULL, -- Sous-type d'équipement
@@ -2891,6 +2896,7 @@ COMMENT ON TABLE m_mobilite_douce.geo_mob_equip_velo IS 'Classe d''objet géogra
 -- Column comments
 
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.id_eqvelo IS 'Identifiant unique interne';
+COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.num_ordre IS 'Numéro d'ordre dans la commune, fonctionne avec la classe d''objets des stationnement cyclable';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.id_regroupement IS 'identifiant de l''aire de service ou de la halte repos auquel appartient l''équipement';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.type_equip IS 'type d''équipement';
 COMMENT ON COLUMN m_mobilite_douce.geo_mob_equip_velo.ss_type_equip IS 'Sous-type d''équipement';
@@ -4136,12 +4142,13 @@ AS $function$
 
 BEGIN
 
-IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN	
+
+
+IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
 -- contrôle de saisie sur EPCI (ne peut pas saisir sur une autre EPCI que la sienne)
 
-	
---if new.op_maj is null and
- IF (TG_OP = 'INSERT') and
+
+if new.op_maj is null and 
 	(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
 	   and values like '%' ||
 	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
@@ -4149,21 +4156,16 @@ IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
 	) = 0 
 	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
 end if;
-
-
- IF (TG_OP = 'UPDATE') and
-(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_sai
+if new.op_maj is not null and
+(select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
 	   and values like '%' ||
 	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
 	   || '%'
-	) = 0 or  (select count(*) from custom_attributes ca where name = 'ccocom' and user_login = NEW.op_maj
-	   and values like '%' ||
-	   (select insee from r_osm.geo_vm_osm_commune_grdc where st_intersects(new.geom,geom))
-	   || '%'
-	) = 0
-	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas modifier/déplacer un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
+	) = 0 
+	then raise exception '<font color="#FF0000"><b>Vous ne pouvez pas saisir un lieu de stationnement cyclable en dehors de votre EPCI.</font></b><br><br>';
 
 end if;	
+
 
  -- automatisation des valeurs d'accroche en fonction du type de mobilier saisie (l'accroche peut-être saisie si le mobilier non)
 IF new.mobil || new.typ_accro = '0000' then
@@ -4228,6 +4230,7 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_statio_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs';
+
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_statio_controle_media ###############################################
@@ -5745,7 +5748,6 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Foncti
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_controle ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_controle();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_controle()
@@ -5816,6 +5818,7 @@ $function$
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs des équipoements vélos (hors stationnement)';
 
 
+
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
 
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
@@ -5846,7 +5849,7 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
 
--- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup ###############################################
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_after ###############################################
 
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_after();
 
@@ -5882,6 +5885,9 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_after() IS 'Fonction supprimant l''id_regroupement des équipements à la suppression d''une aire de service';
 
+
+
+
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup ###############################################
 
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup();
@@ -5914,6 +5920,119 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup() IS 'Fonction affectant l''aire de service à l''équipement';
 
+
+
+-- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
+-- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+DECLARE v_id_regroup text;
+
+BEGIN
+
+
+	new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where new.dbstatut='10' and st_intersects(geom,new.geom) is true);
+
+return new;
+
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
+
+
+-- #################################################################### FONCTION/TRIGGER ft_m_num_ordre ###############################################
+
+-- DROP FUNCTION m_mobilite_douce.ft_m_num_ordre();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_num_ordre()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+
+BEGIN
+
+IF (TG_TABLE_NAME='geo_mob_equip_velo') or (TG_TABLE_NAME='geo_mob_statio_cycl') THEN 
+
+	IF 
+	(with req_rech as
+		(
+		(select insee , TRIM(LEADING '0' FROM num_ordre) as num_ordre from m_mobilite_douce.geo_mob_statio_cycl where num_ordre is not null and insee = new.insee)
+		union all
+		(select insee, TRIM(LEADING '0' FROM num_ordre) as num_ordre from m_mobilite_douce.geo_mob_equip_velo where num_ordre is not null and insee = new.insee)
+		)
+	select 
+		lpad(((max(trim(leading '0' from num_ordre)::integer)::integer+1))::text,4,'0')
+	from 
+		req_rech 
+	where 
+		insee = new.insee) is null 
+    THEN
+
+	new.num_ordre := '0001';
+
+	else
+
+    new.num_ordre := 
+	(
+	with req_rech as
+		(
+		(select insee , TRIM(LEADING '0' FROM num_ordre) as num_ordre from m_mobilite_douce.geo_mob_statio_cycl where num_ordre is not null and insee = new.insee)
+		union all
+		(select insee, TRIM(LEADING '0' FROM num_ordre) as num_ordre from m_mobilite_douce.geo_mob_equip_velo where num_ordre is not null and insee = new.insee)
+		)
+	select 
+		lpad(((max(trim(leading '0' from num_ordre)::integer)::integer+1))::text,4,'0')
+	from 
+		req_rech 
+	where 
+		insee = new.insee
+	);
+	
+	END IF;
+
+END IF;
+
+
+
+IF (TG_TABLE_NAME='geo_mob_regroup') THEN 
+
+	IF (select count(*) from m_mobilite_douce.geo_mob_regroup  where insee = new.insee) = 0 THEN
+
+	new.num_ordre := '0001';
+
+	else
+
+	new.num_ordre :=  (select lpad(((max(trim(leading '0' from num_ordre))::integer+1))::text,4,'0') from m_mobilite_douce.geo_mob_regroup 
+	where insee = new.insee);
+	
+	END IF;
+
+END IF;
+
+
+return new;
+
+END;
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_num_ordre() IS 'Fonction générant le numéro d''ordre des POI à l''insertion';
+
+-- Permissions
+
+ALTER FUNCTION m_mobilite_douce.ft_m_num_ordre() OWNER TO create_sig;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_num_ordre() TO public;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_num_ordre() TO create_sig;
+
+
 -- #################################################################### FONCTION/TRIGGER ft_m_mob_regroup_after ###############################################
 
 -- DROP FUNCTION m_mobilite_douce.ft_m_mob_regroup_after();
@@ -5932,12 +6051,12 @@ update m_mobilite_douce.geo_mob_equip_velo set id_regroupement =
 '' where st_intersects(geo_mob_equip_velo.geom,old.geom) is true;
 */	
 
-IF TG_OP IN ('INSERT','UPDATE') then
-
+/*IF TG_OP IN ('INSERT','UPDATE') then*/
+--raise exception 'on ID --> %', new.id_eqvelo;
 	-- mise à jour du nombre d'équipements dans les aires de services/repos
 	With req_count as
 	(
-		SELECT id_regroupement, count(*) as nb_equip from m_mobilite_douce.geo_mob_equip_velo where dbstatut = '10' and id_regroupement is not null group by id_regroupement
+		SELECT id_regroupement, count(*) as nb_equip from m_mobilite_douce.geo_mob_equip_velo where geo_mob_equip_velo.dbstatut = '10' and id_regroupement is not null group by id_regroupement
 	)
     UPDATE m_mobilite_douce.geo_mob_regroup
 	SET nb_equip = req_count.nb_equip from req_count where geo_mob_regroup.id_regroup = req_count.id_regroupement;
@@ -5945,7 +6064,7 @@ IF TG_OP IN ('INSERT','UPDATE') then
 
 
 
-END IF;
+/*END IF;*/
 
 return new;
 
@@ -5959,12 +6078,7 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_mob_regroup_after() IS 'Fonction supprimant mettant à jour le nombre d''équipements par aire de repos ou service dans la classe des regroupements';
 
--- Permissions
-
-ALTER FUNCTION m_mobilite_douce.ft_m_mob_regroup_after() OWNER TO create_sig;
-GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_mob_regroup_after() TO public;
-GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_mob_regroup_after() TO create_sig;
-
+-- #################################################################### FONCTION/TRIGGER ft_m_mob_regroup_after ###############################################
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
