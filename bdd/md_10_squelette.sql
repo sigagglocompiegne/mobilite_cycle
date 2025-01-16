@@ -5711,41 +5711,6 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_regroup_velo_controle() IS 'Fonction gérant les contrôles de saisies et l''automatisation de certains attributs des équipoements vélos (hors stationnement)';
 
--- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
--- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
-
-CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-
-
-BEGIN
-
-new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where st_intersects(geom,new.geom) is true);
-
-IF (select count(*) from m_mobilite_douce.geo_mob_equip_velo e, m_mobilite_douce.geo_mob_regroup r  where st_intersects(e.geom,r.geom)) > 1 then
-
-raise exception '<font color="#FF0000"><b>Un équipement ne peut appartenir qu''à une seule aire de service.</font></b><br><br>';
-else
-
--- mise à jour des id_regroupement dans geo_mob_equip_velo
-update m_mobilite_douce.geo_mob_equip_velo set id_regroupement = 
-new.id_regroup where st_intersects(geo_mob_equip_velo.geom,new.geom) is true;
-	
-end if;
-
-return new;
-
-
- 
-
-END;
-$function$
-;
-
-COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
-
 
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_controle ###############################################
 -- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_controle();
@@ -5833,21 +5798,18 @@ DECLARE v_id_regroup text;
 BEGIN
 
 
-	new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where new.dbstatut='10' and st_intersects(geom,new.geom) is true);
-
-
-
+	new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where new.dbstatut='10' and st_intersects(geom,new.geom) is true)
+ 					+
+					(select count(*) from m_mobilite_douce.geo_mob_statio_cycl where dbstatut='10' and st_intersects(geom,new.geom) is true)
+					;
 
 return new;
-
-
- 
-
 END;
 $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
+
 
 -- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_after ###############################################
 
@@ -5920,31 +5882,6 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup() IS 'Fonction affectant l''aire de service à l''équipement';
 
-
-
--- #################################################################### FONCTION/TRIGGER ft_m_equip_velo_regroup_before ###############################################
--- DROP FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before();
-
-CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-
-DECLARE v_id_regroup text;
-
-BEGIN
-
-
-	new.nb_equip := (select count(*) from m_mobilite_douce.geo_mob_equip_velo where new.dbstatut='10' and st_intersects(geom,new.geom) is true);
-
-return new;
-
-
-END;
-$function$
-;
-
-COMMENT ON FUNCTION m_mobilite_douce.ft_m_equip_velo_regroup_before() IS 'Fonction calculant le nombre d''équipement par aire de service à la modification ou l''insert d''une aire de service';
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_num_ordre ###############################################
@@ -6034,7 +5971,6 @@ GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_num_ordre() TO create_sig;
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_mob_regroup_after ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_mob_regroup_after();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_mob_regroup_after()
@@ -6043,34 +5979,48 @@ CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_mob_regroup_after()
 AS $function$
 
 
+
 BEGIN
 
-/*
---raise exception 'ok1111';
-update m_mobilite_douce.geo_mob_equip_velo set id_regroupement = 
-'' where st_intersects(geo_mob_equip_velo.geom,old.geom) is true;
-*/	
 
-/*IF TG_OP IN ('INSERT','UPDATE') then*/
---raise exception 'on ID --> %', new.id_eqvelo;
 	-- mise à jour du nombre d'équipements dans les aires de services/repos
-	With req_count as
+    -- prise en compte si au moins un stationnement et un équipement sont présents dans l'aire
+	/*if (select count(*) from m_mobilite_douce.geo_mob_statio_cycl s, m_mobilite_douce.geo_mob_regroup r where s.dbstatut = '10' and r.dbstatut='10' and st_intersects(s.geom, r.geom) is true) > 0 
+	   and
+	   (select count(*) from m_mobilite_douce.geo_mob_equip_velo s where s.dbstatut = '10' and new.dbstatut='10' and st_intersects(s.geom, new.geom) is true) > 0
+	then*/
+
+	with req_final as
+	(	
+
+	With req_count_statio as
 	(
-		SELECT id_regroupement, count(*) as nb_equip from m_mobilite_douce.geo_mob_equip_velo where geo_mob_equip_velo.dbstatut = '10' and id_regroupement is not null group by id_regroupement
+		SELECT id_regroupement, count(*) as nb_statio from m_mobilite_douce.geo_mob_equip_velo where geo_mob_equip_velo.dbstatut = '10' and id_regroupement is not null group by id_regroupement
+	), req_count_equip as
+	(
+		SELECT r.id_regroup, count(*) as nb_equip from m_mobilite_douce.geo_mob_statio_cycl s, m_mobilite_douce.geo_mob_regroup r 
+	    where s.dbstatut = '10' and st_intersects(s.geom, r.geom) is true group by r.id_regroup
+	), req_regroup as
+	(
+		select id_regroup from m_mobilite_douce.geo_mob_regroup where dbstatut = '10'
 	)
+	select 
+		req_regroup.id_regroup,
+		req_count_equip.nb_equip,
+		req_count_statio.nb_statio
+	from
+		req_regroup
+	left join req_count_equip on req_count_equip.id_regroup = req_regroup.id_regroup
+	left join req_count_statio on req_count_statio.id_regroupement = req_regroup.id_regroup
+	)
+
     UPDATE m_mobilite_douce.geo_mob_regroup
-	SET nb_equip = req_count.nb_equip from req_count where geo_mob_regroup.id_regroup = req_count.id_regroupement;
-	
-
-
-
-/*END IF;*/
+	SET nb_equip = CASE when req_final.nb_equip is null then 0 else req_final.nb_equip end + CASE when req_final.nb_statio is null then 0 else req_final.nb_statio end
+	from req_final 
+	where req_final.id_regroup = geo_mob_regroup.id_regroup;
 
 return new;
 
-
-
- 
 
 END;
 $function$
@@ -6078,7 +6028,9 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_mob_regroup_after() IS 'Fonction supprimant mettant à jour le nombre d''équipements par aire de repos ou service dans la classe des regroupements';
 
--- #################################################################### FONCTION/TRIGGER ft_m_mob_regroup_after ###############################################
+
+
+
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -6418,7 +6370,19 @@ create trigger t_t5_num_ordre before
 insert
     on
     m_mobilite_douce.geo_mob_statio_cycl for each row execute procedure m_mobilite_douce.ft_m_num_ordre();   
-   
+
+
+create trigger t_t7_regroup_after after
+insert
+    or
+delete
+    or
+update
+    of dbstatut,
+    geom on
+    m_mobilite_douce.geo_mob_statio_cycl for each row execute procedure m_mobilite_douce.ft_m_mob_regroup_after();
+
+
 -- ########################################## FONCTION/TRIGGER classe d'objets geo_mob_troncon ###############################################   
    
 create trigger t_t0_controle before
