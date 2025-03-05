@@ -41,5 +41,5 @@ De plus cette thématique est partagée dans le cadre de la mutualisation avec l
 
 ## Jeu de données consolidé
 
-Aucun jeu de données consolidé n'est disponible pour le moment. Le patrimoine des données espace vert est en cours de constitution.
+Les jeux de données sont en cours de préparation, ils seront bientôt disponibles (courant 2025).
 
