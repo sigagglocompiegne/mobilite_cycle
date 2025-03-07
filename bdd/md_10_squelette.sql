@@ -1581,6 +1581,18 @@ CREATE SEQUENCE m_mobilite_douce.geo_mob_regroup_seq
 	MAXVALUE 9223372036854775807
 	START 1
 	NO CYCLE;
+-- ################################################################# Séquence sur TABLE lk_mob_tronc_plan_seq ###############################################
+
+-- m_mobilite_douce.lk_mob_tronc_plan_seq lk_mob_tronc_plan_seq
+
+DROP SEQUENCE if exists m_mobilite_douce.lk_mob_tronc_plan_seq;
+
+CREATE SEQUENCE m_mobilite_douce.lk_mob_tronc_plan_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	NO CYCLE;
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -3169,6 +3181,28 @@ COMMENT ON COLUMN m_mobilite_douce.lk_mob_iticycl_sign.id IS 'Identifiant unique
 COMMENT ON COLUMN m_mobilite_douce.lk_mob_iticycl_sign.id_iticycl IS 'Identifiant de l''itinéraire cyclable';
 COMMENT ON COLUMN m_mobilite_douce.lk_mob_iticycl_sign.id_sign IS 'Identifiant du signalement';
 
+-- ################################################################# TABLE lk_mob_tronc_plan ###############################################
+
+-- m_mobilite_douce.lk_mob_tronc_plan definition
+
+-- Drop table
+
+DROP table if exists m_mobilite_douce.lk_mob_tronc_plan;
+
+CREATE TABLE m_mobilite_douce.lk_mob_tronc_plan (
+	id int4 DEFAULT nextval('m_mobilite_douce.lk_mob_tronc_plan_seq'::regclass) NOT NULL, -- Identifiant unique non signifiant
+	id_tronc text,
+	id_plan text,
+	CONSTRAINT lk_mob_tronc_plan_pkey PRIMARY KEY (id)
+);
+CREATE INDEX lk_mob_tronc_plan_idx ON m_mobilite_douce.lk_mob_tronc_plan USING btree (id);
+COMMENT ON TABLE m_mobilite_douce.lk_mob_tronc_plan IS 'Table de relation permettant d''associer un tronçon aménagé à un plan de mobilité (sans itinéraire projeté)';
+
+-- Column comments
+
+COMMENT ON COLUMN m_mobilite_douce.lk_mob_tronc_plan.id IS 'Identifiant unique de la relation';
+COMMENT ON COLUMN m_mobilite_douce.lk_mob_tronc_plan.id_tronc IS 'Identifiant du tronçon aménagé';
+COMMENT ON COLUMN m_mobilite_douce.lk_mob_tronc_plan.id_plan IS 'Identifiant du plan de mobilité';
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
