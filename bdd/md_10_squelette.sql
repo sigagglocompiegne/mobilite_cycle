@@ -4542,7 +4542,6 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_suppan_rep_controle_update_troncon() I
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_troncon_controle();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_troncon_controle()
@@ -4615,6 +4614,11 @@ IF NEW.posi_dg = '11' then
 	if new.largeur_d is not null and new.largeur_d >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur de droite n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
 	end if;	
+
+     -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if new.ame_d NOT IN ('10','40','50','81','99') and new.local_d = 'ZZ' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
+	end if;	 
 
  	--IF (NEW.lin_d IS NULL OR NEW.lin_d = 0) THEN
 	NEW.lin_d=ST_Length(new.geom)::integer;
@@ -4712,6 +4716,8 @@ IF NEW.posi_dg = '11' then
    IF NEW.ame_d IN ('40','71','99') THEN
     new.local_d := 'ZZ';
    END IF;
+
+	
    
 END IF;
 
@@ -4747,6 +4753,11 @@ IF NEW.posi_dg = '12' then
 	    -- largeur cohérente <=5m
 	if new.largeur_d is not null and new.largeur_d >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de gauche n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
+	end if;	
+
+	    -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if new.ame_g NOT IN ('10','40','50','81','99') and new.local_g = 'ZZ' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
 	end if;	
 
  	--IF (NEW.lin_g IS NULL OR NEW.lin_g = 0) THEN
@@ -4861,6 +4872,12 @@ IF NEW.posi_dg = '20' then
     IF NEW.requal_d is true AND (NEW.reqame_d IS NULL OR NEW.reqame_d = '') AND (NEW.reqam_dbetat_d IS NULL OR NEW.reqam_dbetat_d = '') THEN
        RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de droite sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
     END IF;
+
+	    -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if (new.ame_g NOT IN ('10','40','50','81','99') and new.local_g = 'ZZ') and (new.ame_d NOT IN ('10','40','50','81','99') and new.local_d = 'ZZ') then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
+	end if;	
+
 	IF NEW.requal_d is false then
 		NEW.reqame_d := 'ZZ';
 		NEW.reqam_dbetat_d := 'ZZ';
@@ -5264,6 +5281,11 @@ $function$
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() IS 'Fonction gérant les contrôles de saisies et les informations automatiquement remplies liées à la particularité des infos de droites et de gauche';
 
+-- Permissions
+
+ALTER FUNCTION m_mobilite_douce.ft_m_troncon_controle() OWNER TO create_sig;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO public;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO create_sig;
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle_after ###############################################
