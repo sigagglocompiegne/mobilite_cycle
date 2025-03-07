@@ -6569,7 +6569,19 @@ delete
 update
     on
     m_mobilite_douce.lk_mob_rep_iti for each row execute procedure m_mobilite_douce.ft_m_moddouce_log();
+
+-- ########################################## FONCTION/TRIGGER classe d'objets lk_mob_tronc_plan ###############################################
+
+create trigger t_t100_log after
+insert
+    or
+delete
+    or
+update
+    on
+    m_mobilite_douce.lk_mob_tronc_plan for each row execute procedure m_mobilite_douce.ft_m_moddouce_log();
    
+
 -- ########################################## FONCTION/TRIGGER classe d'objets lk_mob_tronc_iti ###############################################   
    
 create trigger t_t0_controle after
