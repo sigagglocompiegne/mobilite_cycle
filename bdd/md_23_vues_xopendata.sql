@@ -350,6 +350,7 @@ AS WITH req_photo AS (
     r.insee AS code_com,
     NULL::text AS src_photo,
     NULL::text AS l_photo,
+    r.epci,
     r.geom
    FROM m_mobilite_douce.geo_mob_regroup r
      JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
@@ -429,6 +430,7 @@ AS ( WITH req_photo AS (
             WHEN ph.photo IS NOT NULL OR ph.photo <> ''::text THEN 'CC BY'::text
             ELSE ''::text
         END AS l_photo,
+        e.epci,
         e.geom
    FROM m_mobilite_douce.geo_mob_equip_velo e
      LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_type lte ON e.type_equip::text = lte.code::text
@@ -513,6 +515,7 @@ UNION ALL
             WHEN ps.photo IS NOT NULL OR ps.photo <> ''::text THEN 'CC BY'::text
             ELSE ''::text
         END AS l_photo,
+        s.epci,
         s.geom
    FROM m_mobilite_douce.geo_mob_statio_cycl s
      LEFT JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
