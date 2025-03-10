@@ -95,7 +95,7 @@ AS WITH req_epci_dg AS (
            FROM m_mobilite_douce.geo_mob_troncon t
              LEFT JOIN m_mobilite_douce.lt_mob_tronc_ame am ON t.ame_g::text = am.code::text
              LEFT JOIN r_objet.lt_etat_avancement ea ON t.dbetat_g::text = ea.code::text
-          WHERE t.ame_d::text <> 'ZZ'::text AND t.ame_g::text <> 'ZZ'::text AND t.dbetat_g::text = '40'::text AND t.dbstatut::text = '10'::text
+          WHERE t.ame_d::text <> 'ZZ'::text AND t.ame_g::text <> 'ZZ'::text AND t.dbstatut::text = '10'::text
           GROUP BY t.ame_g, am.valeur, t.epci_g, ea.valeur, ea.code, t.gestio_g, t.proprio_g, t.requal_g
           ORDER BY am.valeur)
         UNION ALL
@@ -111,7 +111,7 @@ AS WITH req_epci_dg AS (
            FROM m_mobilite_douce.geo_mob_troncon t
              LEFT JOIN m_mobilite_douce.lt_mob_tronc_ame am ON t.ame_d::text = am.code::text
              LEFT JOIN r_objet.lt_etat_avancement ea ON t.dbetat_d::text = ea.code::text
-          WHERE t.ame_g::text <> 'ZZ'::text AND t.ame_d::text <> 'ZZ'::text AND t.dbetat_d::text = '40'::text AND t.dbstatut::text = '10'::text
+          WHERE t.ame_g::text <> 'ZZ'::text AND t.ame_d::text <> 'ZZ'::text AND t.dbstatut::text = '10'::text
           GROUP BY t.ame_d, am.valeur, t.epci_d, ea.valeur, ea.code, t.gestio_d, t.proprio_d, t.requal_d
           ORDER BY am.valeur)
         ), req_epci AS (
@@ -144,19 +144,11 @@ AS WITH req_epci_dg AS (
         END AS lineaire
    FROM req_epci e
      LEFT JOIN req_epci_dg d ON e.epci::text = d.epci::text
-  WHERE e.epci::text = ANY (ARRAY['arc'::character varying::text, 'cc2v'::character varying::text, 'ccpe'::character varying::text, 'cclo'::character varying::text])
   GROUP BY e.epci, d.ame, d.lib_ame, d.avancement, d.cod_avancement, d.gestio, d.proprio, d.requal;
 
 COMMENT ON VIEW m_mobilite_douce.xapps_an_v_amgt_cycl_tab IS 'Vue attributaire pour la génération du TAB (synthèse du linéaire d''aménagement en service par EPCI )';
 
--- Permissions
 
-ALTER TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab OWNER TO sig_create;
-GRANT ALL ON TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab TO sig_create;
-GRANT DELETE, SELECT, INSERT, TRUNCATE, UPDATE ON TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab TO create_sig;
-GRANT SELECT ON TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab TO sig_read;
-GRANT SELECT ON TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab TO sig_edit;
-GRANT ALL ON TABLE m_mobilite_douce.xapps_an_v_amgt_cycl_tab TO postgres;
    
 -- #################################################################### vue xapps_an_v_cycl_tab1 ###############################################
 -- m_mobilite_douce.xapps_an_v_cycl_tab1 source
