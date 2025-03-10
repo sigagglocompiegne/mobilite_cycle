@@ -358,11 +358,11 @@ AS WITH req_photo AS (
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
 
 -- #################################################################### vue xopendata_geo_v_mob_equip ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_equip source
-
+drop view if exists m_mobilite_douce.xopendata_geo_v_mob_equip;
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_equip
-AS ( WITH req_photo AS (
+AS
+( WITH req_photo AS (
          SELECT an_mob_equip_regroup_media.id,
             'https://geo.compiegnois.fr/documents/metiers/mob/mob_douce/equip_regroup/'::text || an_mob_equip_regroup_media.n_fichier AS photo
            FROM m_mobilite_douce.an_mob_equip_regroup_media
@@ -419,9 +419,12 @@ AS ( WITH req_photo AS (
             ELSE to_char(e.dbupdate, 'YYYY-MM-DD'::text)
         END AS date_maj,
     e.observ AS commentaire,
-    (e.insee::text || '_REQUIP_'::text) || num_ordre AS id_regroupement,
+     (select 
+	s1.insee::text || '_REQUIP_' || r.num_ordre
+	FROM m_mobilite_douce.geo_mob_regroup r, m_mobilite_douce.geo_mob_statio_cycl s1
+	WHERE st_intersects(r.geom, s1.geom) IS true) AS id_regroupement,
     NULL::text AS src_photo,
-    'CC BY'::text AS l_photo
+    case when ph.photo is not null or ph.photo <>'' then 'CC BY'::text else ''end AS l_photo
    FROM m_mobilite_douce.geo_mob_equip_velo e
      LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_type lte ON e.type_equip::text = lte.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_sstype lste ON e.ss_type_equip::text = lste.code::text
@@ -496,11 +499,12 @@ UNION ALL
             ELSE to_char(s.dbupdate, 'YYYY-MM-DD'::text)
         END AS date_maj,
     s.observ AS commentaire,
-    (s.insee::text || '_REQUIP_'::text) || ( SELECT r.num_ordre
-           FROM m_mobilite_douce.geo_mob_regroup r
-          WHERE st_intersects(r.geom, s.geom) IS TRUE) AS id_regroupement,
+    (select 
+	s1.insee::text || '_REQUIP_' || r.num_ordre
+	FROM m_mobilite_douce.geo_mob_regroup r, m_mobilite_douce.geo_mob_statio_cycl s1
+	WHERE st_intersects(r.geom, s1.geom) IS true) AS id_regroupement,
     NULL::text AS src_photo,
-    'CC BY'::text AS l_photo
+    case when ps.photo is not null or ps.photo <>'' then 'CC BY'::text else ''end AS l_photo
    FROM m_mobilite_douce.geo_mob_statio_cycl s
      LEFT JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON s.protect::text = p.code::text
@@ -512,4 +516,7 @@ UNION ALL
   WHERE s.dbstatut::text = '10'::text);
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
+
+
+
 
