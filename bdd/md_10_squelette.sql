@@ -3526,7 +3526,6 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_controle_saisie_itirand() IS 'Fonction
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_controle_saisie_plan ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_controle_saisie_plan();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_controle_saisie_plan()
@@ -3573,6 +3572,7 @@ IF (TG_OP = 'DELETE') THEN
 		UPDATE m_mobilite_douce.an_mob_plan SET dbstatut = '11' WHERE id_plan = OLD.id_plan AND OLD.dbstatut = '10';
 	ELSE
 		DELETE FROM m_mobilite_douce.lk_mob_iti_plan WHERE id_plan = OLD.id_plan;
+		DELETE FROM m_mobilite_douce.lk_mob_tronc_plan WHERE id_plan = OLD.id_plan;
 		return old;
 	end if;
     
@@ -3730,7 +3730,6 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_moddouce_log() IS 'Fonction gérant l'
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_refresh_iti ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_refresh_iti();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_refresh_iti()
@@ -3740,67 +3739,387 @@ AS $function$
 
 --declare v_typ_rep text;
 
+DECLARE v_epci text;
+
 begin
 
-IF (TG_OP = 'INSERT') then	
+--raise exception 'test SIG 2';
 
--- rafraichissement des vues matérialisées des tronçons par aménagement et état d'avancement
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
+IF new.epci is null then
 
--- rafraichissement des vues matérialisées cyclables et des randonnées pour l'affichage dans le contexte de carte de GEO
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
+v_epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 
-END IF;
+else
 
-IF (TG_OP = 'DELETE') then	
-
--- rafraichissement des vues matérialisées des tronçons par aménagement et état d'avancement
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
-
--- rafraichissement des vues matérialisées cyclables et des randonnées pour l'affichage dans le contexte de carte de GEO
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
-
-END IF;
-
-IF (TG_OP = 'UPDATE') and st_equals(new.geom,old.geom) is false then
-
--- rafraichissement des vues matérialisées des tronçons par aménagement et état d'avancement
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
-
--- rafraichissement des vues matérialisées cyclables et des randonnées pour l'affichage dans le contexte de carte de GEO
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
+v_epci := new.epci;
 
 end if;
 
---raise exception 'geom --> %', st_equals(new.geom,old.geom);
-IF (TG_OP = 'UPDATE') and (new.dbstatut <> old.dbstatut
- OR new.ame_d <> old.ame_d OR new.ame_g <> old.ame_g or new.dbetat_d <> old.dbetat_d or new.dbetat_g <> old.dbetat_g or new.gestio_g <> old.gestio_g 
-or new.gestio_d <> old.gestio_d or new.proprio_g <> old.proprio_g or new.proprio_d <> old.proprio_d or new.regime_d <> old.regime_d  or new.regime_g <> old.regime_g) then	
+IF (TG_OP = 'INSERT' or (TG_OP = 'UPDATE' and new.dbstatut = '10')) then
 
--- rafraichissement des vues matérialisées des tronçons par aménagement et état d'avancement
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon;
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_etat;
 
--- rafraichissement des vues matérialisées cyclables et des randonnées pour l'affichage dans le contexte de carte de GEO
+delete from m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon where epci = v_epci;
+
+WITH req_t AS (
+        ( WITH req_d AS (
+                 SELECT t.id_tronc,
+                    t.ame_d AS ame,
+                    t.dbetat_d AS dbetat,
+                    t.dbstatut,
+                    t.typ_mob,
+                    t.regime_d AS regime,
+                    t.local_d AS local,
+                    t.requal_d AS requal,
+                    t.gestio_d AS gestio,
+                    t.proprio_d AS proprio,
+                    t.epci,
+                    t.observ,
+                    i.id_iticycl,
+                    r.id_itirand,
+                        CASE
+                            WHEN p.id_plan IS NOT NULL THEN p.id_plan
+                            ELSE ''::text
+                        END ||
+                        CASE
+                            WHEN pr.id_plan IS NOT NULL THEN pr.id_plan
+                            ELSE ''::text
+                        END ||
+						CASE
+                            WHEN prt.id_plan IS NOT NULL THEN prt.id_plan
+                            ELSE ''::text
+                        END
+							AS id_plan,
+                    (st_dump(t.geom)).geom AS geom
+                   FROM m_mobilite_douce.geo_mob_troncon t
+                     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_rand r ON r.id_itirand = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = i.id_iticycl
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkpr ON lkpr.id_iti = r.id_itirand
+					 LEFT JOIN m_mobilite_douce.lk_mob_tronc_plan lktp ON lktp.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
+                     LEFT JOIN m_mobilite_douce.an_mob_plan pr ON pr.id_plan = lkpr.id_plan
+					 LEFT JOIN m_mobilite_douce.an_mob_plan prt ON prt.id_plan = lktp.id_plan
+                  WHERE t.ame_g::text = 'ZZ'::text AND (t.ame_d::text = ANY (ARRAY['10'::character varying::text, '31'::character varying::text, '32'::character varying::text, '33'::character varying::text, '40'::character varying::text, '50'::character varying::text, '71'::character varying::text,  '72'::character varying::text, '73'::character varying::text, '81'::character varying::text, '82'::character varying::text, '90'::character varying::text, '99'::character varying::text])) AND t.local_d::text = 'ZZ'::text AND t.dbstatut::text = '10'::text
+                  and t.epci = v_epci
+                )
+         SELECT row_number() OVER () AS gid,
+            d.id_tronc,
+            d.ame,
+            d.dbetat,
+            d.dbstatut,
+            d.typ_mob,
+            d.regime,
+            d.local,
+            d.requal,
+            d.gestio,
+            d.proprio,
+            d.epci,
+            d.observ,
+            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom
+           FROM req_d d
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+        UNION ALL
+        ( WITH req_d1 AS (
+                 SELECT t.id_tronc,
+                    t.ame_d AS ame,
+                    t.dbetat_d AS dbetat,
+                    t.dbstatut,
+                    t.typ_mob,
+                    t.regime_d AS regime,
+                    t.local_d AS local,
+                    t.requal_d AS requal,
+                    t.gestio_d AS gestio,
+                    t.proprio_d AS proprio,
+                    t.epci,
+                    t.observ,
+                    i.id_iticycl,
+                    r.id_itirand,
+                        CASE
+                            WHEN p.id_plan IS NOT NULL THEN p.id_plan
+                            ELSE ''::text
+                        END ||
+                        CASE
+                            WHEN pr.id_plan IS NOT NULL THEN pr.id_plan
+                            ELSE ''::text
+                        END ||
+						CASE
+                            WHEN prt.id_plan IS NOT NULL THEN prt.id_plan
+                            ELSE ''::text
+                        END
+							AS id_plan,
+                    (st_dump(t.geom)).geom AS geom
+                   FROM m_mobilite_douce.geo_mob_troncon t
+                     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_rand r ON r.id_itirand = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = i.id_iticycl
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkpr ON lkpr.id_iti = r.id_itirand
+					 LEFT JOIN m_mobilite_douce.lk_mob_tronc_plan lktp ON lktp.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
+                     LEFT JOIN m_mobilite_douce.an_mob_plan pr ON pr.id_plan = lkpr.id_plan
+					 LEFT JOIN m_mobilite_douce.an_mob_plan prt ON prt.id_plan = lktp.id_plan
+                  WHERE t.ame_g::text = 'ZZ'::text AND (t.ame_d::text = ANY (ARRAY['31'::character varying::text, '32'::character varying::text, '33'::character varying::text, '40'::character varying::text, '50'::character varying::text, '82'::character varying::text, '90'::character varying::text, '99'::character varying::text])) AND t.local_d::text <> 'ZZ'::text AND t.dbstatut::text = '10'::text
+                  and t.epci = v_epci
+                )
+         SELECT row_number() OVER () AS gid,
+            d.id_tronc,
+            d.ame,
+            d.dbetat,
+            d.dbstatut,
+            d.typ_mob,
+            d.regime,
+            d.local,
+            d.requal,
+            d.gestio,
+            d.proprio,
+            d.epci,
+            d.observ,
+            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom
+           FROM req_d1 d
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+        UNION ALL
+        ( WITH req_d_chaussee AS (
+                 SELECT t.id_tronc,
+                    t.ame_d AS ame,
+                    t.dbetat_d AS dbetat,
+                    t.dbstatut,
+                    t.typ_mob,
+                    t.regime_d AS regime,
+                    t.local_d AS local,
+                    t.requal_d AS requal,
+                    t.gestio_d AS gestio,
+                    t.proprio_d AS proprio,
+                    t.epci,
+                    t.observ,
+                    i.id_iticycl,
+                    r.id_itirand,
+                        CASE
+                            WHEN p.id_plan IS NOT NULL THEN p.id_plan
+                            ELSE ''::text
+                        END ||
+                        CASE
+                            WHEN pr.id_plan IS NOT NULL THEN pr.id_plan
+                            ELSE ''::text
+                        END ||
+						CASE
+                            WHEN prt.id_plan IS NOT NULL THEN prt.id_plan
+                            ELSE ''::text
+                        END
+							AS id_plan,
+                    st_offsetcurve((st_dump(t.geom)).geom, '-4'::integer::double precision, 'quad_segs=4 join=round'::text) AS geom
+                   FROM m_mobilite_douce.geo_mob_troncon t
+                     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_rand r ON r.id_itirand = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = i.id_iticycl
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkpr ON lkpr.id_iti = r.id_itirand
+					 LEFT JOIN m_mobilite_douce.lk_mob_tronc_plan lktp ON lktp.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
+                     LEFT JOIN m_mobilite_douce.an_mob_plan pr ON pr.id_plan = lkpr.id_plan
+					 LEFT JOIN m_mobilite_douce.an_mob_plan prt ON prt.id_plan = lktp.id_plan
+                  WHERE (t.ame_g::text <> 'ZZ'::text OR t.ame_d::text <> 'ZZ'::text) AND (t.ame_d::text <> ALL (ARRAY['31'::character varying::text, '32'::character varying::text, '33'::character varying::text, '40'::character varying::text, '50'::character varying::text, '71'::character varying::text, '72'::character varying::text, '73'::character varying::text, '81'::character varying::text, '82'::character varying::text, '90'::character varying::text, '99'::character varying::text])) AND t.local_d::text <> 'ZZ'::text AND t.dbstatut::text = '10'::text
+                  and t.epci = v_epci
+                )
+         SELECT row_number() OVER () AS gid,
+            d.id_tronc,
+            d.ame,
+            d.dbetat,
+            d.dbstatut,
+            d.typ_mob,
+            d.regime,
+            d.local,
+            d.requal,
+            d.gestio,
+            d.proprio,
+            d.epci,
+            d.observ,
+            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom
+           FROM req_d_chaussee d
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+        UNION ALL
+        ( WITH req_g_chaussee AS (
+                 SELECT t.id_tronc,
+                    t.ame_g AS ame,
+                    t.dbetat_g AS dbetat,
+                    t.dbstatut,
+                    t.typ_mob,
+                    t.regime_g AS regime,
+                    t.local_g AS local,
+                    t.requal_g AS requal,
+                    t.gestio_g AS gestio,
+                    t.proprio_g AS proprio,
+                    t.epci,
+                    t.observ,
+                    i.id_iticycl,
+                    r.id_itirand,
+                        CASE
+                            WHEN p.id_plan IS NOT NULL THEN p.id_plan
+                            ELSE ''::text
+                        END ||
+                        CASE
+                            WHEN pr.id_plan IS NOT NULL THEN pr.id_plan
+                            ELSE ''::text
+                        END ||
+						CASE
+                            WHEN prt.id_plan IS NOT NULL THEN prt.id_plan
+                            ELSE ''::text
+                        END
+							AS id_plan,
+                    st_offsetcurve((st_dump(t.geom)).geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+                   FROM m_mobilite_douce.geo_mob_troncon t
+                     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_rand r ON r.id_itirand = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = i.id_iticycl
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkpr ON lkpr.id_iti = r.id_itirand
+					 LEFT JOIN m_mobilite_douce.lk_mob_tronc_plan lktp ON lktp.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
+                     LEFT JOIN m_mobilite_douce.an_mob_plan pr ON pr.id_plan = lkpr.id_plan
+					 LEFT JOIN m_mobilite_douce.an_mob_plan prt ON prt.id_plan = lktp.id_plan
+                  WHERE (t.ame_g::text <> 'ZZ'::text OR t.ame_d::text <> 'ZZ'::text) AND (t.ame_g::text <> ALL (ARRAY['31'::character varying::text, '32'::character varying::text, '33'::character varying::text, '40'::character varying::text, '50'::character varying::text, '71'::character varying::text, '72'::character varying::text,'73'::character varying::text, '81'::character varying::text, '82'::character varying::text, '90'::character varying::text, '99'::character varying::text])) AND t.local_g::text <> 'ZZ'::text AND t.dbstatut::text = '10'::text
+                  and t.epci = v_epci
+                )
+         SELECT row_number() OVER () AS gid,
+            g.id_tronc,
+            g.ame,
+            g.dbetat,
+            g.dbstatut,
+            g.typ_mob,
+            g.regime,
+            g.local,
+            g.requal,
+            g.gestio,
+            g.proprio,
+            g.epci,
+            g.observ,
+            string_agg(g.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(g.id_itirand, ','::text) AS code_iditirand,
+            string_agg(g.id_plan, ','::text) AS code_idplan,
+            st_multi(g.geom) AS geom
+           FROM req_g_chaussee g
+          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal)
+        UNION ALL
+        ( WITH req_g AS (
+                 SELECT t.id_tronc,
+                    t.ame_g AS ame,
+                    t.dbetat_g AS dbetat,
+                    t.dbstatut,
+                    t.typ_mob,
+                    t.regime_g AS regime,
+                    t.local_g AS local,
+                    t.requal_g AS requal,
+                    t.gestio_g AS gestio,
+                    t.proprio_g AS proprio,
+                    t.epci,
+                    t.observ,
+                    i.id_iticycl,
+                    r.id_itirand,
+                        CASE
+                            WHEN p.id_plan IS NOT NULL THEN p.id_plan
+                            ELSE ''::text
+                        END ||
+                        CASE
+                            WHEN pr.id_plan IS NOT NULL THEN pr.id_plan
+                            ELSE ''::text
+                        END ||
+						CASE
+                            WHEN prt.id_plan IS NOT NULL THEN prt.id_plan
+                            ELSE ''::text
+                        END	
+							AS id_plan,
+                    (st_dump(t.geom)).geom AS geom
+                   FROM m_mobilite_douce.geo_mob_troncon t
+                     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.an_mob_iti_rand r ON r.id_itirand = lki.id_iti
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = i.id_iticycl
+                     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkpr ON lkpr.id_iti = r.id_itirand
+ 					LEFT JOIN m_mobilite_douce.lk_mob_tronc_plan lktp ON lktp.id_tronc = t.id_tronc
+                     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
+                     LEFT JOIN m_mobilite_douce.an_mob_plan pr ON pr.id_plan = lkpr.id_plan
+				     LEFT JOIN m_mobilite_douce.an_mob_plan prt ON prt.id_plan = lktp.id_plan
+                  WHERE t.ame_d::text = 'ZZ'::text AND (t.ame_g::text = ANY (ARRAY['10'::character varying::text, '31'::character varying::text, '32'::character varying::text, '33'::character varying::text, '40'::character varying::text, '50'::character varying::text, '71'::character varying::text, '72'::character varying::text, '73'::character varying::text,'81'::character varying::text, '82'::character varying::text, '90'::character varying::text, '99'::character varying::text])) AND t.local_g::text = 'ZZ'::text AND t.dbstatut::text = '10'::text
+                  and t.epci = v_epci
+                )
+         SELECT row_number() OVER () AS gid,
+            g.id_tronc,
+            g.ame,
+            g.dbetat,
+            g.dbstatut,
+            g.typ_mob,
+            g.regime,
+            g.local,
+            g.requal,
+            g.gestio,
+            g.proprio,
+            g.epci,
+            g.observ,
+            string_agg(g.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(g.id_itirand, ','::text) AS code_iditirand,
+            string_agg(g.id_plan, ','::text) AS code_idplan,
+            st_multi(g.geom) AS geom
+           FROM req_g g
+          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal)
+        )
+ insert INTO m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon (gid,id_tronc,ame,dbetat,dbstatut,typ_mob,regime,local,requal,gestio, proprio, lib_gestio,lib_proprio, epci, observ,code_iditicycl,code_iditirand,code_idplan,geom)
+    SELECT nextval('m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_seq'::regclass) AS gid,
+    req_t.id_tronc,
+    req_t.ame,
+    req_t.dbetat,
+    req_t.dbstatut,
+    req_t.typ_mob,
+    req_t.regime,
+    req_t.local,
+    req_t.requal,
+    req_t.gestio,
+    req_t.proprio,
+    ( WITH req_g AS (
+                 SELECT unnest(string_to_array(req_t.gestio, ';'::text)) AS code
+                )
+         SELECT string_agg(l.valeur::text, chr(10)) AS string_agg
+           FROM req_g g
+             LEFT JOIN r_objet.lt_gestio_proprio l ON g.code = l.code::text) AS lib_gestio,
+    ( WITH req_p AS (
+                 SELECT unnest(string_to_array(req_t.proprio, ';'::text)) AS code
+                )
+         SELECT string_agg(l.valeur::text, chr(10)) AS string_agg
+           FROM req_p p
+             LEFT JOIN r_objet.lt_gestio_proprio l ON p.code = l.code::text) AS lib_proprio,
+    req_t.epci,
+    req_t.observ,
+    req_t.code_iditicycl,
+    req_t.code_iditirand,
+    req_t.code_idplan,
+    req_t.geom::geometry(MultiLineString,2154) AS geom
+   FROM req_t
+  WHERE req_t.ame::text <> 'ZZ'::text AND req_t.dbetat::text <> '11'::text AND req_t.dbetat::text <> 'ZZ'::text
+;
+
 refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
 refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
 
 END IF;
 
-IF (TG_OP = 'UPDATE') and (new.reqame_g <> old.reqame_g or new.reqame_d <> old.reqame_d) THEN
+IF (TG_OP = 'UPDATE' and new.dbstatut = '11') or TG_OP = 'DELETE' then
 
-refresh materialized view m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_requa;
+--raise exception 'id_tronc --> %',old.id_tronc;
 
-END IF; 
+DELETE FROM m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon where id_tronc = old.id_tronc;
+
+refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
+refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_rand;
+
+END IF;
 
 RETURN NEW;
 
@@ -3809,6 +4128,7 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_refresh_iti() IS 'Fonction gérant le rafraichissement des itinéraires pour l''affichage dans les contextes de carte de GEO';
+
 
 
 
