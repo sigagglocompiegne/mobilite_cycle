@@ -16,7 +16,7 @@
 -- VUES
 
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
-DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_statio_cycl;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_statio_cycl;
 DROP VIEW IF exists m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_iti_rand;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_equip;
@@ -53,11 +53,11 @@ AS SELECT c.numero,
 COMMENT ON VIEW m_mobilite_douce.xopendata_an_v_mob_iti_cycl IS 'Vue opendata des itinéraires cyclables en service avec un statut actif pour les itinéraires de niveau commune/interco';
 
 
--- #################################################################### vue xopendata_an_v_statio_cycl ###############################################
+-- #################################################################### vue xopendata_geo_v_mob_statio_cycl ###############################################
 
--- m_mobilite_douce.xopendata_an_v_statio_cycl source
+-- m_mobilite_douce.xopendata_geo_v_mob_statio_cycl source
 
-CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_an_v_statio_cycl
+CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl
 AS SELECT s.id_statio AS id_local,
     NULL::text AS id_osm,
     s.insee AS code_com,
@@ -65,15 +65,15 @@ AS SELECT s.id_statio AS id_local,
     s.cap AS capacite,
     s.cap_cargo AS capacite_cargo,
         CASE
-            WHEN ta.code::text <> '00'::text THEN ta.valeur
+            WHEN ta.code::text <> '00'::text THEN unaccent(upper(ta.valeur))
             ELSE ''::character varying
         END AS type_accroche,
         CASE
-            WHEN m.code::text <> '00'::text THEN m.valeur
+            WHEN m.code::text <> '00'::text THEN unaccent(upper(m.valeur))
             ELSE ''::character varying
         END AS mobilier,
         CASE
-            WHEN a.code::text <> '00'::text THEN a.valeur
+            WHEN a.code::text <> '00'::text THEN unaccent(upper(a.valeur))
             ELSE ''::character varying
         END AS acces,
         CASE
@@ -86,7 +86,7 @@ AS SELECT s.id_statio AS id_local,
             END
         END AS gratuit,
         CASE
-            WHEN pr.code::text <> '00'::text THEN pr.valeur
+            WHEN pr.code::text <> '00'::text THEN unaccent(upper(pr.valeur))
             ELSE ''::character varying
         END AS protection,
         CASE
@@ -128,10 +128,12 @@ AS SELECT s.id_statio AS id_local,
     g.valeur AS proprietaire,
     p.valeur AS gestionnaire,
         CASE
-            WHEN s.dbupdate IS NULL THEN s.dbinsert
-            ELSE s.dbinsert
+            WHEN s.dbupdate IS NULL THEN to_char(s.dbinsert,'YYYY-MM-JJ')
+            ELSE to_char(s.dbinsert,'YYYY-MM-JJ')
         END AS date_maj,
-    s.observ AS commentaires
+    s.observ AS commentaires,
+    s.epci,
+    s.geom
    FROM m_mobilite_douce.geo_mob_statio_cycl s
      JOIN r_objet.lt_gestio_proprio g ON s.gestio = g.code::text
      JOIN r_objet.lt_gestio_proprio p ON s.proprio = p.code::text
@@ -141,7 +143,8 @@ AS SELECT s.id_statio AS id_local,
      JOIN m_mobilite_douce.lt_mob_statio_typ_accro ta ON s.typ_accro::text = ta.code::text
   WHERE s.dbetat::text = '40'::text AND s.dbstatut::text = '10'::text;
 
-COMMENT ON VIEW m_mobilite_douce.xopendata_an_v_statio_cycl IS 'Vue opendata des lieux de stationnements cyclables actifs et en service';
+COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl IS 'Vue opendata des lieux de stationnements cyclables actifs et en service';
+
 
 
 -- #################################################################### vue xopendata_geo_v_mob_amgt_cycl ###############################################
