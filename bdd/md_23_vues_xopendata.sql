@@ -15,12 +15,13 @@
 
 -- VUES
 
-DROP VIEW IF EXISTS m_mobilite_douce.xopendata_an_v_mob_iti_cycl;
+
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_statio_cycl;
 DROP VIEW IF exists m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_iti_rand;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_equip;
 DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_regroup;
+DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_repere;
 
 
 -- ####################################################################################################################################################
@@ -29,29 +30,7 @@ DROP VIEW IF EXISTS m_mobilite_douce.xopendata_geo_v_mob_regroup;
 -- ###                                                                                                                                              ###
 -- ####################################################################################################################################################
 
--- #################################################################### vue xopendata_an_v_mob_iti_cycl ###############################################
-
--- m_mobilite_douce.xopendata_an_v_mob_iti_cycl source
-
-CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_an_v_mob_iti_cycl
-AS SELECT c.numero,
-    c.nomoff AS nomofficiel,
-    c.nomusage,
-    c.depart,
-    c.arrivee,
-    'Non'::text AS estinscrit,
-    np.valeur,
-    p.d_appro,
-    c.url AS siteweb,
-    c.d_service AS anneeouverture
-   FROM m_mobilite_douce.an_mob_iti_cycl c
-     LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_iti = c.id_iticycl
-     LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
-     LEFT JOIN m_mobilite_douce.lt_mob_plan_niveau np ON np.code::text = p.plan_niv::text
-  WHERE c.dbetat::text = '40'::text AND c.dbstatut::text = '10'::text AND ((p.plan_niv::text = ANY (ARRAY['50'::character varying, '60'::character varying]::text[])) OR p.plan_niv IS NULL);
-
-COMMENT ON VIEW m_mobilite_douce.xopendata_an_v_mob_iti_cycl IS 'Vue opendata des itinéraires cyclables en service avec un statut actif pour les itinéraires de niveau commune/interco';
-
+-- #################################################################### vue xopendata_geo_v_mob_iti_cycl ###############################################
 
 -- #################################################################### vue xopendata_geo_v_mob_statio_cycl ###############################################
 -- m_mobilite_douce.xopendata_geo_v_mob_statio_cycl source
@@ -614,13 +593,14 @@ UNION ALL
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
 
 -- #################################################################### vue xopendata_geo_v_mob_repere ###############################################
+
 -- m_mobilite_douce.xopendata_geo_v_mob_repere source
-drop view if exists m_mobilite_douce.xopendata_geo_v_mob_repere;
+
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_repere
 AS SELECT r.id_rep,
     r.libelle,
     tr.valeur AS typ_rep,
-    r.typ_rep_a as autre_rep,
+    r.typ_rep_a AS autre_rep,
     r.observ,
     r.insee,
     r.commune,
@@ -628,11 +608,21 @@ AS SELECT r.id_rep,
             WHEN r.dbupdate IS NULL THEN r.dbinsert
             ELSE r.dbupdate
         END AS date_maj,
+    epci.lib_epci as epci,    
     r.epci AS epci_droit,
     r.geom
    FROM m_mobilite_douce.geo_mob_repere r
      LEFT JOIN m_mobilite_douce.lt_mob_rep_typrep tr ON tr.code::text = r.typ_rep::text
+     LEFT JOIN r_osm.geo_osm_epci epci ON epci.iepci::text = r.epci::text
   WHERE r.usa_rep::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_repere IS 'Vue opendata des repères cyclables';
+
+-- Permissions
+
+ALTER TABLE m_mobilite_douce.xopendata_geo_v_mob_repere OWNER TO sig_create;
+GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_create;
+GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO create_sig;
+GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_edit;
+GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_read;
 
