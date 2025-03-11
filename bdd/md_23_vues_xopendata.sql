@@ -54,7 +54,6 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_an_v_mob_iti_cycl IS 'Vue opendata de
 
 
 -- #################################################################### vue xopendata_geo_v_mob_statio_cycl ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_statio_cycl source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl
@@ -65,15 +64,15 @@ AS SELECT s.id_statio AS id_local,
     s.cap AS capacite,
     s.cap_cargo AS capacite_cargo,
         CASE
-            WHEN ta.code::text <> '00'::text THEN unaccent(upper(ta.valeur))
+            WHEN ta.code::text <> '00'::text THEN unaccent(upper(ta.valeur::text))::character varying
             ELSE ''::character varying
         END AS type_accroche,
         CASE
-            WHEN m.code::text <> '00'::text THEN unaccent(upper(m.valeur))
+            WHEN m.code::text <> '00'::text THEN unaccent(upper(m.valeur::text))::character varying
             ELSE ''::character varying
         END AS mobilier,
         CASE
-            WHEN a.code::text <> '00'::text THEN unaccent(upper(a.valeur))
+            WHEN a.code::text <> '00'::text THEN unaccent(upper(a.valeur::text))::character varying
             ELSE ''::character varying
         END AS acces,
         CASE
@@ -86,7 +85,7 @@ AS SELECT s.id_statio AS id_local,
             END
         END AS gratuit,
         CASE
-            WHEN pr.code::text <> '00'::text THEN unaccent(upper(pr.valeur))
+            WHEN pr.code::text <> '00'::text THEN unaccent(upper(pr.valeur::text))::character varying
             ELSE ''::character varying
         END AS protection,
         CASE
@@ -119,20 +118,21 @@ AS SELECT s.id_statio AS id_local,
     s.url AS url_info,
     s.an_pose AS d_service,
         CASE
-            WHEN s.epci::text = 'arc'::text THEN 'Agglomération de la Région de Compiègne et de la Basse Automne'::text
-            WHEN s.epci::text = 'cclo'::text THEN 'Communauté de Communes des Lisières de l''Oise'::text
-            WHEN s.epci::text = 'ccpe'::text THEN 'Communauté de Communes de la Plaine d''Estrées'::text
-            WHEN s.epci::text = 'cc2v'::text THEN 'Communauté de Communes des Deux Vallées'::text
+            WHEN s.epci::text = 'arc'::text THEN 'CA de la Région de Compiègne et de la Basse Automne'::text
+            WHEN s.epci::text = 'cclo'::text THEN 'CC des Lisières de l''Oise'::text
+            WHEN s.epci::text = 'ccpe'::text THEN 'CC de la Plaine d''Estrées'::text
+            WHEN s.epci::text = 'cc2v'::text THEN 'CC des Deux Vallées'::text
             ELSE ''::text
         END AS source,
     g.valeur AS proprietaire,
     p.valeur AS gestionnaire,
         CASE
-            WHEN s.dbupdate IS NULL THEN to_char(s.dbinsert,'YYYY-MM-JJ')
-            ELSE to_char(s.dbinsert,'YYYY-MM-JJ')
+            WHEN s.dbupdate IS NULL THEN to_char(s.dbinsert, 'YYYY-MM-JJ'::text)
+            ELSE to_char(s.dbinsert, 'YYYY-MM-JJ'::text)
         END AS date_maj,
     s.observ AS commentaires,
-    s.epci,
+    epci.lib_epci as epci,
+    s.epci AS epci_droit,
     s.geom
    FROM m_mobilite_douce.geo_mob_statio_cycl s
      JOIN r_objet.lt_gestio_proprio g ON s.gestio = g.code::text
@@ -141,6 +141,7 @@ AS SELECT s.id_statio AS id_local,
      JOIN m_mobilite_douce.lt_mob_statio_acces a ON s.acces::text = a.code::text
      JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
      JOIN m_mobilite_douce.lt_mob_statio_typ_accro ta ON s.typ_accro::text = ta.code::text
+     left join r_osm.geo_osm_epci epci on epci.iepci = s.epci
   WHERE s.dbetat::text = '40'::text AND s.dbstatut::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl IS 'Vue opendata des lieux de stationnements cyclables actifs et en service';
@@ -148,21 +149,19 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl IS 'Vue opendat
 
 
 -- #################################################################### vue xopendata_geo_v_mob_amgt_cycl ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl
 AS SELECT t.id_tronc AS id_local,
-    upper(replace(r.valeur::text, 'é'::text, 'E'::text)) AS reseau_loc,
-    string_agg(
         CASE
-            WHEN p.plan_niv IS NULL OR (p.plan_niv::text = ANY (ARRAY['50'::character varying::text, '60'::character varying::text])) THEN (
-            CASE
-                WHEN c.numero IS NOT NULL OR c.numero::text <> ''::text THEN c.numero
-                ELSE ''::character varying
-            END::text || ' - '::text) || c.nomoff::text
-            ELSE NULL::text
-        END, ':'::text) AS nom_loc,
+            WHEN r.valeur::text = 'Non renseigné'::text THEN NULL::character varying
+            ELSE r.valeur
+        END AS reseau_loc,
+    string_agg((
+        CASE
+            WHEN c.numero IS NOT NULL OR c.numero::text <> ''::text THEN c.numero
+            ELSE ''::character varying
+        END::text || ' - '::text) || c.nomoff::text, ':'::text) AS nom_loc,
     NULL::text AS id_osm,
     string_agg(
         CASE
@@ -173,25 +172,69 @@ AS SELECT t.id_tronc AS id_local,
             END::text || ' - '::text) || c.nomoff::text
             ELSE NULL::text
         END, ':'::text) AS num_iti,
-    t.insee_d,
-    upper(replace(replace(ad.valeur::text, 'é'::text, 'E'::text), 'ê'::text, 'E'::text)) AS ame_d,
-    upper(replace(rd.valeur::text, 'é'::text, 'E'::text)) AS regime_d,
-    upper(replace(sd.valeur::text, 'é'::text, 'E'::text)) AS sens_d,
+    t.insee_d AS code_com_d,
+        CASE
+            WHEN ad.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            WHEN ad.code::text = '90'::text THEN 'AUCUN'::text
+            ELSE unaccent(upper(ad.valeur::text))
+        END AS ame_d,
+        CASE
+            WHEN rd.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(rd.valeur::text))
+        END AS regime_d,
+        CASE
+            WHEN sd.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(sd.valeur::text))
+        END AS sens_d,
     t.largeur_d,
-    upper(replace(ld.valeur::text, 'é'::text, 'E'::text)) AS local_d,
-    upper(replace(std.valeur::text, 'é'::text, 'E'::text)) AS statut_d,
-    upper(replace(rvd.valeur::text, 'é'::text, 'E'::text)) AS revet_d,
-    t.insee_g,
-    upper(replace(replace(ag.valeur::text, 'é'::text, 'E'::text), 'ê'::text, 'E'::text)) AS ame_g,
-    upper(replace(rg.valeur::text, 'é'::text, 'E'::text)) AS regime_g,
-    upper(replace(sg.valeur::text, 'é'::text, 'E'::text)) AS sens_g,
+        CASE
+            WHEN ld.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(ld.valeur::text))
+        END AS local_d,
+        CASE
+            WHEN std.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(std.valeur::text))
+        END AS statut_d,
+        CASE
+            WHEN rvd.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(rvd.valeur::text))
+        END AS revet_d,
+    t.insee_g AS code_com_g,
+        CASE
+            WHEN ag.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            WHEN ag.code::text = '90'::text THEN 'AUCUN'::text
+            ELSE unaccent(upper(ag.valeur::text))
+        END AS ame_g,
+        CASE
+            WHEN rg.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(rg.valeur::text))
+        END AS regime_g,
+        CASE
+            WHEN sg.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(sg.valeur::text))
+        END AS sens_g,
     t.largeur_g,
-    upper(replace(lg.valeur::text, 'é'::text, 'E'::text)) AS local_g,
-    upper(replace(stg.valeur::text, 'é'::text, 'E'::text)) AS statut_g,
-    upper(replace(rvg.valeur::text, 'é'::text, 'E'::text)) AS revet_g,
-    upper(replace(a.valeur::text, 'é'::text, 'E'::text)) AS acces_ame,
+        CASE
+            WHEN lg.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(lg.valeur::text))
+        END AS local_g,
+        CASE
+            WHEN stg.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(stg.valeur::text))
+        END AS statut_g,
+        CASE
+            WHEN rvg.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(rvg.valeur::text))
+        END AS revet_g,
+        CASE
+            WHEN a.code::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN NULL::text
+            ELSE unaccent(upper(a.valeur::text))
+        END AS acces_ame,
     to_char(t.dbupdate, 'YYYY-MM-DD'::text) AS date_maj,
-    t.trafic_vit,
+        CASE
+            WHEN t.trafic_vit IS NULL THEN NULL::integer
+            ELSE t.trafic_vit
+        END AS trafic_vit,
         CASE
             WHEN t.lum::text = 'f'::text THEN 'false'::text
             WHEN t.lum::text = 't'::text THEN 'true'::text
@@ -208,16 +251,48 @@ AS SELECT t.id_tronc AS id_local,
         END AS d_service,
     t.observ AS comm,
         CASE
-            WHEN t.epci_d::text = 'arc'::text THEN 'Agglomération de la Région de Compiègne et de la Basse Automne'::text
-            WHEN t.epci_d::text = 'cclo'::text THEN 'Communauté de Communes des Lisières de l''Oise'::text
-            WHEN t.epci_d::text = 'ccpe'::text THEN 'Communauté de Communes de la Plaine d''Estrées'::text
-            WHEN t.epci_d::text = 'cc2v'::text THEN 'Communauté de Communes des Deux Vallées'::text
+            WHEN t.epci::text = 'arc'::text THEN 'CA de la Région de Compiègne et de la Basse Automne'::text
+            WHEN t.epci::text = 'cclo'::text THEN 'CC des Lisières de l''Oise'::text
+            WHEN t.epci::text = 'ccpe'::text THEN 'CC de la Plaine d''Estrées'::text
+            WHEN t.epci::text = 'cc2v'::text THEN 'CC des Deux Vallées'::text
             ELSE ''::text
         END AS source,
-    t.epci_d,
-    'Lambert 93'::text AS project_c,
+       CASE
+            WHEN d.epci_ad IS NULL THEN case 
+            					        when t.epci = 'arc' then 'CA de la Région de Compiègne et de la Basse Automne'
+            					        when t.epci = 'ccpe' then 'CC de la Plaine d''Estrée'
+            					        when t.epci = 'cclo' then 'CC des Lisières de l''Oise'
+            					        when t.epci = 'cc2v' then 'CC des Deux Vallées'
+            					        else '' END
+            WHEN t.epci_g::text = t.epci_d::text THEN case 
+            					        when t.epci_d = 'arc' then 'CA de la Région de Compiègne et de la Basse Automne'
+            					        when t.epci_d = 'ccpe' then 'CC de la Plaine d''Estrée'
+            					        when t.epci_d = 'cclo' then 'CC des Lisières de l''Oise'
+            					        when t.epci_d = 'cc2v' then 'CC des Deux Vallées'
+            					        else '' END
+            WHEN t.epci_g IS NULL AND t.epci_d IS NOT NULL THEN case 
+            					        when t.epci_d = 'arc' then 'CA de la Région de Compiègne et de la Basse Automne'
+            					        when t.epci_d = 'ccpe' then 'CC de la Plaine d''Estrée'
+            					        when t.epci_d = 'cclo' then 'CC des Lisières de l''Oise'
+            					        when t.epci_d = 'cc2v' then 'CC des Deux Vallées'
+            					        else '' END
+            WHEN t.epci_g IS NOT NULL AND t.epci_d IS NULL THEN case 
+            					        when t.epci_g = 'arc' then 'CA de la Région de Compiègne et de la Basse Automne'
+            					        when t.epci_g = 'ccpe' then 'CC de la Plaine d''Estrée'
+            					        when t.epci_g = 'cclo' then 'CC des Lisières de l''Oise'
+            					        when t.epci_g = 'cc2v' then 'CC des Deux Vallées'
+            					        else '' END
+            ELSE case 
+            					        when t.epci_d = 'arc' then 'CA de la Région de Compiègne et de la Basse Automne'
+            					        when t.epci_d = 'ccpe' then 'CC de la Plaine d''Estrée'
+            					        when t.epci_d = 'cclo' then 'CC des Lisières de l''Oise'
+            					        when t.epci_d = 'cc2v' then 'CC des Deux Vallées'
+            					        else '' END
+        END AS epci,
+     t.epci AS epci_droit,   
+    'Lambert 93 (EPSG : 2154)' AS project_c,
         CASE
-            WHEN t.src_geom::text = '00'::text THEN NULL::text::character varying
+            WHEN t.src_geom::text = ANY (ARRAY['00'::text, 'ZZ'::text]) THEN NULL::character varying
             ELSE src.valeur
         END AS ref_geo,
     t.geom
@@ -238,14 +313,15 @@ AS SELECT t.id_tronc AS id_local,
      JOIN m_mobilite_douce.lt_mob_tronc_revet rvd ON rvd.code::text = t.revet_d::text
      JOIN r_objet.lt_booleen lu ON lu.code::text = t.lum::text
      JOIN r_objet.lt_src_geom src ON src.code::text = t.src_geom::text
-     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_iti = t.id_tronc
+     LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl c ON c.id_iticycl = lki.id_iti
      LEFT JOIN m_mobilite_douce.lk_mob_iti_plan lkp ON lkp.id_plan = c.id_iticycl
      LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
-  WHERE t.typ_mob::text = '10'::text AND (t.dbetat_d::text = '40'::text OR t.dbetat_g::text = '40'::text) AND t.dbstatut::text = '10'::text
-  GROUP BY t.id_tronc, r.valeur, t.insee_d, ad.valeur, rd.valeur, sd.valeur, ld.valeur, std.valeur, rvd.valeur, ag.valeur, rg.valeur, sg.valeur, lg.valeur, stg.valeur, rvg.valeur, src.valeur, t.geom, a.valeur;
+     LEFT JOIN m_mobilite_douce.lk_mob_droit_delegue_iti d ON d.id_iti = c.id_iticycl
+  WHERE t.typ_mob::text = '10'::text AND t.dbstatut::text = '10'::text AND (t.dbetat_g::text <> '11'::text OR t.dbetat_d::text <> '11'::text)
+  GROUP BY d.epci_ad, a.code, rvg.code, stg.code, lg.code, sg.code, rg.code, ag.code, rvd.code, std.code, ld.code, sd.code, rd.code, ad.code, t.id_tronc, r.valeur, t.insee_d, ad.valeur, rd.valeur, sd.valeur, ld.valeur, std.valeur, rvd.valeur, ag.valeur, rg.valeur, sg.valeur, lg.valeur, stg.valeur, rvg.valeur, src.valeur, t.geom, a.valeur;
 
-COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl IS 'Vue opendata des aménagements cyclables';
+COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl IS 'Vue opendata des aménagements cyclables (les aménagements seront filtrés pour les états à EN TRAVAUC, EN SERVICE et PROVISOIRE pour l''export en geojson conformément au schéma national';
 
 
 -- #################################################################### vue xopendata_geo_v_mob_iti_rand ###############################################
@@ -255,10 +331,10 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl IS 'Vue opendata 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand
 AS SELECT r.id_itirand AS id_local,
         CASE
-            WHEN r.epci = 'arc'::text THEN 'Agglomération de la Région de Compiègne et de la Basse Automne'::text
-            WHEN r.epci = 'cclo'::text THEN 'Communauté de Communes des Lisières de l''Oise'::text
-            WHEN r.epci = 'ccpe'::text THEN 'Communauté de Communes de la Plaine d''Estrées'::text
-            WHEN r.epci = 'cc2v'::text THEN 'Communauté de Communes des Deux Vallées'::text
+            WHEN r.epci = 'arc'::text THEN 'CA Région de Compiègne et de la Basse Automne'::text
+            WHEN r.epci = 'cclo'::text THEN 'CC des Lisières de l''Oise'::text
+            WHEN r.epci = 'ccpe'::text THEN 'CC de la Plaine d''Estrées'::text
+            WHEN r.epci = 'cc2v'::text THEN 'CC des Deux Vallées'::text
             ELSE ''::text
         END AS producteur,
     r.contact,
@@ -350,19 +426,23 @@ AS WITH req_photo AS (
     r.insee AS code_com,
     NULL::text AS src_photo,
     NULL::text AS l_photo,
-    r.epci,
+    epci.lib_epci as epci,
+    r.epci AS epci_droit,
     r.geom
    FROM m_mobilite_douce.geo_mob_regroup r
      JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
      LEFT JOIN req_photo p ON p.id = r.id_regroup
+     left join r_osm.geo_osm_epci epci on epci.iepci = r.epci
   WHERE r.dbstatut::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
 
 
+
+
 -- #################################################################### vue xopendata_geo_v_mob_equip ###############################################
 -- m_mobilite_douce.xopendata_geo_v_mob_equip source
-
+drop view if exists m_mobilite_douce.xopendata_geo_v_mob_equip;
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_equip
 AS ( WITH req_photo AS (
          SELECT an_mob_equip_regroup_media.id,
@@ -430,8 +510,9 @@ AS ( WITH req_photo AS (
             WHEN ph.photo IS NOT NULL OR ph.photo <> ''::text THEN 'CC BY'::text
             ELSE ''::text
         END AS l_photo,
-        e.epci,
-        e.geom
+    epci.lib_epci as epci,
+    e.ecpi AS epci_droit,
+    e.geom
    FROM m_mobilite_douce.geo_mob_equip_velo e
      LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_type lte ON e.type_equip::text = lte.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_eqvelo_sstype lste ON e.ss_type_equip::text = lste.code::text
@@ -443,6 +524,7 @@ AS ( WITH req_photo AS (
      LEFT JOIN r_objet.lt_src_geom s ON e.src_geom::text = s.code::text
      LEFT JOIN req_photo ph ON ph.id = e.id_eqvelo
      LEFT JOIN r_administratif.an_geo g ON g.insee::text = e.insee::text
+     left join r_osm.geo_osm_epci epci on epci.iepci = e.epci
   WHERE e.dbstatut::text = '10'::text)
 UNION ALL
 ( WITH req_photo AS (
@@ -515,8 +597,9 @@ UNION ALL
             WHEN ps.photo IS NOT NULL OR ps.photo <> ''::text THEN 'CC BY'::text
             ELSE ''::text
         END AS l_photo,
-        s.epci,
-        s.geom
+    epci.lib_epci as epci,
+    s.epci AS epci_droit,
+    s.geom
    FROM m_mobilite_douce.geo_mob_statio_cycl s
      LEFT JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON s.protect::text = p.code::text
@@ -525,9 +608,11 @@ UNION ALL
      LEFT JOIN r_objet.lt_src_geom src ON s.src_geom::text = src.code::text
      LEFT JOIN req_photo ps ON ps.id = s.id_statio
      LEFT JOIN r_administratif.an_geo g ON g.insee::text = s.insee::text
+     left join r_osm.geo_osm_epci epci on epci.iepci = s.epci
   WHERE s.dbstatut::text = '10'::text);
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
+
 
 
 
