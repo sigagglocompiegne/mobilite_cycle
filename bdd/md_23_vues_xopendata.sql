@@ -614,34 +614,25 @@ UNION ALL
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des équipements liés au vélo y compris le stationnement cyclable';
 
 -- #################################################################### vue xopendata_geo_v_mob_repere ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_repere source
 drop view if exists m_mobilite_douce.xopendata_geo_v_mob_repere;
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_repere
-AS 
-
-select 
-	r.id_rep,
-	r.libelle,
-	tr.valeur as typ_rep,
-	r.num_compt,
-	r.observ,
-	r.insee,
-	r.commune,
-	case when r.dbupdate is null then r.dbinsert else r.dbupdate end as date_maj,
-	r.epci as epci_droit,
-	r.geom
-from
-	m_mobilite_douce.geo_mob_repere r
-	left join m_mobilite_douce.lt_mob_rep_typrep tr on tr.code = r.typ_rep
-where r.usa_rep = '10';
+AS SELECT r.id_rep,
+    r.libelle,
+    tr.valeur AS typ_rep,
+    r.typ_rep_a as autre_rep,
+    r.observ,
+    r.insee,
+    r.commune,
+        CASE
+            WHEN r.dbupdate IS NULL THEN r.dbinsert
+            ELSE r.dbupdate
+        END AS date_maj,
+    r.epci AS epci_droit,
+    r.geom
+   FROM m_mobilite_douce.geo_mob_repere r
+     LEFT JOIN m_mobilite_douce.lt_mob_rep_typrep tr ON tr.code::text = r.typ_rep::text
+  WHERE r.usa_rep::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_repere IS 'Vue opendata des repères cyclables';
 
--- Permissions
-
-ALTER TABLE m_mobilite_douce.xopendata_geo_v_mob_repere OWNER TO sig_create;
-GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_create;
-GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO create_sig;
-GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_edit;
-GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_repere TO sig_read;
