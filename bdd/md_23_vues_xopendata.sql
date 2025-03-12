@@ -675,9 +675,8 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_repere IS 'Vue opendata des
 
 
 -- #################################################################### vue xopendata_geo_v_mob_panneau ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_panneau source
-
+drop view if exists  m_mobilite_douce.xopendata_geo_v_mob_panneau;
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_panneau
 AS WITH req_photo AS (
          SELECT an_mob_pan_media.id,
@@ -691,9 +690,9 @@ AS WITH req_photo AS (
     p.code_pan,
     ep.valeur AS etat_mob,
     p.an_pose,
-    string_agg(DISTINCT iti_r.nomoff::text, ','::text) AS iti_rand,
-    string_agg(DISTINCT iti_c.nomoff::text, chr(10)) AS iti_cycl,
-    ea.valeur AS dbetat,
+--    string_agg(DISTINCT iti_r.nomoff::text, ','::text) AS iti_rand,
+--    string_agg(DISTINCT iti_c.nomoff::text, chr(10)) AS iti_cycl,
+    ea.valeur AS etat,
     ( WITH req_p AS (
                  SELECT unnest(string_to_array(p.proprio, ';'::text)) AS code
                 )
@@ -712,9 +711,11 @@ AS WITH req_photo AS (
     string_agg(ph.photo, chr(10)) AS photo,
     p.insee,
     p.commune,
-    p.epci AS epci_droit,
-    to_char(p.dbinsert, 'YYYY-MM-DD'::text) AS dbinsert,
-    to_char(p.dbupdate, 'YYYY-MM-DD'::text) AS dbupdate,
+    p.epci,
+    epci.lib_epci,
+    case when p.dbupdate is null then to_char(p.dbinsert, 'YYYY-MM-DD'::text) else to_char(p.dbupdate, 'YYYY-MM-DD'::text) end as date_maj,
+--    to_char(p.dbinsert, 'YYYY-MM-DD'::text) AS dbinsert,
+--    to_char(p.dbupdate, 'YYYY-MM-DD'::text) AS dbupdate,
     p.geom
    FROM m_mobilite_douce.geo_mob_pan p
      LEFT JOIN m_mobilite_douce.lt_mob_pan_typsign ts ON ts.code::text = p.typ_sign::text
@@ -727,10 +728,17 @@ AS WITH req_photo AS (
      LEFT JOIN m_mobilite_douce.an_mob_iti_rand iti_r ON iti_r.id_itirand = lkr.id_iti
      LEFT JOIN m_mobilite_douce.lk_mob_pan_iti lkc ON lkc.id_pan = p.id_pan
      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl iti_c ON iti_c.id_iticycl = lkc.id_iti
+      LEFT JOIN r_osm.geo_osm_epci epci ON epci.iepci::text = p.epci::text
   WHERE p.dbstatut::text = '10'::text
-  GROUP BY p.id_pan, ts.valeur, tp.typpan, ep.valeur, ea.valeur, p.an_pose, p.proprio_a, p.gestio_a, p.observ, p.insee, p.commune, p.dbinsert, p.dbupdate, p.geom;
+  GROUP by epci.lib_epci, p.id_pan, ts.valeur, tp.typpan, ep.valeur, ea.valeur, p.an_pose, p.proprio_a, p.gestio_a, p.observ, p.insee, p.commune, p.dbinsert, p.dbupdate, p.geom;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_panneau IS 'Vue opendata des panneaux';
 
+-- Permissions
 
+ALTER TABLE m_mobilite_douce.xopendata_geo_v_mob_panneau OWNER TO sig_create;
+GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_panneau TO sig_create;
+GRANT ALL ON TABLE m_mobilite_douce.xopendata_geo_v_mob_panneau TO create_sig;
+GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_panneau TO sig_edit;
+GRANT SELECT ON TABLE m_mobilite_douce.xopendata_geo_v_mob_panneau TO sig_read;
 
