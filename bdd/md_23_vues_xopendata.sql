@@ -54,6 +54,7 @@ AS SELECT i.id_iticycl,
     i.url AS siteweb,
     i.d_service AS anneeouverture,
     i.epci,
+    epci.lib_epci,
     st_union(st_multi(st_linemerge(t.geom)))::geometry(MultiLineString,2154) AS geom
    FROM m_mobilite_douce.geo_mob_troncon t
      JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
@@ -62,10 +63,12 @@ AS SELECT i.id_iticycl,
      LEFT JOIN m_mobilite_douce.an_mob_plan p ON p.id_plan = lkp.id_plan
      LEFT JOIN m_mobilite_douce.lt_mob_plan_niveau np ON np.code::text = p.plan_niv::text
      LEFT JOIN r_objet.lt_etat_avancement e ON e.code::text = i.dbetat::text
-  WHERE i.dbstatut::text = '10'::text AND t.dbstatut::text = '10'::text
-  GROUP BY i.id_iticycl, e.valeur, np.valeur, np.code, i.numero, i.nomoff, i.nomusage, i.depart, i.arrivee, p.d_appro, i.url, i.d_service;
+     LEFT JOIN r_osm.geo_osm_epci epci ON epci.iepci::text = t.epci::text
+  WHERE i.dbstatut::text = '10'::text AND t.dbstatut::text = '10'::text AND i.epci <> 'all'::text
+  GROUP BY epci.lib_epci, i.id_iticycl, e.valeur, np.valeur, np.code, i.numero, i.nomoff, i.nomusage, i.depart, i.arrivee, p.d_appro, i.url, i.d_service;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_cycl IS 'Vue opendata des itinéraires cyclables en service avec un statut actif pour les itinéraires de niveau commune/interco au standard COVADIS VéloRoute-Voie Verte';
+
 
 
 
@@ -351,6 +354,7 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl IS 'Vue opendata 
 
 
 -- #################################################################### vue xopendata_geo_v_mob_iti_rand ###############################################
+
 -- m_mobilite_douce.xopendata_geo_v_mob_iti_rand source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand
@@ -421,53 +425,10 @@ AS SELECT r.id_itirand AS id_local,
      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_iti = r.id_itirand
      LEFT JOIN m_mobilite_douce.geo_mob_troncon t ON t.id_tronc = lki.id_tronc
      LEFT JOIN r_objet.lt_etat_avancement ev ON ev.code::text = r.dbetat::text
-  WHERE st_linemerge(t.geom) IS NOT NULL AND r.dbstatut::text = '10'::text AND t.dbstatut::text = '10'::text
+  WHERE st_linemerge(t.geom) IS NOT NULL AND r.dbstatut::text = '10'::text AND t.dbstatut::text = '10'::text AND r.epci <> 'all'::text
   GROUP BY ev.valeur, r.id_itirand, r.epci, r.contact, r.url, r.nomoff, pr.valeur, tr.valeur, r.depart, r.arrivee, r.duree, r.balisage, r.lin_iti, r.diff_iti, r.alti_max, r.alti_min, r.deni_pos, r.deni_neg, r.instruc, r.present_d, r.present_c, r.theme, r.recommand, r.accessi, r.acces_r, r.acces_tc, r.park_inf, r.park_loc, r.dbinsert, r.dbupdate, r.typ_sol, r.pdipr, r.pdipr_d;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand IS 'Vue opendata des itinéraires de randonnées en service et avec un statut actif dans le schéma national des itinéraires de randonnées';
-
-
-
--- #################################################################### vue xopendata_geo_v_mob_regroup ###############################################
-
--- m_mobilite_douce.xopendata_geo_v_mob_regroup source
-
-CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup
-AS WITH req_photo AS (
-         SELECT an_mob_equip_regroup_media.id,
-            'https://geo.compiegnois.fr/fichier_ref/metiers/mob/mob_douce/equip_regroup/'::text || an_mob_equip_regroup_media.n_fichier AS photo
-           FROM m_mobilite_douce.an_mob_equip_regroup_media
-          GROUP BY an_mob_equip_regroup_media.id, an_mob_equip_regroup_media.n_fichier
-         LIMIT 1
-        )
- SELECT (r.insee::text || '_REQUIP_'::text) || r.num_ordre::text AS id_regroupement,
-    r.nom,
-        CASE
-            WHEN r.dbetat::text = ANY (ARRAY['40'::character varying::text, '90'::character varying::text]) THEN 'existante'::text
-            WHEN r.dbetat::text = ANY (ARRAY['10'::character varying::text, '20'::character varying::text, '30'::character varying::text]) THEN 'en projet'::text
-            WHEN r.dbetat::text = '00'::text THEN 'préconisé'::text
-            ELSE NULL::text
-        END AS statut,
-    i.valeur AS importance,
-    r.nb_equip,
-        CASE
-            WHEN p.photo IS NULL THEN p.photo
-            ELSE NULL::text
-        END AS photo,
-    r.insee AS code_com,
-    NULL::text AS src_photo,
-    NULL::text AS l_photo,
-    epci.lib_epci AS epci,
-    r.epci AS epci_droit,
-    r.geom
-   FROM m_mobilite_douce.geo_mob_regroup r
-     JOIN m_mobilite_douce.lt_mob_regroup_imp i ON r.importance::text = i.code::text
-     LEFT JOIN req_photo p ON p.id = r.id_regroup
-     LEFT JOIN r_osm.geo_osm_epci epci ON epci.iepci::text = r.epci::text
-  WHERE r.dbstatut::text = '10'::text;
-
-COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
-
 
 -- #################################################################### vue xopendata_geo_v_mob_equip ###############################################
 
