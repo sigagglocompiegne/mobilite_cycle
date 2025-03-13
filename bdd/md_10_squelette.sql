@@ -14,7 +14,755 @@
 
 begin;
 
--- ## VUE
+-- ## VUE-- DROP FUNCTION m_mobilite_douce.ft_m_troncon_controle();
+
+CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_troncon_controle()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+
+DECLARE v_insee CHARACTER varying(5);
+DECLARE v_commune CHARACTER varying(80);
+DECLARE v_seq integer;
+
+BEGIN
+
+IF (TG_OP = 'INSERT') OR (TG_OP = 'UPDATE') THEN
+	
+
+v_insee	 := (select DISTINCT insee FROM r_osm.geo_vm_osm_commune_grdc_plus c WHERE st_intersects(st_pointonsurface(ST_Envelope(NEW.geom)),c.geom) IS true);
+v_commune := (select DISTINCT commune FROM r_osm.geo_vm_osm_commune_grdc_plus c WHERE st_intersects(st_pointonsurface(ST_Envelope(NEW.geom)),c.geom) IS true);  
+
+
+
+
+-- controle sur la position à droite ou à gauche selon l'aménagement et la régime
+
+-- certains aménagements ne peuvent qu'être saisi à droite
+/*IF NEW.posi_dg IN ('12','20') and (new.ame_d in ('31','32','33','71','72','81','82','84','90','99') or new.ame_g in ('31','32','33','71','72','81','82','84','90','99')) then
+	 RAISE EXCEPTION '<font color="#FF0000"><b>L''amnégament saisi ne peut qu''être qu''à droite. Merci de corriger votre saisie.</font></b><br><br>';
+end if;
+*/
+-- le niveau d'avancement ne peut pas être à non concerné si un aménagement est renseigné
+if new.ame_d <> 'ZZ' and new.dbetat_d = 'ZZ' then
+	 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer un niveau d''avancemenent à "Non concerné" si vous indiquez un aménagement à droite.</font></b><br><br>';
+end if ;
+
+if new.ame_g <> 'ZZ' and new.dbetat_g = 'ZZ' then
+	 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer un niveau d''avancemenent à "Non concerné" si vous indiquez un aménagement à gauche.</font></b><br><br>';
+end if ;
+
+
+
+-- si mon aménagement n'est qu'à droite
+IF NEW.posi_dg = '11' then
+
+	-- le régime de circulation doit être indiqué pour des aménagements sur chaussée
+/*	if new.ame_d in ('20','21','31','32','33','60','73','82','83','84','85','90') and new.regime_d = '00' then
+		RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer le régime de circulation sur la chaussée où se situe l''aménagement.</font></b><br><br>';
+	end if;
+*/
+
+	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
+    IF NEW.requal_d is true AND (NEW.reqame_d IS NULL OR NEW.reqame_d = '') AND (NEW.reqam_dbetat_d IS NULL OR NEW.reqam_dbetat_d = '') THEN
+       RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de droite sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
+    END IF;
+	IF NEW.requal_d is false then
+		NEW.reqame_d := 'ZZ';
+		NEW.reqam_dbetat_d := 'ZZ';
+	end if;
+
+	-- le niveau d'avancement ne peut pas être à non renseigné
+	if new.dbetat_d = '00' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
+	end if ;
+
+    -- année de programmation doit être supérieur à 2000
+	if new.an_prog_d is not null and new.an_prog_d <= 2000 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation d''un tronçon de droite n''est pas cohérente.</font></b><br><br>';
+	end if;	
+
+    -- largeur cohérente <=5m
+	if new.largeur_d is not null and new.largeur_d >= 5 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur de droite n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
+	end if;	
+
+     -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if new.ame_d NOT IN ('10','40','50','81','99') and new.local_d = 'ZZ' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
+	end if;	 
+
+ 	--IF (NEW.lin_d IS NULL OR NEW.lin_d = 0) THEN
+	NEW.lin_d=ST_Length(new.geom)::integer;
+	--END IF;
+ 	NEW.lin_g := 0;
+
+
+	NEW.com_g := TRUE;
+	NEW.insee_d := v_insee;
+	NEW.insee_g := v_insee;
+	NEW.commune_d := v_commune;
+	NEW.commune_g := v_commune;
+	new.gestio_a_g := CASE WHEN new.gestio_g like '%99%' then new.gestio_a_g else null end;
+	new.proprio_a_g := CASE WHEN new.proprio_g like '%99%' then new.proprio_a_g else null end;
+	new.gestio_a_d := CASE WHEN new.gestio_d like '%99%' then new.gestio_a_d else null end;
+	new.proprio_a_d := CASE WHEN new.proprio_d like '%99%' then new.proprio_a_d else null end;
+
+	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445',
+	'60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_d := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_d := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_d := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_d := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_d := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_d := 'ccps';
+  	ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_d := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_d := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_d := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_d := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_d := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_d := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	THEN new.epci_d := 'ccpc';
+
+  	ELSE new.epci_d := null;
+    END IF;
+   
+   	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_g := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_g := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_g := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_g := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_g := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_g := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_g := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_g := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_g := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_g := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_g := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_g := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+    THEN new.epci_d := 'ccpc';
+	ELSE new.epci_g := null;
+    END IF;
+   
+	new.ame_g := 'ZZ';
+	new.dbetat_g := 'ZZ';
+	new.an_prog_g := null;
+	new.d_service_g := null;
+	new.regime_g := 'ZZ';
+	new.sens_g := 'ZZ';
+	new.largeur_g := null;
+	new.local_g := 'ZZ';
+	new.revet_g := 'ZZ';
+    NEW.cout_g := null;
+    NEW.subv_g := null;
+    NEW.proprio_g := 'ZZ';
+    NEW.gestio_g := 'ZZ';
+    NEW.conv_g := 'z';
+
+   
+   -- si voie verte ou assimilé le régime est à non concerné ainsi que la localisation
+   IF NEW.ame_d IN ('40','71','99') THEN
+    new.local_d := 'ZZ';
+   END IF;
+
+	
+   
+END IF;
+
+
+
+-- si mon aménagement n'est qu'à gauche
+IF NEW.posi_dg = '12' then
+
+		-- le régime de circulation doit être indiqué pour des aménagements sur chaussée
+/*	if new.ame_g in ('20','21','31','32','33','60','73','82','83','84','85','90') and new.regime_g = '00' then
+		RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer le régime de circulation sur la chaussée où se situe l''aménagement.</font></b><br><br>';
+	end if;
+*/
+
+	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
+    IF NEW.requal_g is true AND (NEW.reqame_g IS NULL OR NEW.reqame_g = '') AND (NEW.reqam_dbetat_g IS NULL OR NEW.reqam_dbetat_g = '') THEN
+       RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de gauche sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
+    END IF;
+	IF NEW.requal_g is false then
+		NEW.reqame_g := 'ZZ';
+		NEW.reqam_dbetat_g := 'ZZ';
+	end if;
+	-- le niveau d'avancement ne peut pas être à non renseigné
+	if new.dbetat_g = '00' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
+	end if ;
+
+   -- année de programmation doit être supérieur à 2000
+	if new.an_prog_g is not null and new.an_prog_g <= 2000 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de gauche n''est pas cohérente.</font></b><br><br>';
+	end if;	
+
+	    -- largeur cohérente <=5m
+	if new.largeur_d is not null and new.largeur_d >= 5 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de gauche n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
+	end if;	
+
+	    -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if new.ame_g NOT IN ('10','40','50','81','99') and new.local_g = 'ZZ' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
+	end if;	
+
+ 	--IF (NEW.lin_g IS NULL OR NEW.lin_g = 0) THEN
+	NEW.lin_g=ST_Length(new.geom)::integer;
+	--END IF;
+ 	NEW.lin_d := 0;
+ 
+	NEW.insee_d := v_insee;
+	NEW.insee_g := v_insee;
+	NEW.commune_d := v_commune;
+	NEW.commune_g := v_commune;
+	new.gestio_a_g := CASE WHEN new.gestio_g like '%99%' then new.gestio_a_g else null end;
+	new.proprio_a_g := CASE WHEN new.proprio_g like '%99%' then new.proprio_a_g else null end;
+	new.gestio_a_d := CASE WHEN new.gestio_d like '%99%' then new.gestio_a_d else null end;
+	new.proprio_a_d := CASE WHEN new.proprio_d like '%99%' then new.proprio_a_d else null end;
+
+	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_d := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_d := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_d := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_d := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_d := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_d := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_d := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_d := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_d := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_d := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_d := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_d := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+ 		THEN new.epci_d := 'ccpc';
+  	ELSE new.epci_d := null;
+    END IF;
+   	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_g := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_g := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_g := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_g := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_g := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_g := 'ccps';
+  	ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_g := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_g := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_g := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_g := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_g := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_g := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	THEN new.epci_g := 'ccpc';
+  	ELSE new.epci_g := null;
+    END IF;
+
+    NEW.com_g := TRUE;
+	new.ame_d := 'ZZ';
+	new.dbetat_d := 'ZZ';
+	new.an_prog_d := null;
+	new.d_service_d := null;
+	new.regime_d := 'ZZ';
+	new.sens_d := 'ZZ';
+	new.largeur_d := null;
+	new.local_d := 'ZZ';
+	new.revet_d := 'ZZ';
+    NEW.cout_d := null;
+    NEW.subv_d := null;
+    NEW.proprio_d := 'ZZ';
+    NEW.gestio_d := 'ZZ';
+    NEW.conv_d := 'z';
+   
+     -- si voie verte le régime est à non concerné ainsi que la localisation
+   IF NEW.ame_g IN ('40','71','99') THEN
+    new.local_d := 'ZZ';
+   END IF;
+  
+END IF;
+
+
+-- si mon aménagement est à gauche et à droite
+IF NEW.posi_dg = '20' then
+
+
+	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
+    IF NEW.requal_g is true AND (NEW.reqame_g IS NULL OR NEW.reqame_g = '') AND (NEW.reqam_dbetat_g IS NULL OR NEW.reqam_dbetat_g = '') THEN
+       RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de gauche sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
+    END IF;
+	IF NEW.requal_g is false then
+		NEW.reqame_g := 'ZZ';
+		NEW.reqam_dbetat_g := 'ZZ';
+	end if;	
+
+	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
+    IF NEW.requal_d is true AND (NEW.reqame_d IS NULL OR NEW.reqame_d = '') AND (NEW.reqam_dbetat_d IS NULL OR NEW.reqam_dbetat_d = '') THEN
+       RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de droite sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
+    END IF;
+
+	    -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
+	if (new.ame_g NOT IN ('10','40','50','81','99') and new.local_g = 'ZZ') and (new.ame_d NOT IN ('10','40','50','81','99') and new.local_d = 'ZZ') then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
+	end if;	
+
+	IF NEW.requal_d is false then
+		NEW.reqame_d := 'ZZ';
+		NEW.reqam_dbetat_d := 'ZZ';
+	end if;
+
+ 	--IF NEW.lin_g IS null or NEW.lin_g = 0  THEN
+	NEW.lin_g=ST_Length(new.geom)::integer;
+	--END IF;
+	--IF NEW.lin_d IS null or NEW.lin_d = 0 THEN
+	NEW.lin_d=ST_Length(new.geom)::integer;
+	--END IF;
+-- si commune identique
+    IF NEW.com_g IS TRUE then
+		NEW.insee_d := v_insee;
+		NEW.insee_g := v_insee;
+		NEW.commune_d := v_commune;
+		NEW.commune_g := v_commune;
+
+	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_d := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_d := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_d := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_d := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_d := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_d := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_d := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_d := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_d := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_d := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_d := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_d := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	  	THEN new.epci_d := 'ccpc';
+  	ELSE new.epci_d := null;
+    END IF;
+   	IF v_insee IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_g := 'cclo';
+  	ELSIF  v_insee IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_g := 'arc';
+  	ELSIF v_insee IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_g := 'ccpe';
+  	ELSIF v_insee IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_g := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_g := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_g := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_g := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_g := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_g := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_g := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_g := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_g := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	  	THEN new.epci_g := 'ccpc';
+  	ELSE new.epci_g := null;
+    END IF;
+   
+	ELSE
+	
+	IF NEW.insee_g IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_g := 'cclo';
+  	ELSIF  NEW.insee_g IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_g := 'arc';
+  	ELSIF NEW.insee_g IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_g := 'ccpe';
+  	ELSIF NEW.insee_g IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_g := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_g := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_g := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_g := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_g := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_g := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_g := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_g := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_g := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	  	THEN new.epci_g := 'ccpc';
+  	ELSE new.epci_g := null;
+    END IF;
+   
+	IF NEW.insee_d IN ('60025','60032','60064','60072','60145','60167','60171','60184','60188','60305','60324','60438','60445','60491','60534','60569','60572','60593','60641','60647')
+  	THEN new.epci_d := 'cclo';
+  	ELSIF  NEW.insee_d IN ('60023','60067','60068','60070','60151','60156','60159','60323','60325','60326','60337','60338','60382','60402','60447','60578','60579','60597','60600','60665','60667','60674')
+    THEN new.epci_d := 'arc';
+  	ELSIF NEW.insee_d IN ('60024','60036','60040','60078','60125','60149','60152','60210','60223','60229','60254','60284','60308','60318','60369','60424','60441','60531','60540')
+  	THEN new.epci_d := 'ccpe';
+  	ELSIF NEW.insee_d IN ('60043','60119','60147','60150','60368','60373','60378','60392','60423','60492','60501','60537','60582','60636','60642','60654')
+  	THEN new.epci_d := 'cc2v';
+    elsif v_insee IN ('60129','60610','60488','60676','60118','60189')
+  	THEN new.epci_d := 'ccpn';
+    ELSIF v_insee IN ('60126','60206','60383','60386','60675','60689','60273','60166','60048','60408','60281','60632')
+  	THEN new.epci_d := 'ccps';
+  ELSIF v_insee IN ('60440','60553','60177','60137')
+  	THEN new.epci_d := 'ccpp';
+  	ELSIF v_insee IN ('60247','60375','60130')
+  	THEN new.epci_d := 'ccc';
+  	ELSIF v_insee IN ('60562','60587','60563','60050','60509','60508','60536','60680')
+  	THEN new.epci_d := 'ccpoh';
+  	ELSIF v_insee IN ('60525','60560')
+  	THEN new.epci_d := 'ccsso';
+  	ELSIF v_insee IN ('60650','60543','60274','60481','60430')
+  	THEN new.epci_d := 'ccpv';
+  	ELSIF v_insee IN ('02644','02528','02514','02795','02673','02562','02527','02762','02034')
+  	THEN new.epci_d := 'ccrv';
+  	ELSIF v_insee IN ('02093','02140')
+  	  	THEN new.epci_d := 'ccpc';
+  	ELSE new.epci_d := null;
+    END IF;
+   
+	END IF;
+
+		new.gestio_a_d := CASE WHEN new.gestio_d like '%99%' then new.gestio_a_d else null end;
+		new.proprio_a_d := CASE WHEN new.proprio_d like '%99%' then new.proprio_a_d else null end;
+		new.gestio_a_g := CASE WHEN new.gestio_g like '%99%' then new.gestio_a_g else null end;
+		new.proprio_a_g := CASE WHEN new.proprio_g like '%99%' then new.proprio_a_g else null end;	
+
+    -- si aménagement identique
+    IF NEW.mame_g IS TRUE then
+    	new.ame_g := new.ame_d;
+        new.dbetat_g := new.dbetat_d;
+        new.regime_g := new.regime_d;
+        new.sens_g := new.sens_d;
+        new.sens_g := new.sens_d;
+        new.largeur_g := new.largeur_d;
+        new.local_g := new.local_d;
+        new.revet_g := new.revet_d;
+        new.revet_g := new.revet_d;
+        new.an_prog_g := new.an_prog_d;
+        new.cout_g := new.cout_d;
+        new.subv_g := new.subv_d;
+        new.d_service_g := new.d_service_d;
+        new.gestio_g := new.gestio_d;
+        new.proprio_g := new.proprio_d;
+        new.conv_g := new.conv_d;
+        new.requal_g := new.requal_d;
+		new.reqame_g := new.reqame_d;
+		new.reqam_dbetat_g := new.reqam_dbetat_d;
+		new.gestio_a_g := new.gestio_a_d;
+		new.proprio_a_g := new.proprio_a_d;
+
+    end if;
+
+   	-- le régime de circulation doit être indiqué pour des aménagements sur chaussée
+/*	if (new.ame_d in ('20','21','31','32','33','60','73','82','83','84','85','90') and new.regime_d = '00') or  (new.ame_g in ('20','21','31','32','33','60','73','82','83','84','85','90') and new.regime_g = '00') then
+		RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer le régime de circulation sur la chaussée où se situe l''aménagement.</font></b><br><br>';
+	end if;
+  */ 
+	-- le niveau d'avancement ne peut pas être à non renseigné
+	if new.dbetat_d = '00' or new.dbetat_g = '00' then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
+	end if ;
+
+   -- si voie verte le régime est à non concerné ainsi que la localisation
+   IF NEW.ame_d IN ('40','71','99') THEN
+    new.local_d := 'ZZ';
+   END IF;
+   IF NEW.ame_g IN ('40','71','99') THEN
+    new.local_g := 'ZZ';
+   END IF;
+   
+END IF;
+
+	-- contrôle saisie
+	-- année de programmation doit être supérieur à 2000
+	if new.an_prog_d is not null and new.an_prog_d <= 2000 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de droite n''est pas cohérente.</font></b><br><br>';
+	end if;	
+
+	   -- année de programmation doit être supérieur à 2000
+	if new.an_prog_g is not null and new.an_prog_g <= 2000 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de gauche n''est pas cohérente.</font></b><br><br>';
+	end if;	
+
+	-- largeur cohérente <=5m
+	if new.largeur_d is not null and new.largeur_d >= 5 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de droite n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
+	end if;	
+ 
+	-- largeur cohérente <=5m
+	if new.largeur_g is not null and new.largeur_g >= 5 then
+		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de gauche n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
+	end if;	
+
+
+/*****/
+-- gestion des entretiens et aménageurs non renseignés
+
+
+	-- pour gestionnaire à droite null
+   if NEW.posi_dg = '11' and new.gestio_d is null then
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à droite.</b></font><br><br>';
+   end if;
+   -- pour gestionnaire à gauche null
+   if NEW.posi_dg = '12' and new.gestio_g is null then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à gauche.</b></font><br><br>';
+   end if;
+
+   -- pour gestionnaire à gauche et à droite
+  if NEW.posi_dg = '20' and (new.gestio_g is null or new.gestio_d is null) then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à droite ou à gauche.</b></font><br><br>';
+   end if;
+
+	-- pour entretien à droite null
+   if NEW.posi_dg = '11' and new.proprio_d is null then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un organisme d''entretien à droite.</b></font><br><br>';
+   end if;
+   -- pour entretien à gauche null
+   if NEW.posi_dg = '12' and new.proprio_g is null then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un organisme d''entretien à gauche.</b></font><br><br>';
+   end if;
+
+   -- pour entretien à gauche et à droite null
+  if NEW.posi_dg = '20' and (new.proprio_g is null or new.proprio_d is null) then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite ou à gauche.</b></font><br><br>';
+   end if;
+
+
+/*****/
+
+	-- pour gestionnaire à droite
+   if NEW.posi_dg = '11' and length(new.gestio_d) <> 2 and (new.gestio_d like '%00%' or new.gestio_d like '%ZZ%') then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à droite.</b></font><br><br>';
+   end if;
+   -- pour gestionnaire à gauche
+   if NEW.posi_dg = '12' and length(new.gestio_g) <> 2 and (new.gestio_g like '%00%' or new.gestio_g like '%ZZ%') then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à gauche.</b></font><br><br>';
+   end if;
+
+   -- pour gestionnaire à gauche et à droite
+  if NEW.posi_dg = '20' and ((length(new.gestio_g) <> 2 and (new.gestio_g like '%00%' or new.gestio_g like '%ZZ%')) or
+   (length(new.gestio_d) <> 2 and (new.gestio_d like '%00%' or new.gestio_d like '%ZZ%'))) then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à droite ou à gauche.</b></font><br><br>';
+   end if;
+
+	-- pour entretien à droite
+   if NEW.posi_dg = '11' and length(new.proprio_d) <> 2 and (new.proprio_d like '%00%' or new.proprio_d like '%ZZ%') then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite.</b></font><br><br>';
+   end if;
+   -- pour entretien à gauche
+   if NEW.posi_dg = '12' and length(new.proprio_g) <> 2 and (new.proprio_g like '%00%' or new.proprio_g like '%ZZ%') then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme à gauche.</b></font><br><br>';
+   end if;
+
+   -- pour entretien à gauche et à droite
+  if NEW.posi_dg = '20' and ((length(new.proprio_g) <> 2 and (new.proprio_g like '%00%' or new.proprio_g like '%ZZ%')) or
+   (length(new.proprio_d) <> 2 and (new.proprio_d like '%00%' or new.proprio_d like '%ZZ%'))) then 
+   	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite ou à gauche.</b></font><br><br>';
+   end if;
+
+
+	
+   -- si type de mobilité = piéton, sens de circulation par défaut à ZZ 
+   if new.typ_mob = '20' then
+   	  new.sens_g := 'ZZ'; 	
+   	  new.sens_d := 'ZZ';
+   end if;
+
+IF (TG_OP = 'UPDATE') THEN
+    --raise exception 'après fusion passe ici 1';
+	-- quand je réactive un tronçon
+	IF old.dbstatut <> NEW.dbstatut AND NEW.dbstatut = '10' THEN
+		NEW.dbstatut = '10';
+	--raise exception 'nv tronc --> %',new.id_tronc || '-' || old.id_tronc;
+	--raise exception 'après fusion passe ici 2';
+	-- réaffectation de l'idtronc dans geo_mob_pan
+	update m_mobilite_douce.geo_mob_pan set id_tronc = new.id_tronc 
+    where geo_mob_pan.id_pan IN (select p.id_pan from m_mobilite_douce.geo_mob_pan p, m_mobilite_douce.geo_mob_troncon t where st_distance(p.geom,t.geom) < 7 and t.id_tronc = new.id_tronc);
+	
+   	-- réaffectation des itinéraires aux panneaux
+   	with req_maj_iti_pan as
+	(
+		select p.id_pan, ti.id_iti from m_mobilite_douce.lk_mob_tronc_iti ti, m_mobilite_douce.geo_mob_pan p, m_mobilite_douce.geo_mob_troncon t
+		WHERE p.id_tronc = ti.id_tronc and t.id_tronc = new.id_tronc and st_distance(t.geom,p.geom) < 7 and p.id_pan || '-' || ti.id_iti
+		not in (select i.id_pan || '-' || i.id_iti from m_mobilite_douce.lk_mob_pan_iti i WHERE i.id_iti IS NOT null 
+		and i.id_pan || '-' || i.id_iti IS NOT null)
+	)
+	insert into m_mobilite_douce.lk_mob_pan_iti (id, id_pan, id_iti)
+	select nextval('m_mobilite_douce.lk_mob_pan_iti_seq'::regclass), i.id_pan, i.id_iti from req_maj_iti_pan i; 
+	
+	-- réaffectation de la relation repère/itinéraire   
+	with req_maj_iti_rep as
+	(
+		select r.id_rep, ti.id_iti from m_mobilite_douce.lk_mob_tronc_iti ti, m_mobilite_douce.geo_mob_repere r, m_mobilite_douce.geo_mob_troncon t
+		where t.id_tronc = ti.id_tronc and r.typ_rep not in ('10','30') and t.id_tronc = NEW.id_tronc and st_intersects(st_buffer(r.geom,1),t.geom) is true and r.id_rep || '-' || ti.id_iti
+		not in (select i.id_rep || '-' || i.id_iti from m_mobilite_douce.lk_mob_rep_iti i WHERE i.id_iti IS NOT null
+		and i.id_rep || '-' || i.id_iti is not null)
+	)
+		insert into m_mobilite_douce.lk_mob_rep_iti (id, id_rep, id_iti)
+		select nextval('m_mobilite_douce.lk_mob_rep_iti_seq'::regclass), i.id_rep, i.id_iti from req_maj_iti_rep i;
+   
+	-- réaffectation des relations repères/tronçons
+	with req_insert as 
+	(
+		select r.id_rep, new.id_tronc from m_mobilite_douce.geo_mob_repere r
+		where st_intersects(new.geom,st_buffer(r.geom,1)) is true
+		AND r.id_rep || '-' || new.id_tronc NOT IN (SELECT lk.id_rep || '-' || lk.id_tronc FROM m_mobilite_douce.lk_mob_rep_troncon lk)
+	)
+	insert into m_mobilite_douce.lk_mob_rep_troncon (id, id_rep, id_tronc)
+	select nextval('m_mobilite_douce.lk_mob_rep_troncon_seq'::regclass), i.id_rep, i.id_tronc from req_insert i;	
+		
+	END IF;
+
+	IF old.dbstatut <> NEW.dbstatut AND new.dbstatut = '11' then
+	--raise exception 'après fusion passe ici 3';
+	-- si mon tronçon est découpé je sauvegarde les relations tronçon iti dans ma table de passage (le tronçon découpé n'est pas supprimé mais mis en inactif)
+	if (select count(*) from m_mobilite_douce.lk_mob_tronc_iti where id_tronc = old.id_tronc) > 0 then
+        
+      	with req_insert as
+    	(
+    	select 'TC' || currval('m_mobilite_douce.geo_mob_troncon_seq') as id_tronc_new, id_tronc, id_iti from m_mobilite_douce.lk_mob_tronc_iti where id_tronc = old.id_tronc
+    	)
+    	insert into m_mobilite_douce.lk_mob_tronc_iti_decoupe (id, id_tronc,id_iti)
+    	select nextval('m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq'::regclass), id_tronc_new, i.id_iti from req_insert i;
+    	with req_insert as
+    	(
+    	select 'TC' || currval('m_mobilite_douce.geo_mob_troncon_seq')-1 as id_tronc_new, id_tronc, id_iti from m_mobilite_douce.lk_mob_tronc_iti where id_tronc = old.id_tronc
+    	)
+    	insert into m_mobilite_douce.lk_mob_tronc_iti_decoupe (id, id_tronc,id_iti)
+    	select nextval('m_mobilite_douce.lk_mob_tronc_iti_decoupe_seq'::regclass), id_tronc_new, i.id_iti from req_insert i;
+  		
+	    -- je supprime les relations repère/itinéraires
+    	delete from m_mobilite_douce.lk_mob_rep_iti where id_rep IN (select id_rep from m_mobilite_douce.lk_mob_rep_troncon where id_tronc = old.id_tronc);
+    	-- je supprime les relations repère/troncon
+    	delete from m_mobilite_douce.lk_mob_rep_troncon where id_tronc = old.id_tronc;
+    	-- je supprime les relations panneau_iti
+    	delete from m_mobilite_douce.lk_mob_pan_iti where id_pan in (select id_pan from m_mobilite_douce.geo_mob_pan where id_tronc = old.id_tronc);
+    	-- je mets à null l'id_tronc présent dans la classe d'objets geo_mob_pan
+    	update m_mobilite_douce.geo_mob_pan set id_tronc = null where id_tronc = old.id_tronc;	
+    
+    END IF;
+		
+	end if;
+
+
+END IF;
+  
+  
+END IF;
+
+IF (TG_OP = 'DELETE') then
+	--raise exception 'après fusion passe ici 4';
+	--raise exception 'passe dans delete tronçon contrôle';
+    -- gestion des suppressions d'objets par le statut (attention ici avec le découpage qui supprime le tronçon découpé 
+	if old.dbstatut = '10' THEN
+	    --raise EXCEPTION 'ok';
+		-- je mets à jour le statut en inactif (1er suppression)
+		UPDATE m_mobilite_douce.geo_mob_troncon SET dbstatut = '11' WHERE id_tronc = OLD.id_tronc AND OLD.dbstatut = '10';
+	--raise exception 'après fusion passe ici 5 --> %', old.id_tronc;
+	else
+		-- je désactive le trigger contrôle dans la table de relation iti/tronc pour optimiser la suppression
+		ALTER TABLE m_mobilite_douce.lk_mob_tronc_iti DISABLE TRIGGER t_t0_controle;
+	--raise exception 'après fusion passe ici 6 --> %', old.id_tronc;
+		-- je supprime les repères si lié au tronçon
+    	--delete from m_mobilite_douce.geo_mob_repere 
+    	--where id_rep IN (select id_rep from m_mobilite_douce.lk_mob_rep_troncon where id_tronc = old.id_tronc);
+    	-- je supprime les relations tronc / iti
+		delete from m_mobilite_douce.lk_mob_tronc_iti where id_tronc = old.id_tronc;
+		-- je supprime les relations tronc / repère
+	   -- raise exception 'je passe pour supprimer relation tronc-iti après 2nd supression --> %',old.id_tronc;
+    	delete from m_mobilite_douce.lk_mob_rep_troncon	where id_tronc = old.id_tronc;
+    	-- la suppression lk_mob_rep_iti se fait quand je supprime geo_mob_repere
+	    
+   		-- je supprime les médias associés
+		delete from m_mobilite_douce.an_mob_media where id = old.id_tronc;
+
+		-- je résactive le trigger contrôle dans la table de relation iti/tronc
+		ALTER TABLE m_mobilite_douce.lk_mob_tronc_iti ENABLE TRIGGER t_t0_controle;
+	return old;
+	end if;
+
+END IF;
+
+return new;
+
+end;
+
+$function$
+;
+
+COMMENT ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() IS 'Fonction gérant les contrôles de saisies et les informations automatiquement remplies liées à la particularité des infos de droites et de gauche';
+
+-- Permissions
+
+ALTER FUNCTION m_mobilite_douce.ft_m_troncon_controle() OWNER TO create_sig;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO public;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO create_sig;
+
 drop view if exists m_mobilite_douce.xapps_an_v_amgt_cycl_tab;
 drop view if exists m_mobilite_douce.xapps_an_v_cycl_tab1;
 drop view if exists m_mobilite_douce.xapps_an_v_iti_ame_pan_tab;
@@ -4896,6 +5644,7 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_suppan_rep_controle_update_troncon() I
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle ###############################################
+
 -- DROP FUNCTION m_mobilite_douce.ft_m_troncon_controle();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_troncon_controle()
@@ -5607,6 +6356,8 @@ IF (TG_OP = 'DELETE') then
 		UPDATE m_mobilite_douce.geo_mob_troncon SET dbstatut = '11' WHERE id_tronc = OLD.id_tronc AND OLD.dbstatut = '10';
 	--raise exception 'après fusion passe ici 5 --> %', old.id_tronc;
 	else
+		-- je désactive le trigger contrôle dans la table de relation iti/tronc pour optimiser la suppression
+		ALTER TABLE m_mobilite_douce.lk_mob_tronc_iti DISABLE TRIGGER t_t0_controle;
 	--raise exception 'après fusion passe ici 6 --> %', old.id_tronc;
 		-- je supprime les repères si lié au tronçon
     	--delete from m_mobilite_douce.geo_mob_repere 
@@ -5620,7 +6371,9 @@ IF (TG_OP = 'DELETE') then
 	    
    		-- je supprime les médias associés
 		delete from m_mobilite_douce.an_mob_media where id = old.id_tronc;
-	
+
+		-- je résactive le trigger contrôle dans la table de relation iti/tronc
+		ALTER TABLE m_mobilite_douce.lk_mob_tronc_iti ENABLE TRIGGER t_t0_controle;
 	return old;
 	end if;
 
@@ -5634,12 +6387,6 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() IS 'Fonction gérant les contrôles de saisies et les informations automatiquement remplies liées à la particularité des infos de droites et de gauche';
-
--- Permissions
-
-ALTER FUNCTION m_mobilite_douce.ft_m_troncon_controle() OWNER TO create_sig;
-GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO public;
-GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO create_sig;
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle_after ###############################################
