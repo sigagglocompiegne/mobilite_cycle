@@ -135,6 +135,7 @@ AS SELECT s.id_statio AS id_local,
         END AS lumiere,
     s.url AS url_info,
     s.an_pose AS d_service,
+    ev.valeur AS statut,
         CASE
             WHEN s.epci::text = 'arc'::text THEN 'CA de la Région de Compiègne et de la Basse Automne'::text
             WHEN s.epci::text = 'cclo'::text THEN 'CC des Lisières de l''Oise'::text
@@ -156,11 +157,12 @@ AS SELECT s.id_statio AS id_local,
      JOIN r_objet.lt_gestio_proprio g ON s.gestio = g.code::text
      JOIN r_objet.lt_gestio_proprio p ON s.proprio = p.code::text
      JOIN m_mobilite_douce.lt_mob_statio_protect pr ON s.protect::text = pr.code::text
+     JOIN r_objet.lt_etat_avancement ev ON s.dbetat::text = ev.code::text
      JOIN m_mobilite_douce.lt_mob_statio_acces a ON s.acces::text = a.code::text
      JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
      JOIN m_mobilite_douce.lt_mob_statio_typ_accro ta ON s.typ_accro::text = ta.code::text
      LEFT JOIN r_osm.geo_osm_epci epci ON epci.iepci::text = s.epci::text
-  WHERE s.dbetat::text = '40'::text AND s.dbstatut::text = '10'::text;
+  WHERE s.dbstatut::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_statio_cycl IS 'Vue opendata des lieux de stationnements cyclables actifs et en service';
 
@@ -351,8 +353,8 @@ AS SELECT t.id_tronc AS id_local,
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_amgt_cycl IS 'Vue opendata des aménagements cyclables (les aménagements seront filtrés pour les états à EN TRAVAUC, EN SERVICE et PROVISOIRE pour l''export en geojson conformément au schéma national';
 
 
-
 -- #################################################################### vue xopendata_geo_v_mob_iti_rand ###############################################
+
 -- m_mobilite_douce.xopendata_geo_v_mob_iti_rand source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand
@@ -428,8 +430,8 @@ AS SELECT r.id_itirand AS id_local,
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_iti_rand IS 'Vue opendata des itinéraires de randonnées en service et avec un statut actif dans le schéma national des itinéraires de randonnées';
 
--- #################################################################### vue xopendata_geo_v_mob_regroup ###############################################
 
+-- #################################################################### vue xopendata_geo_v_mob_regroup ###############################################
 -- m_mobilite_douce.xopendata_geo_v_mob_regroup source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup
@@ -468,10 +470,7 @@ AS WITH req_photo AS (
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_regroup IS 'Vue opendata des regroupements des équipements vélos';
 
-
-
 -- #################################################################### vue xopendata_geo_v_mob_equip ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_equip source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_equip
@@ -488,13 +487,8 @@ AS ( WITH req_photo AS (
     lste.valeur AS ss_type_equip,
     p.valeur AS protection,
     NULL::smallint AS capacite,
-        CASE
-            WHEN e.dbetat::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN 'Non renseigné'::character varying
-            WHEN e.dbetat::text = ANY (ARRAY['10'::character varying::text, '20'::character varying::text, '30'::character varying::text]) THEN 'en projet'::character varying
-            WHEN e.dbetat::text = '90'::text THEN 'moyen'::character varying
-            WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
-            ELSE em.valeur
-        END AS etat,
+    ev.valeur AS statut,
+    em.valeur AS etat,
     ( WITH req_p AS (
                  SELECT unnest(string_to_array(e.proprio, ';'::text)) AS code
                 )
@@ -550,6 +544,7 @@ AS ( WITH req_photo AS (
      LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON e.protect::text = p.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_etat em ON e.etat_mob::text = em.code::text
      LEFT JOIN r_objet.lt_booleen c ON e.couvert::text = c.code::text
+     LEFT JOIN r_objet.lt_etat_avancement ev ON ev.code::text = e.dbetat::text
      LEFT JOIN r_objet.lt_booleen c1 ON e.payant::text = c1.code::text
      LEFT JOIN r_objet.lt_booleen c2 ON e.acces_pmr::text = c2.code::text
      LEFT JOIN r_objet.lt_src_geom s ON e.src_geom::text = s.code::text
@@ -577,13 +572,8 @@ UNION ALL
     m.valeur AS ss_type_equip,
     p.valeur AS protection,
     s.cap AS capacite,
-        CASE
-            WHEN s.dbetat::text = ANY (ARRAY['00'::character varying::text, 'ZZ'::character varying::text]) THEN 'Non renseigné'::character varying
-            WHEN s.dbetat::text = ANY (ARRAY['10'::character varying::text, '20'::character varying::text, '30'::character varying::text]) THEN 'en projet'::character varying
-            WHEN s.dbetat::text = '90'::text THEN 'moyen'::character varying
-            WHEN em.code::text = '30'::text THEN 'dégradé'::character varying
-            ELSE em.valeur
-        END AS etat,
+    ev.valeur AS statut,
+    em.valeur AS etat,
     ( WITH req_p AS (
                  SELECT unnest(string_to_array(s.proprio, ';'::text)) AS code
                 )
@@ -635,6 +625,7 @@ UNION ALL
      LEFT JOIN m_mobilite_douce.lt_mob_statio_mobil m ON s.mobil::text = m.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_statio_protect p ON s.protect::text = p.code::text
      LEFT JOIN m_mobilite_douce.lt_mob_etat em ON s.etat_mob::text = em.code::text
+     LEFT JOIN r_objet.lt_etat_avancement ev ON ev.code::text = s.dbetat::text
      LEFT JOIN r_objet.lt_booleen c ON s.couvert::text = c.code::text
      LEFT JOIN r_objet.lt_src_geom src ON s.src_geom::text = src.code::text
      LEFT JOIN req_photo ps ON ps.id = s.id_statio
@@ -646,7 +637,6 @@ COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_equip IS 'Vue opendata des 
 
 
 -- #################################################################### vue xopendata_geo_v_mob_repere ###############################################
-
 -- m_mobilite_douce.xopendata_geo_v_mob_repere source
 
 CREATE OR REPLACE VIEW m_mobilite_douce.xopendata_geo_v_mob_repere
@@ -655,6 +645,7 @@ AS SELECT r.id_rep,
     tr.valeur AS typ_rep,
     r.typ_rep_a AS autre_rep,
     r.observ,
+    ev.valeur AS statut,
     r.insee,
     r.commune,
         CASE
@@ -670,8 +661,9 @@ AS SELECT r.id_rep,
    FROM m_mobilite_douce.geo_mob_repere r
      LEFT JOIN m_mobilite_douce.lt_mob_rep_typrep tr ON tr.code::text = r.typ_rep::text
      LEFT JOIN r_osm.geo_vm_osm_commune_grdc epci ON epci.insee::text = r.insee::text
+     LEFT JOIN r_objet.lt_etat_avancement ev ON ev.code::text = r.dbetat::text
      LEFT JOIN r_osm.geo_osm_epci epcinull ON epcinull.iepci::text = r.epci::text
-  WHERE r.usa_rep::text = '10'::text;
+  WHERE r.usa_rep::text = '10'::text AND r.dbstatut::text = '10'::text;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_repere IS 'Vue opendata des repères cyclables';
 
@@ -739,6 +731,5 @@ AS WITH req_photo AS (
   GROUP BY epcinull.lib_epci, epci.lib_epci, p.id_pan, ts.valeur, tp.typpan, ep.valeur, ea.valeur, p.an_pose, p.proprio_a, p.gestio_a, p.observ, p.insee, p.commune, p.dbinsert, p.dbupdate, p.geom;
 
 COMMENT ON VIEW m_mobilite_douce.xopendata_geo_v_mob_panneau IS 'Vue opendata des panneaux';
-
 
 
