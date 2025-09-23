@@ -4478,6 +4478,7 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_moddouce_log() IS 'Fonction gérant l'
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_refresh_iti ###############################################
+
 -- DROP FUNCTION m_mobilite_douce.ft_m_refresh_iti();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_refresh_iti()
@@ -4495,7 +4496,7 @@ begin
 
 IF new.epci is null then
 
-v_epci := (select values from custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
+v_epci := (select values from x_admin.custom_attributes ca where name = 'epci' and (user_login = NEW.op_sai or user_login = NEW.op_maj));
 
 else
 
@@ -4505,7 +4506,7 @@ end if;
 
 IF (TG_OP = 'INSERT' or (TG_OP = 'UPDATE' and new.dbstatut = '10')) then
 
-
+--RAISE EXCEPTION 'test';
 delete from m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon where epci = v_epci;
 
 WITH req_t AS (
@@ -4537,7 +4538,8 @@ WITH req_t AS (
                             ELSE ''::text
                         END
 							AS id_plan,
-                    (st_dump(t.geom)).geom AS geom
+                    (st_dump(t.geom)).geom AS geom,
+                    t.insee_d as insee
                    FROM m_mobilite_douce.geo_mob_troncon t
                      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
                      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
@@ -4564,12 +4566,13 @@ WITH req_t AS (
             d.proprio,
             d.epci,
             d.observ,
-            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
-            string_agg(d.id_itirand, ','::text) AS code_iditirand,
-            string_agg(d.id_plan, ','::text) AS code_idplan,
-            st_multi(d.geom) AS geom
+            string_agg(distinct d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(distinct d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(distinct d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom,
+            d.insee
            FROM req_d d
-          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal,d.insee)
         UNION ALL
         ( WITH req_d1 AS (
                  SELECT t.id_tronc,
@@ -4599,7 +4602,8 @@ WITH req_t AS (
                             ELSE ''::text
                         END
 							AS id_plan,
-                    (st_dump(t.geom)).geom AS geom
+                    (st_dump(t.geom)).geom AS geom,
+                    t.insee_d as insee
                    FROM m_mobilite_douce.geo_mob_troncon t
                      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
                      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
@@ -4626,12 +4630,13 @@ WITH req_t AS (
             d.proprio,
             d.epci,
             d.observ,
-            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
-            string_agg(d.id_itirand, ','::text) AS code_iditirand,
-            string_agg(d.id_plan, ','::text) AS code_idplan,
-            st_multi(d.geom) AS geom
+            string_agg(distinct d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(distinct d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(distinct d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom,
+            d.insee
            FROM req_d1 d
-          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal,d.insee)
         UNION ALL
         ( WITH req_d_chaussee AS (
                  SELECT t.id_tronc,
@@ -4661,7 +4666,8 @@ WITH req_t AS (
                             ELSE ''::text
                         END
 							AS id_plan,
-                    st_offsetcurve((st_dump(t.geom)).geom, '-4'::integer::double precision, 'quad_segs=4 join=round'::text) AS geom
+                    st_offsetcurve((st_dump(t.geom)).geom, '-4'::integer::double precision, 'quad_segs=4 join=round'::text) AS geom,
+                    t.insee_d as insee
                    FROM m_mobilite_douce.geo_mob_troncon t
                      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
                      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
@@ -4688,12 +4694,13 @@ WITH req_t AS (
             d.proprio,
             d.epci,
             d.observ,
-            string_agg(d.id_iticycl, ','::text) AS code_iditicycl,
-            string_agg(d.id_itirand, ','::text) AS code_iditirand,
-            string_agg(d.id_plan, ','::text) AS code_idplan,
-            st_multi(d.geom) AS geom
+            string_agg(distinct d.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(distinct d.id_itirand, ','::text) AS code_iditirand,
+            string_agg(distinct d.id_plan, ','::text) AS code_idplan,
+            st_multi(d.geom) AS geom,
+            d.insee
            FROM req_d_chaussee d
-          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal)
+          GROUP BY d.id_tronc, d.ame, d.dbstatut, d.typ_mob, d.dbetat, d.geom, d.local, d.epci, d.regime, d.gestio, d.proprio, d.observ, d.requal,d.insee)
         UNION ALL
         ( WITH req_g_chaussee AS (
                  SELECT t.id_tronc,
@@ -4723,7 +4730,8 @@ WITH req_t AS (
                             ELSE ''::text
                         END
 							AS id_plan,
-                    st_offsetcurve((st_dump(t.geom)).geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom
+                    st_offsetcurve((st_dump(t.geom)).geom, 4::double precision, 'quad_segs=4 join=round'::text) AS geom,
+                    t.insee_g as insee
                    FROM m_mobilite_douce.geo_mob_troncon t
                      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
                      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
@@ -4750,12 +4758,13 @@ WITH req_t AS (
             g.proprio,
             g.epci,
             g.observ,
-            string_agg(g.id_iticycl, ','::text) AS code_iditicycl,
-            string_agg(g.id_itirand, ','::text) AS code_iditirand,
-            string_agg(g.id_plan, ','::text) AS code_idplan,
-            st_multi(g.geom) AS geom
+            string_agg(distinct g.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(distinct g.id_itirand, ','::text) AS code_iditirand,
+            string_agg(distinct g.id_plan, ','::text) AS code_idplan,
+            st_multi(g.geom) AS geom,
+            g.insee
            FROM req_g_chaussee g
-          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal)
+          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal,g.insee)
         UNION ALL
         ( WITH req_g AS (
                  SELECT t.id_tronc,
@@ -4785,7 +4794,8 @@ WITH req_t AS (
                             ELSE ''::text
                         END	
 							AS id_plan,
-                    (st_dump(t.geom)).geom AS geom
+                    (st_dump(t.geom)).geom AS geom,
+                    t.insee_g as insee
                    FROM m_mobilite_douce.geo_mob_troncon t
                      LEFT JOIN m_mobilite_douce.lk_mob_tronc_iti lki ON lki.id_tronc = t.id_tronc
                      LEFT JOIN m_mobilite_douce.an_mob_iti_cycl i ON i.id_iticycl = lki.id_iti
@@ -4812,14 +4822,15 @@ WITH req_t AS (
             g.proprio,
             g.epci,
             g.observ,
-            string_agg(g.id_iticycl, ','::text) AS code_iditicycl,
-            string_agg(g.id_itirand, ','::text) AS code_iditirand,
-            string_agg(g.id_plan, ','::text) AS code_idplan,
-            st_multi(g.geom) AS geom
+            string_agg(distinct g.id_iticycl, ','::text) AS code_iditicycl,
+            string_agg(distinct g.id_itirand, ','::text) AS code_iditirand,
+            string_agg(distinct g.id_plan, ','::text) AS code_idplan,
+            st_multi(g.geom) AS geom,
+            g.insee
            FROM req_g g
-          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal)
+          GROUP BY g.id_tronc, g.ame, g.dbstatut, g.typ_mob, g.dbetat, g.geom, g.local, g.epci, g.regime, g.gestio, g.proprio, g.observ, g.requal, g.insee)
         )
- insert INTO m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon (gid,id_tronc,ame,dbetat,dbstatut,typ_mob,regime,local,requal,gestio, proprio, lib_gestio,lib_proprio, epci, observ,code_iditicycl,code_iditirand,code_idplan,geom)
+ insert INTO m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon (gid,id_tronc,ame,dbetat,dbstatut,typ_mob,regime,local,requal,gestio, proprio, lib_gestio,lib_proprio, epci, observ,code_iditicycl,code_iditirand,code_idplan,geom,insee)
     SELECT nextval('m_mobilite_douce.xapps_geo_vmr_mob_amgt_troncon_seq'::regclass) AS gid,
     req_t.id_tronc,
     req_t.ame,
@@ -4845,12 +4856,13 @@ WITH req_t AS (
              LEFT JOIN r_objet.lt_gestio_proprio l ON p.code = l.code::text) AS lib_proprio,
     req_t.epci,
     req_t.observ,
-    req_t.code_iditicycl,
-    req_t.code_iditirand,
-    req_t.code_idplan,
-    req_t.geom::geometry(MultiLineString,2154) AS geom
+    trim(both ',' from req_t.code_iditicycl) as code_iditicycl,
+    trim(both ',' from req_t.code_iditirand) as code_iditirand,
+    trim(both ',' from req_t.code_idplan) as code_idplan,
+    req_t.geom::geometry(MultiLineString,2154) AS geom,
+    req_t.insee
    FROM req_t
-  WHERE req_t.ame::text <> 'ZZ'::text AND req_t.dbetat::text <> '11'::text AND req_t.dbetat::text <> 'ZZ'::text
+  WHERE req_t.ame::text <> 'ZZ'::text AND req_t.dbetat::text <> 'ZZ'::text
 ;
 
 refresh materialized view m_mobilite_douce.xapps_geo_vmr_iti_cycl;
@@ -4876,6 +4888,13 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_refresh_iti() IS 'Fonction gérant le rafraichissement des itinéraires pour l''affichage dans les contextes de carte de GEO';
+
+-- Permissions
+
+ALTER FUNCTION m_mobilite_douce.ft_m_refresh_iti() OWNER TO sig_create;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_refresh_iti() TO public;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_refresh_iti() TO sig_create;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_refresh_iti() TO create_sig;
 
 
 
