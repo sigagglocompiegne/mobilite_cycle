@@ -4915,7 +4915,6 @@ COMMENT ON FUNCTION m_mobilite_douce.ft_m_suppan_rep_controle_update_troncon() I
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle ###############################################
-
 -- DROP FUNCTION m_mobilite_douce.ft_m_troncon_controle();
 
 CREATE OR REPLACE FUNCTION m_mobilite_douce.ft_m_troncon_controle()
@@ -4938,14 +4937,11 @@ v_commune := (select DISTINCT commune FROM r_osm.geo_vm_osm_commune_grdc_plus c 
 
 
 
--- controle sur la position à droite ou à gauche selon l'aménagement et la régime
 
--- certains aménagements ne peuvent qu'être saisi à droite
 /*IF NEW.posi_dg IN ('12','20') and (new.ame_d in ('31','32','33','71','72','81','82','84','90','99') or new.ame_g in ('31','32','33','71','72','81','82','84','90','99')) then
 	 RAISE EXCEPTION '<font color="#FF0000"><b>L''amnégament saisi ne peut qu''être qu''à droite. Merci de corriger votre saisie.</font></b><br><br>';
 end if;
 */
--- le niveau d'avancement ne peut pas être à non concerné si un aménagement est renseigné
 if new.ame_d <> 'ZZ' and new.dbetat_d = 'ZZ' then
 	 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer un niveau d''avancemenent à "Non concerné" si vous indiquez un aménagement à droite.</font></b><br><br>';
 end if ;
@@ -4956,7 +4952,6 @@ end if ;
 
 
 
--- si mon aménagement n'est qu'à droite
 IF NEW.posi_dg = '11' then
 
 	-- le régime de circulation doit être indiqué pour des aménagements sur chaussée
@@ -4966,7 +4961,7 @@ IF NEW.posi_dg = '11' then
 */
 
 	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
-    IF NEW.requal_d is true AND (NEW.reqame_d IS NULL OR NEW.reqame_d = '') AND (NEW.reqam_dbetat_d IS NULL OR NEW.reqam_dbetat_d = '') THEN
+    IF NEW.requal_d is true AND LENGTH(COALESCE(trim(new.reqame_d::text), '')) = 0 AND LENGTH(COALESCE(trim(new.reqam_dbetat_d::text), '')) = 0 THEN
        RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de droite sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
     END IF;
 	IF NEW.requal_d is false then
@@ -4979,17 +4974,14 @@ IF NEW.posi_dg = '11' then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
 	end if ;
 
-    -- année de programmation doit être supérieur à 2000
-	if new.an_prog_d is not null and new.an_prog_d <= 2000 then
+	if LENGTH(COALESCE(trim(new.an_prog_d::text), '')) <> 0 and new.an_prog_d <= 2000 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation d''un tronçon de droite n''est pas cohérente.</font></b><br><br>';
 	end if;	
 
-    -- largeur cohérente <=5m
-	if new.largeur_d is not null and new.largeur_d >= 5 then
+	if LENGTH(COALESCE(trim(new.largeur_d::text), '')) <> 0 and new.largeur_d >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur de droite n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
 	end if;	
 
-     -- contrôle sur la localisation <> ZZ si aménagement hors VV et PC
 	if new.ame_d NOT IN ('10','40','50','81','99') and new.local_d = 'ZZ' then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas avoir une localisation à "Non concerné" pour cet aménagement.</font></b><br><br>';
 	end if;	 
@@ -5086,7 +5078,6 @@ IF NEW.posi_dg = '11' then
     NEW.conv_g := 'z';
 
    
-   -- si voie verte ou assimilé le régime est à non concerné ainsi que la localisation
    IF NEW.ame_d IN ('40','71','99') THEN
     new.local_d := 'ZZ';
    END IF;
@@ -5097,7 +5088,6 @@ END IF;
 
 
 
--- si mon aménagement n'est qu'à gauche
 IF NEW.posi_dg = '12' then
 
 		-- le régime de circulation doit être indiqué pour des aménagements sur chaussée
@@ -5107,7 +5097,7 @@ IF NEW.posi_dg = '12' then
 */
 
 	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
-    IF NEW.requal_g is true AND (NEW.reqame_g IS NULL OR NEW.reqame_g = '') AND (NEW.reqam_dbetat_g IS NULL OR NEW.reqam_dbetat_g = '') THEN
+    IF NEW.requal_g is true AND LENGTH(COALESCE(trim(new.reqame_g::text), '')) = 0 AND LENGTH(COALESCE(trim(new.reqam_dbetat_g::text), '')) = 0 THEN
        RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de gauche sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
     END IF;
 	IF NEW.requal_g is false then
@@ -5119,13 +5109,12 @@ IF NEW.posi_dg = '12' then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
 	end if ;
 
-   -- année de programmation doit être supérieur à 2000
-	if new.an_prog_g is not null and new.an_prog_g <= 2000 then
+	if LENGTH(COALESCE(trim(new.an_prog_g::text), '')) <> 0 and new.an_prog_g <= 2000 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de gauche n''est pas cohérente.</font></b><br><br>';
 	end if;	
 
 	    -- largeur cohérente <=5m
-	if new.largeur_d is not null and new.largeur_d >= 5 then
+	if LENGTH(COALESCE(trim(new.largeur_d::text), '')) <> 0 and new.largeur_d >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de gauche n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
 	end if;	
 
@@ -5221,7 +5210,6 @@ IF NEW.posi_dg = '12' then
     NEW.gestio_d := 'ZZ';
     NEW.conv_d := 'z';
    
-     -- si voie verte le régime est à non concerné ainsi que la localisation
    IF NEW.ame_g IN ('40','71','99') THEN
     new.local_d := 'ZZ';
    END IF;
@@ -5229,12 +5217,11 @@ IF NEW.posi_dg = '12' then
 END IF;
 
 
--- si mon aménagement est à gauche et à droite
 IF NEW.posi_dg = '20' then
 
 
 	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
-    IF NEW.requal_g is true AND (NEW.reqame_g IS NULL OR NEW.reqame_g = '') AND (NEW.reqam_dbetat_g IS NULL OR NEW.reqam_dbetat_g = '') THEN
+    IF NEW.requal_g is true AND LENGTH(COALESCE(trim(new.reqame_g::text), '')) = 0 AND LENGTH(COALESCE(trim(new.reqam_dbetat_g::text), '')) = 0 THEN
        RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de gauche sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
     END IF;
 	IF NEW.requal_g is false then
@@ -5243,7 +5230,7 @@ IF NEW.posi_dg = '20' then
 	end if;	
 
 	-- contrôle sur la requalification (si je coche je doit obligatoirement remplir l'aménagement prévu et son état d'avancement)
-    IF NEW.requal_d is true AND (NEW.reqame_d IS NULL OR NEW.reqame_d = '') AND (NEW.reqam_dbetat_d IS NULL OR NEW.reqam_dbetat_d = '') THEN
+    IF NEW.requal_d is true AND LENGTH(COALESCE(trim(new.reqame_d::text), '')) = 0 AND LENGTH(COALESCE(trim(new.reqam_dbetat_d::text), '')) = 0 THEN
        RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer une requalification de l''aménagement de droite sans renseigner le futur aménagement et son état d''avancement.</font></b><br><br>';
     END IF;
 
@@ -5263,7 +5250,6 @@ IF NEW.posi_dg = '20' then
 	--IF NEW.lin_d IS null or NEW.lin_d = 0 THEN
 	NEW.lin_d=ST_Length(new.geom)::integer;
 	--END IF;
--- si commune identique
     IF NEW.com_g IS TRUE then
 		NEW.insee_d := v_insee;
 		NEW.insee_g := v_insee;
@@ -5394,7 +5380,6 @@ IF NEW.posi_dg = '20' then
 		new.gestio_a_g := CASE WHEN new.gestio_g like '%99%' then new.gestio_a_g else null end;
 		new.proprio_a_g := CASE WHEN new.proprio_g like '%99%' then new.proprio_a_g else null end;	
 
-    -- si aménagement identique
     IF NEW.mame_g IS TRUE then
     	new.ame_g := new.ame_d;
         new.dbetat_g := new.dbetat_d;
@@ -5430,7 +5415,6 @@ IF NEW.posi_dg = '20' then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un niveau d''avancemenent autre que non renseigné.</font></b><br><br>';
 	end if ;
 
-   -- si voie verte le régime est à non concerné ainsi que la localisation
    IF NEW.ame_d IN ('40','71','99') THEN
     new.local_d := 'ZZ';
    END IF;
@@ -5442,55 +5426,50 @@ END IF;
 
 	-- contrôle saisie
 	-- année de programmation doit être supérieur à 2000
-	if new.an_prog_d is not null and new.an_prog_d <= 2000 then
+	if LENGTH(COALESCE(trim(new.an_prog_d::text), '')) <> 0 and new.an_prog_d <= 2000 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de droite n''est pas cohérente.</font></b><br><br>';
 	end if;	
 
 	   -- année de programmation doit être supérieur à 2000
-	if new.an_prog_g is not null and new.an_prog_g <= 2000 then
+	if LENGTH(COALESCE(trim(new.an_prog_g::text), '')) <> 0 and new.an_prog_g <= 2000 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>L''année de programmation du tronçon de gauche n''est pas cohérente.</font></b><br><br>';
 	end if;	
 
 	-- largeur cohérente <=5m
-	if new.largeur_d is not null and new.largeur_d >= 5 then
+	if LENGTH(COALESCE(trim(new.largeur_d::text), '')) <> 0 and new.largeur_d >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de droite n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
 	end if;	
  
 	-- largeur cohérente <=5m
-	if new.largeur_g is not null and new.largeur_g >= 5 then
+	if LENGTH(COALESCE(trim(new.largeur_g::text), '')) <> 0 and new.largeur_g >= 5 then
 		 RAISE EXCEPTION '<font color="#FF0000"><b>La largeur du tronçon de gauche n''est pas cohérente (supérieur à 5 mètres).</font></b><br><br>';
 	end if;	
 
 
 /*****/
--- gestion des entretiens et aménageurs non renseignés
 
 
 	-- pour gestionnaire à droite null
-   if NEW.posi_dg = '11' and new.gestio_d is null then
+   if NEW.posi_dg = '11' and LENGTH(COALESCE(trim(new.gestio_d::text), '')) = 0 then
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à droite.</b></font><br><br>';
    end if;
-   -- pour gestionnaire à gauche null
-   if NEW.posi_dg = '12' and new.gestio_g is null then 
+   if NEW.posi_dg = '12' and LENGTH(COALESCE(trim(new.gestio_g::text), '')) = 0 then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à gauche.</b></font><br><br>';
    end if;
 
-   -- pour gestionnaire à gauche et à droite
-  if NEW.posi_dg = '20' and (new.gestio_g is null or new.gestio_d is null) then 
+  if NEW.posi_dg = '20' and LENGTH(COALESCE(trim(new.gestio_g::text), '')) = 0 then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un aménageur à droite ou à gauche.</b></font><br><br>';
    end if;
 
 	-- pour entretien à droite null
-   if NEW.posi_dg = '11' and new.proprio_d is null then 
+   if NEW.posi_dg = '11' and LENGTH(COALESCE(trim(new.proprio_d::text), '')) = 0 then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un organisme d''entretien à droite.</b></font><br><br>';
    end if;
-   -- pour entretien à gauche null
-   if NEW.posi_dg = '12' and new.proprio_g is null then 
+   if NEW.posi_dg = '12' and LENGTH(COALESCE(trim(new.proprio_g::text), '')) = 0 then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous devez indiquer un organisme d''entretien à gauche.</b></font><br><br>';
    end if;
 
-   -- pour entretien à gauche et à droite null
-  if NEW.posi_dg = '20' and (new.proprio_g is null or new.proprio_d is null) then 
+  if NEW.posi_dg = '20' and (LENGTH(COALESCE(trim(new.proprio_g::text), '')) = 0  or LENGTH(COALESCE(trim(new.proprio_d::text), '')) = 0) then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite ou à gauche.</b></font><br><br>';
    end if;
 
@@ -5501,12 +5480,10 @@ END IF;
    if NEW.posi_dg = '11' and length(new.gestio_d) <> 2 and (new.gestio_d like '%00%' or new.gestio_d like '%ZZ%') then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à droite.</b></font><br><br>';
    end if;
-   -- pour gestionnaire à gauche
    if NEW.posi_dg = '12' and length(new.gestio_g) <> 2 and (new.gestio_g like '%00%' or new.gestio_g like '%ZZ%') then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à gauche.</b></font><br><br>';
    end if;
 
-   -- pour gestionnaire à gauche et à droite
   if NEW.posi_dg = '20' and ((length(new.gestio_g) <> 2 and (new.gestio_g like '%00%' or new.gestio_g like '%ZZ%')) or
    (length(new.gestio_d) <> 2 and (new.gestio_d like '%00%' or new.gestio_d like '%ZZ%'))) then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre aménageur à droite ou à gauche.</b></font><br><br>';
@@ -5516,12 +5493,10 @@ END IF;
    if NEW.posi_dg = '11' and length(new.proprio_d) <> 2 and (new.proprio_d like '%00%' or new.proprio_d like '%ZZ%') then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite.</b></font><br><br>';
    end if;
-   -- pour entretien à gauche
    if NEW.posi_dg = '12' and length(new.proprio_g) <> 2 and (new.proprio_g like '%00%' or new.proprio_g like '%ZZ%') then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme à gauche.</b></font><br><br>';
    end if;
 
-   -- pour entretien à gauche et à droite
   if NEW.posi_dg = '20' and ((length(new.proprio_g) <> 2 and (new.proprio_g like '%00%' or new.proprio_g like '%ZZ%')) or
    (length(new.proprio_d) <> 2 and (new.proprio_d like '%00%' or new.proprio_d like '%ZZ%'))) then 
    	  RAISE EXCEPTION '<font color="#FF0000"><b>Vous ne pouvez pas indiquer "Non renseigné" ou "Non concerné" avec un autre organisme d''entretien à droite ou à gauche.</b></font><br><br>';
@@ -5529,14 +5504,12 @@ END IF;
 
 
 	
-   -- si type de mobilité = piéton, sens de circulation par défaut à ZZ 
    if new.typ_mob = '20' then
    	  new.sens_g := 'ZZ'; 	
    	  new.sens_d := 'ZZ';
    end if;
 
 IF (TG_OP = 'UPDATE') THEN
-    --raise exception 'après fusion passe ici 1';
 	-- quand je réactive un tronçon
 	IF old.dbstatut <> NEW.dbstatut AND NEW.dbstatut = '10' THEN
 		NEW.dbstatut = '10';
@@ -5551,8 +5524,8 @@ IF (TG_OP = 'UPDATE') THEN
 	(
 		select p.id_pan, ti.id_iti from m_mobilite_douce.lk_mob_tronc_iti ti, m_mobilite_douce.geo_mob_pan p, m_mobilite_douce.geo_mob_troncon t
 		WHERE p.id_tronc = ti.id_tronc and t.id_tronc = new.id_tronc and st_distance(t.geom,p.geom) < 7 and p.id_pan || '-' || ti.id_iti
-		not in (select i.id_pan || '-' || i.id_iti from m_mobilite_douce.lk_mob_pan_iti i WHERE i.id_iti IS NOT null 
-		and i.id_pan || '-' || i.id_iti IS NOT null)
+		not in (select i.id_pan || '-' || i.id_iti from m_mobilite_douce.lk_mob_pan_iti i WHERE LENGTH(COALESCE(trim(i.id_iti::text), '')) <> 0 
+		and i.id_pan || '-' || LENGTH(COALESCE(trim(i.id_iti::text), '')) <> 0)
 	)
 	insert into m_mobilite_douce.lk_mob_pan_iti (id, id_pan, id_iti)
 	select nextval('m_mobilite_douce.lk_mob_pan_iti_seq'::regclass), i.id_pan, i.id_iti from req_maj_iti_pan i; 
@@ -5562,8 +5535,8 @@ IF (TG_OP = 'UPDATE') THEN
 	(
 		select r.id_rep, ti.id_iti from m_mobilite_douce.lk_mob_tronc_iti ti, m_mobilite_douce.geo_mob_repere r, m_mobilite_douce.geo_mob_troncon t
 		where t.id_tronc = ti.id_tronc and r.typ_rep not in ('10','30') and t.id_tronc = NEW.id_tronc and st_intersects(st_buffer(r.geom,1),t.geom) is true and r.id_rep || '-' || ti.id_iti
-		not in (select i.id_rep || '-' || i.id_iti from m_mobilite_douce.lk_mob_rep_iti i WHERE i.id_iti IS NOT null
-		and i.id_rep || '-' || i.id_iti is not null)
+		not in (select i.id_rep || '-' || i.id_iti from m_mobilite_douce.lk_mob_rep_iti i WHERE LENGTH(COALESCE(trim(i.id_iti::text), '')) <> 0 
+		and i.id_rep || '-' || LENGTH(COALESCE(trim(i.id_iti::text), '')) <> 0)
 	)
 		insert into m_mobilite_douce.lk_mob_rep_iti (id, id_rep, id_iti)
 		select nextval('m_mobilite_douce.lk_mob_rep_iti_seq'::regclass), i.id_rep, i.id_iti from req_maj_iti_rep i;
@@ -5620,7 +5593,6 @@ END IF;
 IF (TG_OP = 'DELETE') then
 	--raise exception 'après fusion passe ici 4';
 	--raise exception 'passe dans delete tronçon contrôle';
-    -- gestion des suppressions d'objets par le statut (attention ici avec le découpage qui supprime le tronçon découpé 
 	if old.dbstatut = '10' THEN
 	    --raise EXCEPTION 'ok';
 		-- je mets à jour le statut en inactif (1er suppression)
@@ -5658,6 +5630,12 @@ $function$
 ;
 
 COMMENT ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() IS 'Fonction gérant les contrôles de saisies et les informations automatiquement remplies liées à la particularité des infos de droites et de gauche';
+
+-- Permissions
+
+ALTER FUNCTION m_mobilite_douce.ft_m_troncon_controle() OWNER TO create_sig;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO public;
+GRANT ALL ON FUNCTION m_mobilite_douce.ft_m_troncon_controle() TO create_sig;
 
 
 -- #################################################################### FONCTION/TRIGGER ft_m_troncon_controle_after ###############################################
