@@ -735,8 +735,8 @@ Particularité(s) à noter :
 
 `[m_mobilite_douce].[lt_mob_etat]` : Liste de valeurs de l'état de vétusté
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de valeurs de l'état du mobilier de l'équipement|character varying(2)| |
 |valeur|Libellé de valeurs de l'état du mobilier de l'équipement|character varying(30)| |
 
@@ -757,8 +757,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_iti_pratrand]` : Liste de valeurs de la pratique de l'itinéraire de randonnée
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
 |valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
 
@@ -782,8 +782,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_iti_typparc]` : Liste de valeurs du type de parcours de l'itinéraire de randonnées
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
 |valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
 
@@ -804,8 +804,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_iti_typrand]` : Liste de valeurs du type de randonnée
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des pratiques des itinéraires de randonnées|character varying(2)| |
 |valeur|Valeur des pratiques des itinéraires de randonnées|character varying(255)| |
 
@@ -826,8 +826,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_iti_usage]` : Liste de valeurs du type de randonnée
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des usages des itinéraires cyclables|character varying(2)| |
 |valeur|Valeur des usages des itinéraires cyclables|character varying(255)| |
 
@@ -836,8 +836,8 @@ Particularité(s) à noter :
 
 Valeurs possibles :
 
-|Code|Valeur|
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |00|Non renseigné|
 |10|Utilitaire|
 |20|Touristique|
@@ -848,8 +848,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_media_typdoc]` : Liste de valeurs du type de document des médias
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de documents joints|character varying(2)| |
 |valeur|Valeur du type de documents joints|character varying(255)| |
 
@@ -874,8 +874,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_pan_codepan]` : Liste de valeurs des panneaux routiers à destination des mobilités douces
 
-|Nom attribut | Définition |
-|:---|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code officiel du panneau|character varying(50)| |
 |typpan|Type de panneau (code liste lt_mob_pan_typpan)|character varying(2)| |
 |url|URL d'accès au symbole du panneau|character varying(255)| |
@@ -1092,8 +1092,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_pan_typpan]` : Liste de valeurs du type de panneaux
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de panneau|character varying(2)| |
 |typsign|Code du type de signalétique|character varying(2)| |
 |typpan|Libellé du type de panneau|character varying(80)| |
@@ -1121,8 +1121,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_pan_typsign]` : Liste de valeurs du type de signalétique
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de signalétique|character varying(2)| |
 |valeur|Type de signalétique|character varying(80)| |
 
@@ -1142,8 +1142,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_plan_niveau]` : Liste de valeurs des niveaux des plans d'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du niveau administratif du schéma dans lequel sont inscrits les itinéraires|character varying(2)| |
 |valeur|Valeur du niveau administratif du schéma dans lequel sont inscrits les itinéraires|character varying(255)| |
 
@@ -1166,8 +1166,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_plan_usage]` : Liste de valeurs des usages des plans d'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des mobilités douces concernées par le plan|character varying(2)| |
 |valeur|Valeur des mobilités douces concernées par le plan|character varying(255)| |
 
@@ -1187,8 +1187,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_rep_typrep]` : Liste de valeurs des types de repères
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de repère|character varying(2)| |
 |valeur|Libellé du type de repère|character varying(40)| |
 
@@ -1214,8 +1214,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_rep_usarep]` : Liste de valeurs des usages des repères
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de repère|character varying(2)| |
 |valeur|Libellé du type de repère|character varying(40)| |
 
@@ -1234,9 +1234,8 @@ Valeurs possibles :
 ---
 
 `[m_mobilite_douce].[lt_mob_statio_acces]` : Liste de valeurs des usages des repères
-
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des modes d'accès à l'emplacement de stationnement|character varying(2)| |
 |valeur|Libellé des modes d'accès à l'emplacement de stationnement|character varying(40)| |
 
@@ -1256,8 +1255,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_statio_mobil]` : Liste de valeurs des types d'accroche
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de valeurs des types d'accroche|character varying(2)| |
 |valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
 
@@ -1284,8 +1283,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_statio_protect]` : Liste des modes d'accès à l'emplacement de stationnement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de valeurs des types d'accroche|character varying(2)| |
 |valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
 
@@ -1306,8 +1305,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_statio_typ_accro]` : Liste des modes d'accès à l'emplacement de stationnement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de valeurs des types d'accroche|character varying(2)| |
 |valeur|Libellé de valeurs des types d'accroche|character varying(30)| |
 
@@ -1329,8 +1328,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_acces]` : Liste des modes d'accès des tronçons
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des types d'accessibilité des aménagements par type de véhicule à deux roues non motorisé|character varying(2)| |
 |valeur|Libellé des types d'accessibilité des aménagements par type de véhicule à deux roues non motorisé|character varying(40)| |
 
@@ -1354,8 +1353,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_ame]` : Liste des modes d'accès des tronçons
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des types d'aménagement|character varying(2)| |
 |valeur|Libellé des types d'aménagement|character varying(80)| |
 
@@ -1393,8 +1392,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_dg]` : Liste de valeurs des positions de l'aménagement 
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de la position de l'aménagement|character varying(2)| |
 |valeur|Valeur de la position de l'aménagement|character varying(255)| |
 
@@ -1414,8 +1413,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_local]` : Liste des valeurs de la localisation de l'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de localisation de l'aménagement|character varying(2)| |
 |valeur|Libellé de localisation de l'aménagement|character varying(40)| |
 
@@ -1444,8 +1443,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_regime]` : Liste des valeurs du régime présent sur la voie
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du régime présent sur la voie|character varying(2)| |
 |valeur|Libellé du du régime présent sur la voie|character varying(40)| |
 
@@ -1469,8 +1468,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_res]` : Liste des types de réseau structurant local auquel appartient l'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code des types de réseau structurant local auquel appartient l'aménagement|character varying(2)| |
 |valeur|Libellé des types de réseau structurant local auquel appartient l'aménagement|character varying(40)| |
 
@@ -1491,8 +1490,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_revet]` : Liste des valeurs des niveaux de qualité du revêtement de l'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du niveau de qualité du revêtement de l'aménagement|character varying(2)| |
 |valeur|Libellé du niveau de qualité du revêtement de l'aménagement|character varying(40)| |
 
@@ -1513,8 +1512,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_sens]` : Liste des valeurs des sens de circulation de l'aménagement
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du sens de circulation de l'aménagement|character varying(2)| |
 |valeur|Libellé du sens de circulation de l'aménagement|character varying(40)| |
 
@@ -1534,8 +1533,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_tronc_typ]` : Liste des valeurs des types de tronçon
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type de tronçon|character varying(2)| |
 |valeur|Libellé du type de tronçon|character varying(40)| |
 
@@ -1553,8 +1552,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_eqvelo_sstype]` : Liste des valeurs des Sous-Type des équipements vélo (hors stationnement)
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du sous-type d'équipements|character varying(2)| |
 |valeur|Valeur du sous-type d'équipements|character varying(255)| |
 |typ|Code du type d'équipement associé|character varying(2)| |
@@ -1584,8 +1583,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_eqvelo_type]` : Liste des valeurs des Type des équipements vélo (hors stationnement)
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code du type d'équipements|character varying(2)| |
 |valeur|Valeur du type d'équipements|character varying(255)| |
 
@@ -1613,8 +1612,8 @@ Valeurs possibles :
 
 `[m_mobilite_douce].[lt_mob_regroup_imp]` : Liste de valeurs de l'importance des regroupements
 
-|Nom attribut | Définition |
-|:---|:---|
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
 |code|Code de l'importance|character varying(2)| |
 |valeur|Valeur de l'importance|character varying(255)| |
 
